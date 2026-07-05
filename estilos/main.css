@@ -1,0 +1,150 @@
+/* ============================================================
+   MAIN.CSS — Variables, reset y base global
+   ============================================================ */
+
+:root {
+    --primary:          #2563eb;
+    --primary-dark:     #1d4ed8;
+    --primary-light:    #eff6ff;
+    --sidebar-bg:       #1e293b;
+    --sidebar-text:     #94a3b8;
+    --sidebar-hover:    #334155;
+    --sidebar-active:   #2563eb;
+    --topbar-bg:        #ffffff;
+    --bg-page:          #f1f5f9;
+    --bg-card:          #ffffff;
+    --text-main:        #0f172a;
+    --text-muted:       #64748b;
+    --border:           #e2e8f0;
+    --success:          #16a34a;
+    --success-light:    #dcfce7;
+    --danger:           #dc2626;
+    --danger-light:     #fee2e2;
+    --warning:          #d97706;
+    --warning-light:    #fef3c7;
+    --info:             #0891b2;
+    --info-light:       #e0f2fe;
+    --shadow-sm:        0 1px 3px rgba(0,0,0,.10);
+    --shadow:           0 4px 6px  rgba(0,0,0,.07);
+    --shadow-lg:        0 10px 25px rgba(0,0,0,.10);
+    --radius:           6px;
+    --radius-lg:        10px;
+    --sidebar-w:        240px;
+    --topbar-h:         60px;
+    --transition:       .2s ease;
+    --font:             -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+/* ── Reset ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 14px; scroll-behavior: smooth; }
+
+body {
+    font-family: var(--font);
+    font-size:   1rem;
+    color:       var(--text-main);
+    background:  var(--bg-page);
+    min-height:  100vh;
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { list-style: none; }
+
+input, select, textarea, button {
+    font-family: inherit;
+    font-size:   inherit;
+}
+
+img { max-width: 100%; display: block; }
+
+/* ── Utilidades ──────────────────────────────────────────── */
+.d-none    { display: none !important; }
+.d-flex    { display: flex; }
+.d-block   { display: block; }
+.flex-col  { flex-direction: column; }
+.gap-1     { gap: .5rem; }
+.gap-2     { gap: 1rem; }
+.items-center  { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center  { justify-content: center; }
+.text-center  { text-align: center; }
+.text-right   { text-align: right; }
+.text-muted   { color: var(--text-muted); }
+.text-danger  { color: var(--danger); }
+.text-success { color: var(--success); }
+.w-100        { width: 100%; }
+.mt-1 { margin-top: .5rem; }
+.mt-2 { margin-top: 1rem; }
+.mb-1 { margin-bottom: .5rem; }
+.mb-2 { margin-bottom: 1rem; }
+
+/* ── Badge de estado ─────────────────────────────────────── */
+.badge {
+    display:       inline-block;
+    padding:       .2rem .6rem;
+    border-radius: 20px;
+    font-size:     .75rem;
+    font-weight:   600;
+    line-height:   1.4;
+}
+.badge-activo   { background: var(--success-light); color: var(--success); }
+.badge-inactivo { background: var(--danger-light);  color: var(--danger);  }
+.badge-primary  { background: var(--primary-light); color: var(--primary); }
+.badge-warning  { background: var(--warning-light); color: var(--warning); }
+
+/* ── Alerta/notificación flotante ────────────────────────── */
+#alerta-global {
+    position:      fixed;
+    top:           1.2rem;
+    right:         1.2rem;
+    z-index:       9999;
+    max-width:     360px;
+    min-width:     240px;
+    padding:       .9rem 1.2rem;
+    border-radius: var(--radius);
+    border-left:   4px solid transparent;
+    background:    var(--bg-card);
+    box-shadow:    var(--shadow-lg);
+    font-size:     .9rem;
+    line-height:   1.4;
+    opacity:       0;
+    transform:     translateX(20px);
+    transition:    opacity var(--transition), transform var(--transition);
+    pointer-events: none;
+}
+#alerta-global.visible {
+    opacity:   1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+#alerta-global.alerta-ok      { border-color: var(--success); color: var(--success); }
+#alerta-global.alerta-error   { border-color: var(--danger);  color: var(--danger);  }
+#alerta-global.alerta-warning { border-color: var(--warning); color: var(--warning); }
+#alerta-global.alerta-info    { border-color: var(--info);    color: var(--info);    }
+
+/* ── Spinner de carga ────────────────────────────────────── */
+.spinner {
+    display:        inline-block;
+    width:          20px; height: 20px;
+    border:         3px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius:  50%;
+    animation:      spin .7s linear infinite;
+    vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Overlay de carga de página ──────────────────────────── */
+#loading-overlay {
+    position:   fixed;
+    inset:      0;
+    background: rgba(255,255,255,.7);
+    display:    flex;
+    align-items: center;
+    justify-content: center;
+    z-index:    8888;
+}
+#loading-overlay.d-none { display: none; }

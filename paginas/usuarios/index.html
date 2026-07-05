@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios — Sistema Empresarial</title>
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/dashboard.css">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/components.css">
+</head>
+<body class="pag-dashboard">
+
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="main-wrap">
+        <header class="topbar" id="topbar"></header>
+
+        <main class="contenido">
+            <div class="breadcrumb">
+                <span>Inicio</span><span>›</span><span>Usuarios</span>
+            </div>
+
+            <div class="pag-titulo-wrap">
+                <div>
+                    <h1 class="pag-titulo">Usuarios</h1>
+                    <p class="pag-subtitulo">Gestión de cuentas de usuario del sistema</p>
+                </div>
+                <button class="btn btn-primary" id="btnNuevoUsuario">+ Nuevo Usuario</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-titulo">Listado de Usuarios</span>
+                    <div class="busqueda-wrap">
+                        <span class="busqueda-icono">⊙</span>
+                        <input type="text" id="txtBuscar" placeholder="Buscar usuario...">
+                    </div>
+                </div>
+                <div class="tabla-wrap">
+                    <table class="tabla">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre / Usuario</th>
+                                <th>Correo</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyUsuarios">
+                            <tr><td colspan="6" class="tabla-vacia">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="alerta-global"></div>
+
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/config.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/menu.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/auth.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/usuarios.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', iniciarListaUsuarios);</script>
+</body>
+</html>

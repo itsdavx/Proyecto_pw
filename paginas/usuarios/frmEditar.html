@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Usuario — Sistema Empresarial</title>
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/dashboard.css">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/components.css">
+</head>
+<body class="pag-dashboard">
+
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="main-wrap">
+        <header class="topbar" id="topbar"></header>
+
+        <main class="contenido">
+            <div class="breadcrumb">
+                <a href="/NRC30713-Web/Proyecto_pw/paginas/usuarios/index.html">Usuarios</a>
+                <span>›</span><span>Editar Usuario</span>
+            </div>
+
+            <div class="pag-titulo-wrap">
+                <h1 class="pag-titulo">Editar Usuario</h1>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-titulo">Datos del usuario</span>
+                </div>
+                <div class="card-body">
+                    <form id="formUsuario" novalidate autocomplete="off">
+                        <input type="hidden" id="hdnIdUser">
+
+                        <div class="form-grid">
+
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtNombre">Nombre completo</label>
+                                <input class="form-control" type="text" id="txtNombre" placeholder="Nombre y apellido">
+                                <span class="form-error"></span>
+                            </div>
+
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtUsername">Nombre de usuario</label>
+                                <input class="form-control" type="text" id="txtUsername" placeholder="usuario123">
+                                <span class="form-error"></span>
+                            </div>
+
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtEmail">Correo electrónico</label>
+                                <input class="form-control" type="email" id="txtEmail" placeholder="correo@empresa.com">
+                                <span class="form-error"></span>
+                            </div>
+
+                            <div class="form-grupo">
+                                <label class="form-label" for="selRol">Rol</label>
+                                <select class="form-control" id="selRol">
+                                    <option value="">-- Seleccione --</option>
+                                </select>
+                                <span class="form-error"></span>
+                            </div>
+
+                            <div class="form-grupo full">
+                                <label class="form-label" for="txtPassword">Nueva contraseña (dejar vacío para no cambiar)</label>
+                                <input class="form-control" type="password" id="txtPassword" placeholder="Nueva contraseña (opcional)">
+                                <span class="form-error"></span>
+                                <span class="form-ayuda" id="ayudaPassword"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="form-acciones">
+                            <button type="submit" class="btn btn-primary">Actualizar Usuario</button>
+                            <button type="button" class="btn btn-secondary" id="btnCancelar">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="alerta-global"></div>
+
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/config.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/validaciones.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/menu.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/auth.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/usuarios.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('ayudaPassword').textContent = Validaciones?.descripcionPolitica?.() || '';
+            iniciarFormUsuario('editar');
+        });
+    </script>
+</body>
+</html>

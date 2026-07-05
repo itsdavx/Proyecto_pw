@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opciones — Sistema Empresarial</title>
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/dashboard.css">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/components.css">
+</head>
+<body class="pag-dashboard">
+
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="main-wrap">
+        <header class="topbar" id="topbar"></header>
+
+        <main class="contenido">
+            <div class="breadcrumb">
+                <span>Inicio</span><span>›</span><span>Opciones de Menú</span>
+            </div>
+
+            <div class="pag-titulo-wrap">
+                <div>
+                    <h1 class="pag-titulo">Opciones de Menú</h1>
+                    <p class="pag-subtitulo">Sub-opciones asociadas a cada ítem de menú</p>
+                </div>
+                <button class="btn btn-primary" id="btnNuevaOpcion">+ Nueva Opción</button>
+            </div>
+
+            <div class="card mb-2">
+                <div class="card-body" style="padding:1rem 1.4rem">
+                    <div class="form-grupo" style="max-width:320px">
+                        <label class="form-label" for="selMenu">Menú</label>
+                        <select class="form-control" id="selMenu">
+                            <option value="">-- Seleccione un menú --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-titulo">Opciones</span>
+                </div>
+                <div class="tabla-wrap">
+                    <table class="tabla">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre</th>
+                                <th>Acción</th>
+                                <th>Orden</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyOpciones">
+                            <tr><td colspan="5" class="tabla-vacia">Seleccione un menú.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal nueva opción -->
+    <div class="modal-overlay" id="modalNuevaOpcion">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-titulo">Nueva Opción</span>
+                <button class="modal-cerrar" id="btnCerrarModal">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="formNuevaOpcion" novalidate>
+                    <div class="form-grupo mb-2">
+                        <label class="form-label" for="txtNombreOpcion">Nombre</label>
+                        <input class="form-control" type="text" id="txtNombreOpcion" placeholder="Nombre de la opción">
+                        <span class="form-error"></span>
+                    </div>
+                    <div class="form-grupo mb-2">
+                        <label class="form-label" for="txtAccionOpcion">Acción</label>
+                        <input class="form-control" type="text" id="txtAccionOpcion" placeholder="Ej: exportar, imprimir">
+                        <span class="form-ayuda">Identificador de la acción (opcional).</span>
+                    </div>
+                    <div class="form-grupo">
+                        <label class="form-label" for="txtOrdenOpcion">Orden</label>
+                        <input class="form-control" type="number" id="txtOrdenOpcion" value="1" min="1">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="formNuevaOpcion" class="btn btn-primary">Guardar</button>
+                <button type="button" class="btn btn-secondary" id="btnCancelarModal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="alerta-global"></div>
+
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/config.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/validaciones.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/menu.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/auth.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/opciones.js"></script>
+</body>
+</html>

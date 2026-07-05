@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permisos — Sistema Empresarial</title>
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/dashboard.css">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/components.css">
+</head>
+<body class="pag-dashboard">
+
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="main-wrap">
+        <header class="topbar" id="topbar"></header>
+
+        <main class="contenido">
+            <div class="breadcrumb">
+                <span>Inicio</span><span>›</span><span>Permisos</span>
+            </div>
+
+            <div class="pag-titulo-wrap">
+                <div>
+                    <h1 class="pag-titulo">Permisos</h1>
+                    <p class="pag-subtitulo">Asignación de permisos por rol</p>
+                </div>
+            </div>
+
+            <div class="card mb-2">
+                <div class="card-header">
+                    <span class="card-titulo">Seleccionar Rol</span>
+                </div>
+                <div class="card-body">
+                    <div class="form-grupo" style="max-width:320px">
+                        <label class="form-label" for="selRolPermisos">Rol</label>
+                        <select class="form-control" id="selRolPermisos">
+                            <option value="">-- Seleccione un rol --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-titulo">Matriz de Permisos</span>
+                    <div class="btn-group d-none" id="accionesPermisos">
+                        <button class="btn btn-sm btn-outline" id="btnMarcarTodos">Marcar todos</button>
+                        <button class="btn btn-sm btn-secondary" id="btnDesmarcarTodos">Desmarcar todos</button>
+                        <button class="btn btn-sm btn-primary" id="btnGuardarPermisos">Guardar Permisos</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="matrizPermisos">
+                        <p class="text-muted text-center">Seleccione un rol para ver sus permisos.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="alerta-global"></div>
+
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/config.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/menu.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/auth.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/permisos.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', iniciarPermisos);</script>
+</body>
+</html>

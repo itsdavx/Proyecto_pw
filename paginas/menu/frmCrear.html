@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ítem de Menú — Sistema Empresarial</title>
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/dashboard.css">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/components.css">
+</head>
+<body class="pag-dashboard">
+
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="main-wrap">
+        <header class="topbar" id="topbar"></header>
+
+        <main class="contenido">
+            <div class="breadcrumb">
+                <a href="/NRC30713-Web/Proyecto_pw/paginas/menu/index.html">Menú</a>
+                <span>›</span><span>Ítem de Menú</span>
+            </div>
+
+            <div class="pag-titulo-wrap">
+                <h1 class="pag-titulo" id="tituloForm">Nuevo Ítem de Menú</h1>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-titulo">Datos del ítem</span>
+                </div>
+                <div class="card-body">
+                    <form id="formMenu" novalidate>
+                        <div class="form-grid">
+
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtNombreMenu">Nombre</label>
+                                <input class="form-control" type="text" id="txtNombreMenu" placeholder="Ej: Usuarios">
+                                <span class="form-error"></span>
+                            </div>
+
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtIcono">Ícono</label>
+                                <input class="form-control" type="text" id="txtIcono" placeholder="Ej: fa-users">
+                                <span class="form-ayuda">Nombre del ícono (fa-*). Se mostrará como símbolo Unicode.</span>
+                            </div>
+
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtUrl">URL</label>
+                                <input class="form-control" type="text" id="txtUrl" placeholder="/paginas/modulo/index.html">
+                                <span class="form-error"></span>
+                            </div>
+
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtModulo">Módulo</label>
+                                <input class="form-control" type="text" id="txtModulo" placeholder="Ej: usuarios">
+                                <span class="form-ayuda">Nombre del módulo para control de permisos.</span>
+                            </div>
+
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtOrden">Orden</label>
+                                <input class="form-control" type="number" id="txtOrden" value="1" min="1">
+                            </div>
+
+                            <div class="form-grupo">
+                                <label class="form-label" for="selPadre">Menú padre</label>
+                                <select class="form-control" id="selPadre">
+                                    <option value="">-- Sin padre (nivel raíz) --</option>
+                                </select>
+                            </div>
+
+                            <div class="form-grupo">
+                                <label class="form-label">Estado</label>
+                                <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;margin-top:.3rem">
+                                    <input type="checkbox" id="chkEstadoMenu" checked
+                                        style="width:18px;height:18px;accent-color:var(--primary)">
+                                    <span>Activo</span>
+                                </label>
+                            </div>
+
+                        </div>
+
+                        <div class="form-acciones">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <button type="button" class="btn btn-secondary" id="btnCancelar">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="alerta-global"></div>
+
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/config.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/validaciones.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/menu.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/auth.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/menu-admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const esEditar = !!new URLSearchParams(location.search).get('id');
+            document.getElementById('tituloForm').textContent = esEditar ? 'Editar Ítem de Menú' : 'Nuevo Ítem de Menú';
+            iniciarFormMenu();
+        });
+    </script>
+</body>
+</html>

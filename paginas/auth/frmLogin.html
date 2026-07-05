@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión — Sistema Empresarial</title>
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/login.css">
+</head>
+<body class="pag-login">
+
+    <div class="login-card">
+
+        <div class="login-header">
+            <div class="sistema-nombre">Sistema Empresarial</div>
+            <div class="sistema-sub">Control de Acceso y Administración</div>
+        </div>
+
+        <div class="login-body">
+
+            <div class="login-bloqueado" id="msgBloqueo"></div>
+
+            <form id="formLogin" novalidate autocomplete="off">
+
+                <div class="campo-grupo">
+                    <label for="txtUsuario">Usuario</label>
+                    <input type="text" id="txtUsuario" placeholder="Ingrese su usuario" autocomplete="off">
+                    <span class="mensaje-error"></span>
+                </div>
+
+                <div class="campo-grupo">
+                    <label for="txtPassword">Contraseña</label>
+                    <input type="password" id="txtPassword" placeholder="Ingrese su contraseña" autocomplete="off">
+                    <span class="mensaje-error"></span>
+                </div>
+
+                <div class="campo-grupo">
+                    <label>Verificación de seguridad</label>
+                    <div class="captcha-wrap">
+                        <canvas id="captchaCanvas" width="210" height="56" title="Haga clic para refrescar"></canvas>
+                        <button type="button" class="btn-refresh-captcha" id="btnRefrescarCaptcha" title="Refrescar captcha">⟳</button>
+                    </div>
+                    <input type="text" id="txtCaptcha" placeholder="Escriba los caracteres de la imagen" autocomplete="off">
+                    <span class="mensaje-error"></span>
+                </div>
+
+                <button type="submit" class="btn-login" id="btnLogin">Iniciar Sesión</button>
+
+            </form>
+        </div>
+
+        <div class="login-footer">
+            &copy; 2024 Sistema Empresarial — Todos los derechos reservados
+        </div>
+
+    </div>
+
+    <div id="alerta-global"></div>
+
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/config.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/auth.js"></script>
+</body>
+</html>
