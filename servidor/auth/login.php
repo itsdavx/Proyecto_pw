@@ -70,6 +70,9 @@ $db->prepare("DELETE FROM login_intentos WHERE username = ? AND ip = ?")
 $db->prepare("DELETE FROM sesiones WHERE id_user = ?")
    ->execute([$user['id_user']]);
 
+// Purgar sesiones caducadas de cualquier usuario (housekeeping)
+$db->exec("DELETE FROM sesiones WHERE expires_at < NOW()");
+
 // ── Crear token de sesion ─────────────────────────────────────
 $token  = bin2hex(random_bytes(32));
 $expira = date('Y-m-d H:i:s', strtotime('+1 hour'));

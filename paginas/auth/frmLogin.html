@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proyecto PW</title>
-    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css?v=10">
-    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/login.css?v=10">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css?v=11">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/login.css?v=11">
 </head>
 <body class="pag-login">
 
     <div class="login-card">
 
         <div class="login-header">
-            <div class="sistema-nombre">Sistema Generico</div>
+            <div class="sistema-nombre">Sistema Genérico</div>
             <div class="sistema-sub">Modulo de Login</div>
         </div>
 
@@ -30,7 +30,11 @@
 
                 <div class="campo-grupo">
                     <label for="txtPassword">Contraseña</label>
-                    <input type="password" id="txtPassword" placeholder="Ingrese su contraseña" autocomplete="off">
+                    <div class="pass-wrap">
+                        <input type="password" id="txtPassword" placeholder="Ingrese su contraseña" autocomplete="off">
+                        <button type="button" class="btn-toggle-pass" id="togglePassword"
+                            title="Mostrar/ocultar contraseña" aria-label="Mostrar contraseña">👁</button>
+                    </div>
                     <span class="mensaje-error"></span>
                 </div>
 
@@ -50,17 +54,17 @@
         </div>
 
         <div class="login-footer">
-            &copy; 2026 Sistema Generico — Todos los derechos reservados
+            &copy; 2026 Sistema Genérico — Todos los derechos reservados
         </div>
 
     </div>
 
     <div id="alerta-global"></div>
 
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/config.js?v=10"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js?v=10"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js?v=10"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js?v=10"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/auth.js?v=10"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/config.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/auth.js?v=11"></script>
 </body>
 </html>

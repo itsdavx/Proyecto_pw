@@ -11,7 +11,7 @@ $stmt = $db->prepare("
     SELECT id_menu, nombre, icono, modulo, estado
     FROM   menu
     WHERE  url IS NOT NULL
-    ORDER  BY orden ASC
+    ORDER  BY id_menu ASC
 ");
 $stmt->execute();
 

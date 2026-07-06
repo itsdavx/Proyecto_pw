@@ -1,6 +1,6 @@
 // Constantes y configuración global del sistema
 const APP = {
-    nombre:         'Sistema Empresarial',
+    nombre:         'Sistema Genérico',
     version:        '1.0.0',
     baseUrl:        'http://localhost:8080/NRC30713-Web/Proyecto_pw/',
     api:            'http://localhost:8080/NRC30713-Web/Proyecto_pw/servidor/',

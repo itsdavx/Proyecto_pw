@@ -1,0 +1,809 @@
+% ============================================================
+% CAPÍTULO 3 — REQUERIMIENTOS FUNCIONALES (IEEE 830 §3)
+% 54 requerimientos extraídos del código fuente, agrupados por módulo.
+% ============================================================
+\chapter{Requerimientos funcionales}\label{cap:rf}
+
+Los requerimientos se agrupan por módulo funcional. La prioridad se clasifica
+en \textbf{Alta} (esencial para operar el sistema), \textbf{Media}
+(funcionalidad relevante no crítica) y \textbf{Baja} (mejora de experiencia).
+
+% ────────────────────────────────────────────────────────────
+\section{Autenticación y sesión}
+
+\begin{ficha}{RF-001 — Inicio de sesión}
+Descripción & El sistema permite autenticarse con nombre de usuario y
+contraseña, verificadas contra el hash bcrypt almacenado. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Visitante \\ \hline
+Entradas & Usuario, contraseña y texto del captcha. \\ \hline
+Proceso & Se validan los campos en el cliente; se verifica el captcha; el
+servidor comprueba el bloqueo por intentos, busca al usuario, verifica la
+contraseña con bcrypt, valida el estado del usuario y de su rol, genera el
+token de sesión y devuelve usuario, permisos y token. \\ \hline
+Salidas & Sesión iniciada y redirección al shell; o mensaje de error con los
+intentos restantes. \\ \hline
+Precondiciones & Cuenta existente y activa; captcha vigente; sin bloqueo
+activo. \\ \hline
+Postcondiciones & Token registrado en la tabla \texttt{sesiones}; estado de
+sesión guardado en el navegador; intentos fallidos reiniciados. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-002 — Verificación captcha}
+Descripción & El login exige transcribir un captcha gráfico de seis
+caracteres generado localmente en un lienzo con ruido visual. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Visitante \\ \hline
+Entradas & Texto transcrito por el usuario. \\ \hline
+Proceso & El captcha se genera al cargar la página y puede regenerarse
+pulsando la imagen o el botón de refresco; expira a los cinco minutos; la
+comparación no distingue mayúsculas de minúsculas. \\ \hline
+Salidas & Validación superada, o mensaje de error con regeneración
+automática del captcha. \\ \hline
+Precondiciones & Página de login cargada. \\ \hline
+Postcondiciones & Si es incorrecto o expiró, se genera un captcha nuevo y se
+limpia el campo. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-003 — Bloqueo por intentos fallidos}
+Descripción & Tras cinco intentos fallidos consecutivos, el acceso de esa
+cuenta se bloquea durante quince minutos. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Visitante \\ \hline
+Entradas & Intentos de inicio de sesión fallidos. \\ \hline
+Proceso & El servidor contabiliza los intentos por usuario e IP
+(\texttt{login\_intentos}); el cliente replica el contador y muestra un
+aviso con los minutos restantes, actualizado cada segundo, deshabilitando el
+botón de ingreso. Un inicio exitoso limpia el contador. \\ \hline
+Salidas & Mensaje de bloqueo con tiempo restante; intentos restantes en cada
+fallo. \\ \hline
+Precondiciones & --- \\ \hline
+Postcondiciones & Cuenta bloqueada temporalmente; desbloqueo automático al
+cumplirse el tiempo. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-004 — Mostrar/ocultar contraseña}
+Descripción & El campo de contraseña del login incluye un ícono de ojo que
+alterna entre texto oculto y visible. \\ \hline
+Prioridad & Baja \\ \hline
+Actor & Visitante \\ \hline
+Entradas & Pulsación sobre el ícono. \\ \hline
+Proceso & Se alterna el tipo del campo entre \texttt{password} y
+\texttt{text} sin borrar el contenido ni robar el foco del campo. \\ \hline
+Salidas & Contraseña visible u oculta; el ícono refleja el estado. \\ \hline
+Precondiciones & Página de login cargada. \\ \hline
+Postcondiciones & El proceso de autenticación no se ve afectado. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-005 — Sesión con token de expiración}
+Descripción & Cada sesión se identifica con un token aleatorio de 64
+caracteres hexadecimales con vigencia de una hora. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Sistema \\ \hline
+Entradas & Inicio de sesión exitoso. \\ \hline
+Proceso & El servidor genera el token con \texttt{random\_bytes}, elimina
+las sesiones anteriores del usuario (sesión única) y purga las sesiones
+caducadas de todos los usuarios. \\ \hline
+Salidas & Token entregado al cliente y almacenado en
+\texttt{sessionStorage}. \\ \hline
+Precondiciones & Credenciales válidas. \\ \hline
+Postcondiciones & Una única sesión vigente por usuario. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-006 — Protección de páginas y verificación de sesión}
+Descripción & Toda página distinta del login verifica la sesión contra el
+servidor antes de mostrarse. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Sistema \\ \hline
+Entradas & Token almacenado en el navegador. \\ \hline
+Proceso & El guardia de navegación consulta al servidor; si el token es
+inválido, expiró o el usuario fue desactivado, limpia el estado local y
+redirige la ventana completa al login; en cada verificación se refrescan los
+permisos del rol. \\ \hline
+Salidas & Acceso concedido, o redirección al login. \\ \hline
+Precondiciones & --- \\ \hline
+Postcondiciones & Solo usuarios con sesión válida visualizan contenido. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-007 — Redirección de usuario autenticado}
+Descripción & Si un usuario con sesión vigente abre el login, es redirigido
+automáticamente al shell. \\ \hline
+Prioridad & Media \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Apertura de la página de login. \\ \hline
+Proceso & Se verifica el token contra el servidor; si es válido se reemplaza
+la ubicación por el shell del sistema. \\ \hline
+Salidas & Navegación directa al Dashboard. \\ \hline
+Precondiciones & Sesión vigente. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-008 — Cambio de contraseña obligatorio en el primer acceso}
+Descripción & Un usuario con la marca de primer inicio debe cambiar su
+contraseña antes de usar el sistema. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Primer inicio de sesión de la cuenta. \\ \hline
+Proceso & Tras autenticarse, el guardia detecta \texttt{primer\_login} y
+redirige al formulario de cambio de contraseña; el botón Cancelar queda
+inhabilitado mediante un aviso mientras la marca esté activa. \\ \hline
+Salidas & Formulario de cambio de contraseña con aviso de obligatoriedad. \\ \hline
+Precondiciones & Cuenta creada por el Administrador o con contraseña
+restablecida. \\ \hline
+Postcondiciones & Al cambiar la contraseña, la marca se desactiva y el
+usuario accede normalmente. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-009 — Cierre de sesión}
+Descripción & El usuario puede cerrar su sesión desde el botón Salir de la
+barra superior. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Pulsación del botón Salir. \\ \hline
+Proceso & Se limpia el estado local, se elimina el token en el servidor y se
+redirige al login. \\ \hline
+Salidas & Sesión finalizada. \\ \hline
+Precondiciones & Sesión activa. \\ \hline
+Postcondiciones & El token deja de ser válido. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-010 — Rechazo de cuentas o roles inactivos}
+Descripción & El sistema impide iniciar sesión a usuarios desactivados y a
+usuarios cuyo rol esté inactivo. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Visitante \\ \hline
+Entradas & Credenciales de una cuenta o rol inactivo. \\ \hline
+Proceso & Tras validar la contraseña, el servidor consulta el estado del
+usuario y el estado de su rol; si alguno es inactivo, se rechaza el acceso
+con un mensaje específico. \\ \hline
+Salidas & Mensaje ``Usuario inactivo'' o ``Su rol está inactivo''. \\ \hline
+Precondiciones & Credenciales correctas. \\ \hline
+Postcondiciones & No se crea sesión. \\ \hline
+\end{ficha}
+
+% ────────────────────────────────────────────────────────────
+\section{Navegación (shell)}
+
+\begin{ficha}{RF-011 — Shell único con carga de Frames sin recarga}
+Descripción & La estructura general (barra lateral y superior) se carga una
+sola vez; los Frames se muestran en un marco interno. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Selección de una opción del menú. \\ \hline
+Proceso & El shell intercepta el clic y reemplaza la ubicación del marco
+interno por la página del Frame, sin recargar la estructura ni acumular
+historial. \\ \hline
+Salidas & Frame visible dentro del shell. \\ \hline
+Precondiciones & Sesión válida. \\ \hline
+Postcondiciones & Barra lateral y superior permanecen intactas. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-012 — Menú lateral según permisos y organización personal}
+Descripción & La barra lateral muestra únicamente los ItemMenus activos y
+permitidos al rol, organizados según los SuperMenus y el orden personal del
+usuario. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Datos de menú provistos por el servidor. \\ \hline
+Proceso & El servidor filtra por estado global y permiso de lectura del rol,
+aplica la organización personal (SuperMenus propios, orden guardado) y
+omite los SuperMenus vacíos; el cliente los renderiza como acordeones. \\ \hline
+Salidas & Menú personalizado del usuario. \\ \hline
+Precondiciones & Sesión válida. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-013 — Ítem activo y título dinámico}
+Descripción & El shell resalta la opción de menú correspondiente al Frame
+visible y muestra su título en la barra superior. \\ \hline
+Prioridad & Media \\ \hline
+Actor & Sistema \\ \hline
+Entradas & Carga de un Frame en el marco. \\ \hline
+Proceso & Al cargar el marco se lee el título del documento, se actualiza la
+barra superior y la pestaña, y se marca el ítem cuyo destino coincide con la
+ruta cargada (abriendo su acordeón contenedor). \\ \hline
+Salidas & Ítem resaltado con el degradado corporativo; título actualizado. \\ \hline
+Precondiciones & Frame cargado. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-014 — Enlace profundo por hash}
+Descripción & La sección visible se refleja en el hash de la URL, de modo
+que recargar la página conserva la sección actual. \\ \hline
+Prioridad & Media \\ \hline
+Actor & Sistema \\ \hline
+Entradas & Navegación entre Frames; recarga del navegador. \\ \hline
+Proceso & Cada carga del marco actualiza el hash; al iniciar, el shell carga
+la ruta del hash si es una página interna válida del sistema, o el Dashboard
+en caso contrario. \\ \hline
+Salidas & Restauración de la sección tras recargar. \\ \hline
+Precondiciones & Sesión válida. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-015 — Navegación móvil}
+Descripción & En pantallas angostas la barra lateral se oculta y se despliega
+con un botón hamburguesa sobre una capa oscura. \\ \hline
+Prioridad & Media \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Pulsación del botón hamburguesa o de la capa oscura. \\ \hline
+Proceso & La barra se desliza desde el borde; seleccionar una opción o tocar
+la capa la cierra. \\ \hline
+Salidas & Menú accesible en dispositivos móviles. \\ \hline
+Precondiciones & Ancho de pantalla igual o inferior a 768\,px. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-016 — Bloqueo de acceso directo no autorizado}
+Descripción & Acceder por URL a un Frame sin permiso o con el módulo
+deshabilitado muestra un aviso y redirige al Dashboard; los datos se
+protegen además en el servidor. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Usuario estándar \\ \hline
+Entradas & URL de un Frame no autorizado. \\ \hline
+Proceso & El guardia del cliente comprueba el permiso de lectura y la
+presencia del módulo en el menú vigente; en paralelo, todo endpoint valida
+sesión, permiso y disponibilidad global antes de operar. \\ \hline
+Salidas & Alerta ``No tiene permiso...'' y redirección; los endpoints
+devuelven error. \\ \hline
+Precondiciones & Sesión válida sin el permiso requerido. \\ \hline
+Postcondiciones & Ningún dato del módulo es servido. \\ \hline
+\end{ficha}
+
+% ────────────────────────────────────────────────────────────
+\section{Dashboard}
+
+\begin{ficha}{RF-017 — Saludo contextual}
+Descripción & El Dashboard saluda al usuario según la hora (buenos días /
+buenas tardes / buenas noches) y muestra la fecha completa y su rol. \\ \hline
+Prioridad & Baja \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Hora local y datos de sesión. \\ \hline
+Proceso & Se calcula el saludo por franja horaria y se formatea la fecha en
+español. \\ \hline
+Salidas & Encabezado personalizado con insignia del rol. \\ \hline
+Precondiciones & Sesión válida. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-018 — Accesos rápidos según permisos}
+Descripción & El Dashboard muestra botones de acceso directo a los Frames
+permitidos al rol (excepto el propio Dashboard). \\ \hline
+Prioridad & Media \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Menú vigente del usuario. \\ \hline
+Proceso & Se generan enlaces a partir de los ItemMenus con página,
+descartando los ocultados por el usuario (RF-019). \\ \hline
+Salidas & Botonera de accesos rápidos con ícono y nombre. \\ \hline
+Precondiciones & Sesión válida. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-019 — Personalización de accesos rápidos}
+Descripción & Cada usuario elige qué accesos rápidos visualizar, sin afectar
+sus permisos. \\ \hline
+Prioridad & Media \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Selección de casillas en el modo ``Personalizar''. \\ \hline
+Proceso & El botón Personalizar muestra todos los Frames permitidos con
+casillas; al guardar, los desmarcados se registran como ocultos para ese
+usuario (\texttt{accesos\_ocultos\_usuario}) y la botonera se actualiza. \\ \hline
+Salidas & Confirmación y botonera filtrada. \\ \hline
+Precondiciones & Sesión válida. \\ \hline
+Postcondiciones & La preferencia persiste entre sesiones; el Frame sigue
+accesible desde el menú. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-020 — Estadísticas del sistema (solo Administrador)}
+Descripción & El Dashboard del Administrador muestra el conteo exacto de
+usuarios, roles y permisos registrados. \\ \hline
+Prioridad & Media \\ \hline
+Actor & Administrador \\ \hline
+Entradas & --- \\ \hline
+Proceso & El servidor cuenta las filas de las tablas correspondientes; el
+cliente oculta la sección para cualquier rol distinto de Administrador. \\ \hline
+Salidas & Tarjetas con los tres conteos. \\ \hline
+Precondiciones & Sesión de Administrador. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-021 — Frase motivadora (solo usuarios estándar)}
+Descripción & Bajo los accesos rápidos, los usuarios no administradores ven
+una frase motivadora con su autor, seleccionada aleatoriamente de la base de
+datos. \\ \hline
+Prioridad & Baja \\ \hline
+Actor & Usuario estándar \\ \hline
+Entradas & --- \\ \hline
+Proceso & El servidor devuelve una frase activa al azar; el cliente la
+conserva durante la sesión (una frase por inicio de sesión) y la libera al
+cerrar sesión. Si no hay frases, la sección no se muestra. \\ \hline
+Salidas & Cita con formato ``frase'' — autor. \\ \hline
+Precondiciones & Sesión de usuario no administrador; al menos una frase
+activa. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+% ────────────────────────────────────────────────────────────
+\section{Usuarios}
+
+\begin{ficha}{RF-022 — Listar usuarios}
+Descripción & Muestra el listado de cuentas con nombre, usuario, correo,
+rol y estado. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Usuario estándar (solo lectura), Administrador \\ \hline
+Entradas & --- \\ \hline
+Proceso & El servidor devuelve los usuarios con su rol (unión con
+\texttt{roles}) previa verificación del permiso de lectura. \\ \hline
+Salidas & Tabla de usuarios con insignias de rol y estado. \\ \hline
+Precondiciones & Permiso \texttt{usuarios:leer}. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-023 — Búsqueda de usuarios en vivo}
+Descripción & Un campo de búsqueda filtra la tabla al escribir, sin recargar. \\ \hline
+Prioridad & Media \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Texto de búsqueda. \\ \hline
+Proceso & Se comparan usuario, nombre, correo y rol de cada fila con el
+texto, ocultando las no coincidentes. \\ \hline
+Salidas & Tabla filtrada al instante. \\ \hline
+Precondiciones & Listado cargado. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-024 — Filtros por rol y estado}
+Descripción & El listado se filtra por rol (con opción ``Todos los roles'')
+y por estado (Todos / Activos / Inactivos), de forma combinable entre sí y
+con la búsqueda. \\ \hline
+Prioridad & Media \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Selección en los dos filtros. \\ \hline
+Proceso & Las opciones de rol se construyen con los roles presentes en el
+listado; al cambiar cualquier filtro la tabla se actualiza automáticamente. \\ \hline
+Salidas & Tabla filtrada. \\ \hline
+Precondiciones & Listado cargado. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-025 — Crear usuario}
+Descripción & El Administrador registra cuentas con nombre, usuario, correo,
+rol y contraseña inicial. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Administrador \\ \hline
+Entradas & Nombre completo, nombre de usuario, correo, rol, contraseña. \\ \hline
+Proceso & Se validan campos obligatorios, formato de correo, política de
+contraseña y unicidad de usuario y correo; la contraseña se almacena con
+bcrypt; la cuenta nace activa con la marca de primer inicio; se genera la
+semilla del menú inicial (RF-043). \\ \hline
+Salidas & Confirmación y retorno al listado. \\ \hline
+Precondiciones & Permiso \texttt{usuarios:crear}; solo un Administrador
+puede asignar el rol Admin. \\ \hline
+Postcondiciones & Cuenta creada con menú inicial y cambio de contraseña
+obligatorio pendiente. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-026 — Editar usuario}
+Descripción & Permite modificar nombre, usuario, correo, rol y,
+opcionalmente, restablecer la contraseña. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Administrador \\ \hline
+Entradas & Datos modificados; contraseña nueva opcional. \\ \hline
+Proceso & Se validan unicidad y formato excluyendo al propio usuario; si se
+proporciona contraseña, se aplica la política, se re-hashea y se reactiva la
+marca de primer inicio. \\ \hline
+Salidas & Confirmación y retorno al listado. \\ \hline
+Precondiciones & Permiso \texttt{usuarios:editar}; no puede cambiarse el rol
+del Administrador principal; solo un Administrador asigna el rol Admin. \\ \hline
+Postcondiciones & Datos actualizados; si hubo contraseña nueva, el usuario
+deberá cambiarla en su próximo acceso. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-027 — Activar / desactivar usuario}
+Descripción & Alterna el estado de una cuenta; una cuenta inactiva no puede
+iniciar sesión. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Administrador \\ \hline
+Entradas & Confirmación sobre el usuario elegido. \\ \hline
+Proceso & Previa confirmación, el servidor invierte el estado; el
+Administrador principal (usuario 1) no puede desactivarse. \\ \hline
+Salidas & Mensaje ``Usuario activado/desactivado'' y listado actualizado. \\ \hline
+Precondiciones & Permiso \texttt{usuarios:editar}. \\ \hline
+Postcondiciones & El estado nuevo rige el próximo intento de login. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-028 — Interfaz de usuarios condicionada por permisos}
+Descripción & Los controles de escritura solo se muestran a quien posee la
+acción correspondiente. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Permisos del rol en sesión. \\ \hline
+Proceso & El botón ``Nuevo Usuario'' se oculta sin \texttt{usuarios:crear};
+los botones Editar y Activar/Desactivar solo aparecen con
+\texttt{usuarios:editar}; el servidor revalida cada operación. \\ \hline
+Salidas & Vista de solo lectura para usuarios estándar. \\ \hline
+Precondiciones & Listado cargado. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+% ────────────────────────────────────────────────────────────
+\section{Roles}
+
+\begin{ficha}{RF-029 — Listar roles}
+Descripción & Muestra los roles con nombre, descripción y estado, con
+búsqueda en vivo. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Administrador \\ \hline
+Entradas & Texto de búsqueda opcional. \\ \hline
+Proceso & El servidor devuelve los roles previa verificación del permiso;
+el rol Admin no ofrece botón de edición. \\ \hline
+Salidas & Tabla de roles. \\ \hline
+Precondiciones & Permiso \texttt{roles:leer} (solo lo posee el
+Administrador). \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-030 — Crear rol}
+Descripción & Registra un rol nuevo con nombre único, descripción opcional y
+estado. \\ \hline
+Prioridad & Media \\ \hline
+Actor & Administrador \\ \hline
+Entradas & Nombre del rol, descripción, estado. \\ \hline
+Proceso & Se valida el nombre obligatorio y su unicidad; el rol se crea sin
+permisos (deben asignarse en el módulo Permisos). \\ \hline
+Salidas & Confirmación y retorno al listado. \\ \hline
+Precondiciones & Permiso \texttt{roles:crear}. \\ \hline
+Postcondiciones & Rol disponible para asignar a usuarios y configurar
+permisos. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-031 — Editar rol}
+Descripción & Modifica nombre, descripción y estado de un rol existente. \\ \hline
+Prioridad & Media \\ \hline
+Actor & Administrador \\ \hline
+Entradas & Datos modificados del rol. \\ \hline
+Proceso & Se valida la unicidad del nombre excluyendo al propio rol;
+desactivar un rol impide el acceso de todos sus usuarios (RF-010). \\ \hline
+Salidas & Confirmación y retorno al listado. \\ \hline
+Precondiciones & Permiso \texttt{roles:editar}; el rol Admin no es editable
+desde la interfaz. \\ \hline
+Postcondiciones & Cambios aplicados a los próximos inicios de sesión. \\ \hline
+\end{ficha}
+
+% ────────────────────────────────────────────────────────────
+\section{Permisos}
+
+\begin{ficha}{RF-032 — Selección del rol a configurar}
+Descripción & El módulo Permisos presenta un selector con todos los roles
+excepto Admin, cuyo acceso total es implícito y no configurable. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Administrador \\ \hline
+Entradas & Rol elegido. \\ \hline
+Proceso & Al seleccionar un rol se cargan sus permisos vigentes y se
+construyen las dos matrices (RF-033 y RF-034). \\ \hline
+Salidas & Matrices de permisos del rol. \\ \hline
+Precondiciones & Permiso \texttt{permisos:leer}. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-033 — Matriz de acceso a Frames}
+Descripción & Primera matriz: todos los Frames del sistema con una casilla
+``Habilitar'' que otorga o revoca el acceso (acción \texttt{leer}). \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Administrador \\ \hline
+Entradas & Casillas marcadas o desmarcadas. \\ \hline
+Proceso & Los Frames provienen del registro central del servidor; habilitar
+un Frame lo hace visible en el menú del rol y accesible; deshabilitarlo lo
+oculta y bloquea por completo. \\ \hline
+Salidas & Estado de acceso por Frame. \\ \hline
+Precondiciones & Rol seleccionado. \\ \hline
+Postcondiciones & Cambios pendientes hasta guardar (RF-036). \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-034 — Acciones internas por Frame habilitado}
+Descripción & Segunda sección, generada dinámicamente: por cada Frame
+habilitado que declare acciones internas se listan sus casillas
+(p.~ej. Usuarios: agregar, editar/desactivar; Frame~1: guardar, editar,
+eliminar tarea). \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Administrador \\ \hline
+Entradas & Casillas de acciones internas. \\ \hline
+Proceso & Al alternar la casilla de un Frame, su bloque de acciones aparece
+o desaparece en el acto; las acciones de Frames deshabilitados no se
+muestran ni se evalúan al guardar. \\ \hline
+Salidas & Configuración fina de operaciones por rol. \\ \hline
+Precondiciones & Frame habilitado con acciones declaradas en el registro. \\ \hline
+Postcondiciones & Cambios pendientes hasta guardar (RF-036). \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-035 — Marcar / desmarcar todos}
+Descripción & Botones que activan o desactivan de una vez todos los Frames y
+todas sus acciones internas. \\ \hline
+Prioridad & Baja \\ \hline
+Actor & Administrador \\ \hline
+Entradas & Pulsación del botón correspondiente. \\ \hline
+Proceso & Se actualizan todas las casillas y la visibilidad de los bloques
+de acciones. \\ \hline
+Salidas & Matrices completamente marcadas o vacías. \\ \hline
+Precondiciones & Rol seleccionado. \\ \hline
+Postcondiciones & Cambios pendientes hasta guardar. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-036 — Guardar permisos}
+Descripción & Persiste la configuración completa del rol seleccionado. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Administrador \\ \hline
+Entradas & Estado de ambas matrices. \\ \hline
+Proceso & El cliente envía los pares módulo--acción de los Frames
+habilitados; el servidor valida cada par contra el registro central,
+reemplaza los permisos del rol dentro de una transacción y rechaza
+modificaciones al rol Admin. \\ \hline
+Salidas & Confirmación ``Permisos actualizados correctamente''. \\ \hline
+Precondiciones & Permiso \texttt{permisos:crear}; rol distinto de Admin. \\ \hline
+Postcondiciones & Los usuarios del rol reciben los permisos nuevos en su
+próxima verificación de sesión. \\ \hline
+\end{ficha}
+
+% ────────────────────────────────────────────────────────────
+\section{Menú (personalización individual)}
+
+\begin{ficha}{RF-037 — Organizador del menú personal}
+Descripción & Todo usuario dispone de un organizador visual de su menú:
+un árbol libre donde ItemMenus y SuperMenus propios se intercalan en la
+raíz. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & --- \\ \hline
+Proceso & El servidor entrega los ItemMenus activos permitidos al rol (sin
+URLs) junto con los SuperMenus y la organización del usuario; el organizador
+los presenta como lista arrastrable. \\ \hline
+Salidas & Vista editable del menú personal. \\ \hline
+Precondiciones & Permiso \texttt{menu:leer}. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-038 — Crear SuperMenu}
+Descripción & El usuario crea contenedores propios para agrupar sus
+ItemMenus. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Nombre del SuperMenu. \\ \hline
+Proceso & Se solicita el nombre; el servidor lo registra a nombre del
+usuario al final de su menú. \\ \hline
+Salidas & SuperMenu vacío listo para recibir ítems. \\ \hline
+Precondiciones & Permiso \texttt{menu:leer}; nombre no vacío. \\ \hline
+Postcondiciones & El SuperMenu pertenece exclusivamente a ese usuario. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-039 — Renombrar SuperMenu}
+Descripción & El usuario cambia el nombre de un SuperMenu propio. \\ \hline
+Prioridad & Media \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Nuevo nombre. \\ \hline
+Proceso & El servidor actualiza el nombre validando la propiedad del
+SuperMenu. \\ \hline
+Salidas & Confirmación y organizador actualizado. \\ \hline
+Precondiciones & SuperMenu propio; nombre no vacío. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-040 — Eliminar SuperMenu vacío}
+Descripción & Solo pueden eliminarse SuperMenus sin ItemMenus dentro. \\ \hline
+Prioridad & Media \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Confirmación de eliminación. \\ \hline
+Proceso & El botón Eliminar solo se muestra en SuperMenus vacíos; el
+servidor verifica propiedad y vacuidad antes de borrar. \\ \hline
+Salidas & Confirmación, o rechazo si contiene elementos. \\ \hline
+Precondiciones & SuperMenu propio y vacío. \\ \hline
+Postcondiciones & Los ItemMenus del sistema no se ven afectados. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-041 — Reorganización por arrastrar y soltar}
+Descripción & El usuario reordena ItemMenus y SuperMenus, mueve ítems entre
+SuperMenus y los intercala libremente en la raíz. El Dashboard puede
+reordenarse pero nunca agruparse. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Gestos de arrastrar y soltar. \\ \hline
+Proceso & Soltar un elemento sobre otro nodo de la raíz lo inserta en esa
+posición; soltar un ítem dentro de un SuperMenu lo agrupa; intentar agrupar
+el Dashboard muestra un aviso y lo devuelve a la raíz. \\ \hline
+Salidas & Árbol reorganizado en pantalla. \\ \hline
+Precondiciones & Organizador cargado. \\ \hline
+Postcondiciones & Cambio persistido automáticamente (RF-042). \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-042 — Persistencia y refresco del menú personal}
+Descripción & Cada movimiento se guarda automáticamente; el botón Guardar
+persiste, confirma y refresca el menú lateral del shell sin cerrar sesión. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Organización vigente del árbol. \\ \hline
+Proceso & Se envía la secuencia completa (orden de raíz compartido entre
+ítems y SuperMenus, orden interno por SuperMenu); el servidor la registra en
+una transacción validando la propiedad; el botón Guardar recarga además la
+barra lateral del shell. \\ \hline
+Salidas & ``Menú guardado y actualizado''; sidebar reflejando el cambio. \\ \hline
+Precondiciones & Permiso \texttt{menu:leer}. \\ \hline
+Postcondiciones & La organización se reconstruye idéntica en próximos
+inicios de sesión; la de otros usuarios no cambia. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-043 — Menú inicial automático (semilla)}
+Descripción & Al crear una cuenta se genera una única vez su estructura de
+menú: Dashboard primero, SuperMenu ``Mi Perfil'' (Ver Perfil, Cambiar
+Contraseña, Menú) y el resto sin agrupar; para administradores se añaden los
+SuperMenus ``Administración'' y ``Frames''. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Sistema \\ \hline
+Entradas & Creación de un usuario (RF-025). \\ \hline
+Proceso & La semilla consulta los ItemMenus activos permitidos al rol, crea
+los SuperMenus predefinidos con su contenido en el orden establecido y ubica
+el resto en la raíz; se aborta si el usuario ya posee organización. \\ \hline
+Salidas & Menú inicial completo en el primer acceso. \\ \hline
+Precondiciones & Usuario recién creado sin organización previa. \\ \hline
+Postcondiciones & El sistema no vuelve a reconstruir el menú jamás; toda
+personalización posterior se conserva. \\ \hline
+\end{ficha}
+
+% ────────────────────────────────────────────────────────────
+\section{Configurar Menús (disponibilidad global)}
+
+\begin{ficha}{RF-044 — Listado global de ItemMenus}
+Descripción & El Administrador visualiza todos los ItemMenus del sistema con
+su módulo y disponibilidad, ordenados por identificador ascendente. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Administrador \\ \hline
+Entradas & --- \\ \hline
+Proceso & El servidor lista la tabla \texttt{menu} completa previa
+verificación del permiso \texttt{configmenu:leer}. \\ \hline
+Salidas & Tabla estable con casilla ``Activo'' por ItemMenu. \\ \hline
+Precondiciones & Sesión de Administrador. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-045 — Activar / desactivar ItemMenus globalmente}
+Descripción & Las casillas acumulan cambios que el botón Guardar persiste en
+lote, con confirmación y refresco inmediato del menú lateral. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Administrador \\ \hline
+Entradas & Casillas modificadas. \\ \hline
+Proceso & Al guardar se envía cada cambio al servidor; ``Configurar Menús''
+no puede desactivarse (su casilla está deshabilitada y el servidor lo
+rechaza); al terminar se recarga la tabla y el sidebar del shell. \\ \hline
+Salidas & ``Cambios guardados (N ItemMenu actualizados)''. \\ \hline
+Precondiciones & Permiso \texttt{configmenu:editar}. \\ \hline
+Postcondiciones & La disponibilidad rige de inmediato para todos los
+usuarios. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-046 — Bloqueo integral de módulos deshabilitados}
+Descripción & Un ItemMenu inactivo desaparece del menú de todos los usuarios
+y su módulo queda inaccesible por navegación, URL directa y endpoints. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Sistema \\ \hline
+Entradas & Estado global de los ItemMenus. \\ \hline
+Proceso & El listado del menú filtra por estado; el guardia del cliente
+bloquea módulos ausentes del menú vigente; cada endpoint verifica la
+disponibilidad global del módulo y responde ``deshabilitado temporalmente''
+incluso al Administrador. \\ \hline
+Salidas & Módulo completamente inaccesible mientras esté inactivo. \\ \hline
+Precondiciones & ItemMenu desactivado en Configurar Menús. \\ \hline
+Postcondiciones & Reactivarlo restaura el acceso sin pérdida de permisos ni
+de organización personal. \\ \hline
+\end{ficha}
+
+% ────────────────────────────────────────────────────────────
+\section{Mi Perfil}
+
+\begin{ficha}{RF-047 — Ver perfil propio}
+Descripción & Muestra exclusivamente los datos del usuario autenticado:
+nombre, usuario, correo, rol y fecha de registro. \\ \hline
+Prioridad & Media \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & --- \\ \hline
+Proceso & El servidor consulta la fila del usuario en sesión (unida a su
+rol); ningún parámetro permite consultar a terceros. \\ \hline
+Salidas & Ficha de datos personales. \\ \hline
+Precondiciones & Permiso \texttt{perfil:leer}. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-048 — Cambiar contraseña}
+Descripción & El usuario cambia su contraseña validando la actual y
+cumpliendo la política de seguridad, con indicador de fortaleza y botones de
+ver/ocultar por campo. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Contraseña actual, nueva y su confirmación. \\ \hline
+Proceso & Cliente y servidor validan: actual correcta, política (mínimo 8
+caracteres, una mayúscula, un número, un carácter especial), confirmación
+coincidente y nueva distinta de la actual; se almacena el hash bcrypt y se
+desactiva la marca de primer inicio. \\ \hline
+Salidas & Confirmación y redirección al Dashboard. \\ \hline
+Precondiciones & Sesión válida. \\ \hline
+Postcondiciones & La contraseña anterior deja de ser válida. \\ \hline
+\end{ficha}
+
+% ────────────────────────────────────────────────────────────
+\section{Frame 1 — Tareas (CRUD de ejemplo)}
+
+\begin{ficha}{RF-049 — Listar tareas}
+Descripción & Muestra las tareas registradas con título, descripción y
+nombre del creador. \\ \hline
+Prioridad & Media \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & --- \\ \hline
+Proceso & El servidor devuelve las tareas (unidas al nombre del creador)
+previa verificación de \texttt{frame1:leer}. \\ \hline
+Salidas & Tabla de tareas. \\ \hline
+Precondiciones & Permiso \texttt{frame1:leer}. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-050 — Crear tarea}
+Descripción & Registra una tarea con título obligatorio y descripción
+opcional, asociada a su creador. \\ \hline
+Prioridad & Media \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Título, descripción. \\ \hline
+Proceso & Validación en cliente y servidor del permiso \texttt{frame1:crear}
+y del título; se registra el usuario creador. \\ \hline
+Salidas & Confirmación y listado actualizado. \\ \hline
+Precondiciones & Permiso \texttt{frame1:crear}. \\ \hline
+Postcondiciones & Tarea visible para todos los usuarios con acceso. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-051 — Editar tarea}
+Descripción & Modifica el título y la descripción de una tarea existente. \\ \hline
+Prioridad & Media \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Tarea seleccionada; datos modificados. \\ \hline
+Proceso & El botón Editar precarga el formulario en modo actualización, con
+opción de cancelar; el servidor verifica \texttt{frame1:editar}. \\ \hline
+Salidas & Confirmación y listado actualizado. \\ \hline
+Precondiciones & Permiso \texttt{frame1:editar}. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-052 — Eliminar tarea}
+Descripción & Elimina definitivamente una tarea, previa confirmación. \\ \hline
+Prioridad & Media \\ \hline
+Actor & Usuario estándar (si su rol lo permite), Administrador \\ \hline
+Entradas & Confirmación sobre la tarea elegida. \\ \hline
+Proceso & El servidor verifica \texttt{frame1:eliminar} y borra la fila. \\ \hline
+Salidas & Confirmación y listado actualizado. \\ \hline
+Precondiciones & Permiso \texttt{frame1:eliminar}. \\ \hline
+Postcondiciones & La tarea no puede recuperarse. \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-053 — Interfaz de tareas condicionada por permisos}
+Descripción & El Frame~1 adapta su interfaz a las acciones del rol: sin
+crear ni editar se oculta el formulario; los botones Editar y Eliminar solo
+aparecen con su permiso. \\ \hline
+Prioridad & Alta \\ \hline
+Actor & Usuario estándar \\ \hline
+Entradas & Permisos del rol en sesión. \\ \hline
+Proceso & El cliente consulta los permisos antes de renderizar; el servidor
+revalida cada operación, de modo que la restricción no depende de la
+interfaz. \\ \hline
+Salidas & Ejemplo funcional de permisos por operación (p.~ej. Rol1 crea y
+edita pero no elimina; Rol2 dispone del CRUD completo; Rol3 no accede). \\ \hline
+Precondiciones & Frame~1 habilitado para el rol. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}
+
+\begin{ficha}{RF-054 — Frames de demostración 2 a 5}
+Descripción & Cuatro pantallas de ejemplo que muestran el texto ``Aquí va un
+Frame'' y demuestran la distribución de accesos por rol. \\ \hline
+Prioridad & Baja \\ \hline
+Actor & Usuario estándar, Administrador \\ \hline
+Entradas & Navegación al Frame. \\ \hline
+Proceso & Cada Frame verifica sesión y permiso de lectura de su módulo
+(\texttt{frame2}\dots\texttt{frame5}) antes de mostrarse; la distribución
+vigente asigna a cada rol al menos un Frame y ningún Frame a todos los
+roles. \\ \hline
+Salidas & Contenido de demostración. \\ \hline
+Precondiciones & Permiso \texttt{frameN:leer}. \\ \hline
+Postcondiciones & --- \\ \hline
+\end{ficha}

@@ -1,0 +1,96 @@
+% ============================================================
+% ESPECIFICACIÓN DE REQUERIMIENTOS DE SOFTWARE — IEEE 830
+% Sistema Genérico (Proyecto PW)
+% Documento maestro: compilar este archivo en Overleaf (pdfLaTeX)
+% ============================================================
+\documentclass[12pt,a4paper,oneside]{report}
+
+% ── Codificación e idioma ───────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+
+% ── Página y tipografía ─────────────────────────────────────
+\usepackage[margin=2.5cm,headheight=15pt]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage[table]{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{enumitem}
+\setlist{nosep}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+% ── Colores corporativos (paleta del sistema) ───────────────
+\definecolor{azulcorp}{HTML}{3A7BD5}
+\definecolor{moradocorp}{HTML}{5A4FCF}
+\definecolor{grisfila}{HTML}{F1F5F9}
+
+% ── Encabezado y pie de página ──────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape ERS — Sistema Genérico}
+\fancyhead[R]{\small\itshape IEEE 830}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ── Estilo de capítulos ─────────────────────────────────────
+\titleformat{\chapter}[hang]
+  {\normalfont\huge\bfseries\color{azulcorp}}
+  {\thechapter.}{0.6em}{}
+\titlespacing*{\chapter}{0pt}{0pt}{24pt}
+
+% ── Hipervínculos y metadatos ───────────────────────────────
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle={ERS IEEE 830 - Sistema Genérico},
+  pdfauthor={David Bonilla},
+  pdfsubject={Especificación de Requerimientos de Software},
+  pdfkeywords={IEEE 830, RBAC, requerimientos, Sistema Genérico}
+}
+
+% ── Datos editables del documento ───────────────────────────
+\newcommand{\nombreSistema}{Sistema Genérico}
+\newcommand{\autorDoc}{David Bonilla}
+\newcommand{\versionDoc}{1.0}
+\newcommand{\cursoDoc}{NRC 30713 — Programación Web}
+
+% ── Ficha de requisito / caso de uso (tabla que corta página) ──
+% Uso:
+% \begin{ficha}{RF-001 — Nombre del requisito}
+%   Descripción  & ...texto... \\ \hline
+%   Prioridad    & Alta        \\ \hline
+% \end{ficha}
+\newenvironment{ficha}[1]{%
+  \begin{longtable}{|>{\bfseries\raggedright\arraybackslash}p{3.2cm}|p{11.4cm}|}
+  \hline
+  \multicolumn{2}{|l|}{\cellcolor{azulcorp!15}\textbf{#1}}\\ \hline
+  \endfirsthead
+  \hline
+  \multicolumn{2}{|l|}{\cellcolor{azulcorp!15}\textbf{#1} \textit{(continuación)}}\\ \hline
+  \endhead
+}{%
+  \end{longtable}
+}
+
+% ============================================================
+\begin{document}
+
+\input{portada}
+
+\tableofcontents
+\clearpage
+
+\input{capitulos/01-introduccion}
+\input{capitulos/02-descripcion-general}
+\input{capitulos/03-requerimientos-funcionales}
+\input{capitulos/04-requerimientos-no-funcionales}
+\input{capitulos/05-casos-de-uso}
+\input{capitulos/06-reglas-de-negocio}
+\input{capitulos/07-anexos}
+
+\end{document}
