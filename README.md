@@ -42,25 +42,6 @@ Es una aplicación web de tipo **SPA (Single Page Application)** donde:
 
 ---
 
-## 📸 Capturas de pantalla
-
-> Las capturas se agregarán en `documentacion/img/`.
-
-| Pantalla | Vista previa |
-|---|---|
-| Login | <!-- ![Login](documentacion/img/login.png) --> *pendiente* |
-| Dashboard (Administrador) | <!-- ![Dashboard admin](documentacion/img/dashboard-admin.png) --> *pendiente* |
-| Dashboard (Usuario) | <!-- ![Dashboard usuario](documentacion/img/dashboard-usuario.png) --> *pendiente* |
-| Usuarios | <!-- ![Usuarios](documentacion/img/usuarios.png) --> *pendiente* |
-| Roles | <!-- ![Roles](documentacion/img/roles.png) --> *pendiente* |
-| Permisos | <!-- ![Permisos](documentacion/img/permisos.png) --> *pendiente* |
-| Configurar Menús | <!-- ![Configurar Menús](documentacion/img/configurar-menus.png) --> *pendiente* |
-| Menú (organizador) | <!-- ![Menú](documentacion/img/menu.png) --> *pendiente* |
-| Mi Perfil | <!-- ![Mi Perfil](documentacion/img/perfil.png) --> *pendiente* |
-| Frame 1 — Tareas | <!-- ![Tareas](documentacion/img/frame1.png) --> *pendiente* |
-
----
-
 ## 🛠️ Tecnologías utilizadas
 
 | Capa | Tecnología |
