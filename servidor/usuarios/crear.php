@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__DIR__) . '/config.php';
+require_once dirname(__DIR__) . '/menu/semilla.php';
 
 $input  = getInput();
 $token  = $input['token'] ?? '';
@@ -39,5 +40,9 @@ $stmt = $db->prepare("
     VALUES (?, ?, ?, ?, ?, 1, 1, ?)
 ");
 $stmt->execute([$username, $hash, $nombre, $email, $id_rol, $sesion['id_user']]);
+$id_nuevo = (int)$db->lastInsertId();
 
-responder(true, 'Usuario creado correctamente.', ['id_user' => (int)$db->lastInsertId()]);
+// Estructura inicial del menú personal (solo al crear; nunca se reconstruye)
+sembrarMenuInicial($db, $id_nuevo, $id_rol);
+
+responder(true, 'Usuario creado correctamente.', ['id_user' => $id_nuevo]);

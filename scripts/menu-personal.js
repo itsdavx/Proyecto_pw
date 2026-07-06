@@ -1,11 +1,15 @@
 /* ============================================================
    MENU-PERSONAL.JS — Módulo "Menú": organización personal
-   SuperMenus propios + Drag & Drop de ItemMenus. El orden se
-   guarda automáticamente y solo afecta al usuario autenticado.
+   Árbol jerárquico libre: la raíz es una secuencia única donde
+   ItemMenus y SuperMenus se intercalan y reordenan por igual
+   mediante Drag & Drop. Única regla: el Dashboard nunca se
+   agrupa (pero sí participa del orden general).
    ============================================================ */
 
-let _supers = [];            // [{id_super, nombre, orden}]
-let _zonas  = { root: [] };  // 'root' | 's<id_super>' → [items]
+/* Nodos raíz ordenados:
+   { tipo:'item',  item:{id_menu,nombre,icono,modulo} }
+   { tipo:'super', super:{id_super,nombre}, items:[...] } */
+let _raiz = [];
 
 async function iniciarMenuPersonal() {
     const ok = await Router.proteger();
@@ -13,6 +17,7 @@ async function iniciarMenuPersonal() {
     if (!Router.verificarPermiso('menu', 'leer')) return;
 
     document.getElementById('btnNuevoSuper')?.addEventListener('click', crearSuper);
+    document.getElementById('btnGuardarMenu')?.addEventListener('click', guardarMenu);
     await cargarMiMenu();
 }
 
@@ -23,13 +28,21 @@ async function cargarMiMenu() {
         mostrarCargando(false);
         if (!r.ok) { mostrarAlerta(r.msg, 'error'); return; }
 
-        _supers = r.data.supers || [];
-        _zonas  = { root: [] };
-        _supers.forEach(s => { _zonas['s' + s.id_super] = []; });
+        const supersNodos = (r.data.supers || []).map(s => ({
+            tipo: 'super', orden: Number(s.orden), super: s, items: [],
+        }));
+        const porSuper = {};
+        supersNodos.forEach(n => { porSuper[n.super.id_super] = n; });
+
+        const itemsRaiz = [];
         (r.data.items || []).forEach(it => {
-            const zona = it.id_super && _zonas['s' + it.id_super] ? 's' + it.id_super : 'root';
-            _zonas[zona].push(it);
+            if (it.id_super && porSuper[it.id_super]) porSuper[it.id_super].items.push(it);
+            else itemsRaiz.push({ tipo: 'item', orden: Number(it.orden), item: it });
         });
+
+        _raiz = [...supersNodos, ...itemsRaiz]
+            .sort((a, b) => (a.orden - b.orden) || (a.tipo === 'item' ? -1 : 1));
+
         renderOrganizador();
     } catch {
         mostrarCargando(false);
@@ -41,78 +54,83 @@ function renderOrganizador() {
     const cont = document.getElementById('organizadorMenu');
     if (!cont) return;
 
-    const renderItems = zona => _zonas[zona].map(it => `
+    const itemLi = it => `
         <li class="om-item" draggable="true" data-item="${it.id_menu}">
             <span class="om-arrastre">⠿</span>
             <span class="nav-icono">${resolverIcono(it.icono)}</span>
             <span>${esc(it.nombre)}</span>
-        </li>`).join('') || '<li class="om-vacio">Arrastre elementos aquí</li>';
+        </li>`;
 
     cont.innerHTML = `
-        <div class="card mb-2">
-            <div class="card-header"><span class="card-titulo">Elementos sin agrupar</span></div>
-            <ul class="om-zona" data-zona="root">${renderItems('root')}</ul>
-        </div>
-        ${_supers.map(s => `
-        <div class="card mb-2 om-super" data-super="${s.id_super}">
-            <div class="card-header om-super-header" draggable="true" data-superdrag="${s.id_super}">
-                <span class="card-titulo"><span class="om-arrastre">⠿</span> ${esc(s.nombre)}</span>
-                <div class="btn-group">
-                    <button class="btn btn-sm btn-outline" data-renombrar="${s.id_super}">✎ Renombrar</button>
-                    ${_zonas['s' + s.id_super].length === 0
-                        ? `<button class="btn btn-sm btn-danger" data-eliminar="${s.id_super}">Eliminar</button>`
-                        : ''}
-                </div>
-            </div>
-            <ul class="om-zona" data-zona="s${s.id_super}">${renderItems('s' + s.id_super)}</ul>
-        </div>`).join('')}`;
+        <div class="card">
+            <ul class="om-zona om-raiz" id="zonaRaiz">
+                ${_raiz.map(n => n.tipo === 'item' ? itemLi(n.item) : `
+                <li class="om-super-nodo" data-super="${n.super.id_super}">
+                    <div class="om-super-cab" draggable="true" data-superdrag="${n.super.id_super}">
+                        <span class="card-titulo"><span class="om-arrastre">⠿</span> ${esc(n.super.nombre)}</span>
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-outline" data-renombrar="${n.super.id_super}">✎ Renombrar</button>
+                            ${n.items.length === 0
+                                ? `<button class="btn btn-sm btn-danger" data-eliminar="${n.super.id_super}">Eliminar</button>`
+                                : ''}
+                        </div>
+                    </div>
+                    <ul class="om-zona om-zona-super" data-zonasuper="${n.super.id_super}">
+                        ${n.items.map(itemLi).join('') || '<li class="om-vacio">Arrastre elementos aquí</li>'}
+                    </ul>
+                </li>`).join('')}
+            </ul>
+        </div>`;
 
     _activarDragDrop(cont);
 }
 
 function _activarDragDrop(cont) {
-    /* Arrastrar ItemMenus */
     cont.querySelectorAll('.om-item').forEach(li => {
         li.addEventListener('dragstart', e => {
             e.dataTransfer.setData('text/plain', 'item:' + li.dataset.item);
+            e.stopPropagation();
             li.classList.add('om-arrastrando');
         });
         li.addEventListener('dragend', () => li.classList.remove('om-arrastrando'));
     });
 
-    /* Soltar ItemMenus en cualquier zona (reordenar o mover entre SuperMenus) */
-    cont.querySelectorAll('.om-zona').forEach(ul => {
-        ul.addEventListener('dragover', e => {
-            e.preventDefault();
-            ul.classList.add('om-zona-hover');
-        });
-        ul.addEventListener('dragleave', () => ul.classList.remove('om-zona-hover'));
-        ul.addEventListener('drop', e => {
-            ul.classList.remove('om-zona-hover');
-            const dato = e.dataTransfer.getData('text/plain');
-            if (!dato.startsWith('item:')) return;
-            e.preventDefault();
-            e.stopPropagation();
-            _soltarItem(parseInt(dato.slice(5)), ul.dataset.zona, e.target.closest('.om-item'));
-        });
-    });
-
-    /* Reordenar SuperMenus arrastrando su cabecera sobre otro bloque */
-    cont.querySelectorAll('.om-super-header').forEach(h => {
+    cont.querySelectorAll('.om-super-cab').forEach(h => {
         h.addEventListener('dragstart', e => {
             e.dataTransfer.setData('text/plain', 'super:' + h.dataset.superdrag);
             e.stopPropagation();
         });
     });
-    cont.querySelectorAll('.om-super').forEach(bloque => {
-        bloque.addEventListener('dragover', e => e.preventDefault());
-        bloque.addEventListener('drop', e => {
-            const dato = e.dataTransfer.getData('text/plain');
-            if (!dato.startsWith('super:')) return;
+
+    /* Zonas internas de SuperMenus: solo aceptan ItemMenus */
+    cont.querySelectorAll('.om-zona-super').forEach(ul => {
+        ul.addEventListener('dragover', e => {
             e.preventDefault();
             e.stopPropagation();
-            _soltarSuper(parseInt(dato.slice(6)), parseInt(bloque.dataset.super));
+            ul.classList.add('om-zona-hover');
         });
+        ul.addEventListener('dragleave', () => ul.classList.remove('om-zona-hover'));
+        ul.addEventListener('drop', e => {
+            e.preventDefault();
+            e.stopPropagation();
+            ul.classList.remove('om-zona-hover');
+            const dato = e.dataTransfer.getData('text/plain');
+            if (!dato.startsWith('item:')) return;
+            _soltarItem(parseInt(dato.slice(5)), { superId: parseInt(ul.dataset.zonasuper) },
+                e.target.closest('.om-item'));
+        });
+    });
+
+    /* Zona raíz: acepta ItemMenus y SuperMenus intercalados */
+    const raiz = cont.querySelector('#zonaRaiz');
+    raiz.addEventListener('dragover', e => e.preventDefault());
+    raiz.addEventListener('drop', e => {
+        if (e.target.closest('.om-zona-super')) return; // lo maneja la zona interna
+        e.preventDefault();
+        const dato = e.dataTransfer.getData('text/plain');
+        const ref  = e.target.closest('#zonaRaiz > li');
+        if (dato.startsWith('item:'))  _soltarItem(parseInt(dato.slice(5)), { raiz: true }, ref);
+        if (dato.startsWith('super:')) _soltarSuper(parseInt(dato.slice(6)), ref);
     });
 
     cont.querySelectorAll('[data-renombrar]').forEach(b =>
@@ -121,55 +139,111 @@ function _activarDragDrop(cont) {
         b.addEventListener('click', () => eliminarSuper(parseInt(b.dataset.eliminar))));
 }
 
-function _soltarItem(id, zonaDestino, liRef) {
-    let origen = null, idx = -1;
-    for (const z in _zonas) {
-        const i = _zonas[z].findIndex(x => x.id_menu == id);
-        if (i >= 0) { origen = z; idx = i; break; }
-    }
-    if (!origen || !_zonas[zonaDestino]) return;
+/* Índice de un nodo raíz a partir de su <li> */
+function _indiceNodoRaiz(li) {
+    if (!li) return -1;
+    if (li.dataset.item)  return _raiz.findIndex(n => n.tipo === 'item'  && n.item.id_menu == li.dataset.item);
+    if (li.dataset.super) return _raiz.findIndex(n => n.tipo === 'super' && n.super.id_super == li.dataset.super);
+    return -1;
+}
 
-    const [item]  = _zonas[origen].splice(idx, 1);
-    const destino = _zonas[zonaDestino];
-    let pos = destino.length;
-    if (liRef && liRef.dataset.item != id) {
-        const i = destino.findIndex(x => x.id_menu == liRef.dataset.item);
-        if (i >= 0) pos = i;
+/* Quita un ItemMenu de donde esté (raíz o SuperMenu) y lo devuelve */
+function _extraerItem(id) {
+    const i = _raiz.findIndex(n => n.tipo === 'item' && n.item.id_menu == id);
+    if (i >= 0) return _raiz.splice(i, 1)[0].item;
+    for (const n of _raiz) {
+        if (n.tipo !== 'super') continue;
+        const j = n.items.findIndex(x => x.id_menu == id);
+        if (j >= 0) return n.items.splice(j, 1)[0];
     }
-    destino.splice(pos, 0, item);
+    return null;
+}
+
+function _soltarItem(id, destino, refEl) {
+    if (refEl && refEl.dataset.item == id) return; // soltado sobre sí mismo
+
+    const item = _extraerItem(id);
+    if (!item) return;
+
+    if (destino.superId != null) {
+        const nodo = _raiz.find(n => n.tipo === 'super' && n.super.id_super === destino.superId);
+        if (!nodo) { renderOrganizador(); return; }
+        if (item.modulo === 'dashboard') {
+            mostrarAlerta('El Dashboard no puede agruparse: siempre queda en el nivel raíz.', 'warning');
+            _raiz.unshift({ tipo: 'item', item });
+        } else {
+            let pos = nodo.items.length;
+            if (refEl?.dataset.item) {
+                const i = nodo.items.findIndex(x => x.id_menu == refEl.dataset.item);
+                if (i >= 0) pos = i;
+            }
+            nodo.items.splice(pos, 0, item);
+        }
+    } else {
+        const i = _indiceNodoRaiz(refEl);
+        _raiz.splice(i >= 0 ? i : _raiz.length, 0, { tipo: 'item', item });
+    }
 
     renderOrganizador();
     guardarOrganizacion();
 }
 
-function _soltarSuper(idMovido, idDestino) {
-    if (idMovido === idDestino) return;
-    const desde = _supers.findIndex(s => s.id_super === idMovido);
-    if (desde < 0) return;
-    const [s] = _supers.splice(desde, 1);
-    const hasta = _supers.findIndex(x => x.id_super === idDestino);
-    _supers.splice(hasta < 0 ? _supers.length : hasta, 0, s);
+function _soltarSuper(id, refEl) {
+    if (refEl && refEl.dataset.super == id) return;
+
+    const idx = _raiz.findIndex(n => n.tipo === 'super' && n.super.id_super === id);
+    if (idx < 0) return;
+    const [nodo] = _raiz.splice(idx, 1);
+
+    const i = _indiceNodoRaiz(refEl);
+    _raiz.splice(i >= 0 ? i : _raiz.length, 0, nodo);
 
     renderOrganizador();
     guardarOrganizacion();
 }
 
-/* Guardado automático de la organización del usuario */
-async function guardarOrganizacion() {
-    const supers = _supers.map((s, i) => ({ id_super: s.id_super, orden: 101 + i }));
+/* Secuencia única de orden en la raíz; los ItemMenus de cada
+   SuperMenu llevan su propio orden interno */
+function _payloadOrganizacion() {
+    const supers = [];
     const items  = [];
-    Object.keys(_zonas).forEach(z => {
-        _zonas[z].forEach((it, i) => {
-            items.push({
-                id_menu:  it.id_menu,
-                id_super: z === 'root' ? null : parseInt(z.slice(1)),
-                orden:    i + 1,
+    let orden = 1;
+    _raiz.forEach(n => {
+        if (n.tipo === 'super') {
+            supers.push({ id_super: n.super.id_super, orden: orden++ });
+            n.items.forEach((it, i) => {
+                items.push({ id_menu: it.id_menu, id_super: n.super.id_super, orden: i + 1 });
             });
-        });
+        } else {
+            items.push({ id_menu: n.item.id_menu, id_super: null, orden: orden++ });
+        }
     });
+    return { token: Sesion.token(), supers, items };
+}
+
+/* Guardado automático tras cada movimiento */
+async function guardarOrganizacion() {
     try {
-        const r = await postJSON(API.menu.organizar, { token: Sesion.token(), supers, items });
+        const r = await postJSON(API.menu.organizar, _payloadOrganizacion());
         if (!r.ok) mostrarAlerta(r.msg, 'error');
+    } catch { mostrarAlerta('Error al guardar el menú.', 'error'); }
+}
+
+/* Guardar explícito: persiste, refresca el organizador y actualiza
+   el sidebar del shell sin cerrar sesión */
+async function guardarMenu() {
+    try {
+        const r = await postJSON(API.menu.organizar, _payloadOrganizacion());
+        if (!r.ok) { mostrarAlerta(r.msg, 'error'); return; }
+
+        await cargarMiMenu();
+
+        const p = window.parent;
+        if (p !== window && typeof p.cargarMenuYRenderizar === 'function') {
+            await p.cargarMenuYRenderizar(document.title.split('—')[0].trim());
+            p.Shell?.marcarActivo?.(window.location.pathname);
+        }
+        mostrarAlerta('Menú guardado y actualizado.', 'ok');
     } catch { mostrarAlerta('Error al guardar el menú.', 'error'); }
 }
 
@@ -184,9 +258,9 @@ async function crearSuper() {
 }
 
 async function renombrarSuper(id) {
-    const actual = _supers.find(s => s.id_super === id);
-    const nombre = (window.prompt('Nuevo nombre del SuperMenu:', actual?.nombre || '') || '').trim();
-    if (!nombre || nombre === actual?.nombre) return;
+    const nodo   = _raiz.find(n => n.tipo === 'super' && n.super.id_super === id);
+    const nombre = (window.prompt('Nuevo nombre del SuperMenu:', nodo?.super.nombre || '') || '').trim();
+    if (!nombre || nombre === nodo?.super.nombre) return;
     try {
         const r = await postJSON(API.menu.superRenombrar, { token: Sesion.token(), id_super: id, nombre });
         if (r.ok) { mostrarAlerta(r.msg, 'ok'); await cargarMiMenu(); }

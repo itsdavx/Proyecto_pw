@@ -17,7 +17,9 @@ async function iniciarListaUsuarios() {
     document.getElementById('btnNuevoUsuario')?.addEventListener('click', () => {
         Router.irA(RUTAS.usuariosCrear);
     });
-    document.getElementById('txtBuscar')?.addEventListener('input', filtrarTabla);
+    document.getElementById('txtBuscar')?.addEventListener('input', aplicarFiltros);
+    document.getElementById('selFiltroRol')?.addEventListener('change', aplicarFiltros);
+    document.getElementById('selFiltroEstado')?.addEventListener('change', aplicarFiltros);
 }
 
 async function cargarUsuarios() {
@@ -46,7 +48,8 @@ function renderizarTablaUsuarios(lista) {
     const puedeEstado  = Sesion.tienePermiso('usuarios', 'editar');
 
     tbody.innerHTML = lista.map(u => `
-        <tr data-buscar="${esc(u.username)} ${esc(u.nombre)} ${esc(u.email)} ${esc(u.rol)}">
+        <tr data-buscar="${esc(u.username)} ${esc(u.nombre)} ${esc(u.email)} ${esc(u.rol)}"
+            data-rol="${esc(u.id_rol)}" data-estado="${u.estado == 1 ? 1 : 0}">
             <td>${esc(u.id_user)}</td>
             <td>
                 <strong>${esc(u.nombre)}</strong>
@@ -71,6 +74,35 @@ function renderizarTablaUsuarios(lista) {
             </td>
         </tr>
     `).join('');
+
+    poblarFiltroRoles(lista);
+    aplicarFiltros();
+}
+
+/* Opciones del filtro de rol a partir de los roles presentes en la lista */
+function poblarFiltroRoles(lista) {
+    const sel = document.getElementById('selFiltroRol');
+    if (!sel) return;
+    const actual = sel.value;
+    const roles  = new Map();
+    lista.forEach(u => roles.set(String(u.id_rol), u.rol));
+    sel.innerHTML = '<option value="">Todos los roles</option>' +
+        [...roles.entries()].map(([id, n]) => `<option value="${id}">${esc(n)}</option>`).join('');
+    sel.value = actual;
+    if (sel.value !== actual) sel.value = '';
+}
+
+/* Filtros combinables: búsqueda + rol + estado */
+function aplicarFiltros() {
+    const q   = (document.getElementById('txtBuscar')?.value || '').toLowerCase();
+    const rol = document.getElementById('selFiltroRol')?.value || '';
+    const est = document.getElementById('selFiltroEstado')?.value ?? '';
+    document.querySelectorAll('#tbodyUsuarios tr[data-buscar]').forEach(tr => {
+        const coincide = tr.dataset.buscar.toLowerCase().includes(q)
+            && (!rol || tr.dataset.rol === rol)
+            && (est === '' || tr.dataset.estado === est);
+        tr.style.display = coincide ? '' : 'none';
+    });
 }
 
 function irEditar(id) {
@@ -86,13 +118,6 @@ async function toggleEstado(id, estadoActual) {
         if (r.ok) { mostrarAlerta(r.msg, 'ok'); await cargarUsuarios(); }
         else mostrarAlerta(r.msg, 'error');
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
-}
-
-function filtrarTabla() {
-    const q = document.getElementById('txtBuscar').value.toLowerCase();
-    document.querySelectorAll('#tbodyUsuarios tr[data-buscar]').forEach(tr => {
-        tr.style.display = tr.dataset.buscar.toLowerCase().includes(q) ? '' : 'none';
-    });
 }
 
 /* ── Formulario Crear/Editar usuario ─────────────────────────── */

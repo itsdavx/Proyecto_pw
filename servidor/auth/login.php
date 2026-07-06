@@ -55,6 +55,14 @@ if (!$user['estado']) {
     responder(false, 'Usuario inactivo. Contacta al administrador.');
 }
 
+// Un rol inactivo bloquea el acceso de todos sus usuarios
+$stmt = $db->prepare("SELECT estado FROM roles WHERE id_rol = ?");
+$stmt->execute([$user['id_rol']]);
+$rolEstado = $stmt->fetch();
+if (!$rolEstado || !$rolEstado['estado']) {
+    responder(false, 'Su rol esta inactivo. Contacta al administrador.');
+}
+
 // ── Login exitoso: limpiar intentos ──────────────────────────
 $db->prepare("DELETE FROM login_intentos WHERE username = ? AND ip = ?")
    ->execute([$username, $ip]);

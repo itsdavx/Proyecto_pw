@@ -11,6 +11,7 @@ const APP = {
         usuario:    'pw_usuario',
         permisos:   'pw_permisos',
         menuData:   'pw_menu',
+        frase:      'pw_frase',
     },
 
     // Seguridad
@@ -35,14 +36,16 @@ const RUTAS = {
     rolesCrear:      '/NRC30713-Web/Proyecto_pw/paginas/roles/frmCrear.html',
     permisos:        '/NRC30713-Web/Proyecto_pw/paginas/permisos/index.html',
     menu:            '/NRC30713-Web/Proyecto_pw/paginas/menu/index.html',
-    menuCrear:       '/NRC30713-Web/Proyecto_pw/paginas/menu/frmCrear.html',
     cambiarPassword: '/NRC30713-Web/Proyecto_pw/paginas/perfil/frmCambiarPassword.html',
 };
 
 // Endpoints PHP (solo operaciones de BD)
 const API = {
     dashboard: {
-        estadisticas: APP.api + 'dashboard/estadisticas.php',
+        estadisticas:   APP.api + 'dashboard/estadisticas.php',
+        accesos:        APP.api + 'dashboard/accesos.php',
+        accesosGuardar: APP.api + 'dashboard/accesos_guardar.php',
+        frase:          APP.api + 'dashboard/frase.php',
     },
     auth: {
         login:           APP.api + 'auth/login.php',

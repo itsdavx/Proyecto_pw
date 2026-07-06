@@ -20,6 +20,7 @@ const Sesion = {
         sessionStorage.removeItem(APP.keys.usuario);
         sessionStorage.removeItem(APP.keys.permisos);
         sessionStorage.removeItem(APP.keys.menuData);
+        sessionStorage.removeItem(APP.keys.frase);
     },
 
     /* Obtener token */

@@ -469,7 +469,32 @@ select.form-control { cursor: pointer; }
     border-radius: var(--radius);
 }
 
-.om-super-header { cursor: grab; }
+.om-raiz {
+    padding: 1rem;
+    gap:     .5rem;
+}
+
+.om-super-nodo {
+    border:        1px solid var(--border);
+    border-radius: var(--radius);
+    background:    #ffffff;
+}
+
+.om-super-cab {
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+    gap:             .6rem;
+    padding:         .55rem .8rem;
+    background:      #f8fafc;
+    border-bottom:   1px solid var(--border);
+    border-radius:   var(--radius) var(--radius) 0 0;
+    cursor:          grab;
+}
+
+.om-zona-super {
+    padding: .6rem .6rem .6rem 1.8rem;
+}
 
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 600px) {
