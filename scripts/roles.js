@@ -8,7 +8,6 @@ async function iniciarListaRoles() {
     if (!ok) return;
     if (!Router.verificarPermiso('roles', 'leer')) return;
 
-    cargarMenuYRenderizar('Roles');
     await cargarRoles();
 
     document.getElementById('btnNuevoRol')?.addEventListener('click', () => {
@@ -80,7 +79,6 @@ async function iniciarFormRol() {
     const modo = id ? 'editar' : 'crear';
 
     if (!Router.verificarPermiso('roles', modo)) return;
-    cargarMenuYRenderizar(modo === 'editar' ? 'Editar Rol' : 'Nuevo Rol');
 
     if (modo === 'editar') await precargarRol(id);
 

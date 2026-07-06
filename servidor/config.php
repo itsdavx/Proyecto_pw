@@ -89,9 +89,25 @@ function verificarSesion(string $token): array
     return $sesion;
 }
 
+// Verifica que el modulo (ItemMenu) este activo globalmente — o detiene ejecucion.
+// Un ItemMenu desactivado en "Configurar Menus" no es accesible para nadie.
+function verificarModuloActivo(string $modulo): void
+{
+    $db   = getDB();
+    $stmt = $db->prepare("SELECT COUNT(*) AS total, COALESCE(SUM(estado = 1), 0) AS activos
+                          FROM menu WHERE modulo = ? AND url IS NOT NULL");
+    $stmt->execute([$modulo]);
+    $r = $stmt->fetch();
+    if ((int)$r['total'] > 0 && (int)$r['activos'] === 0) {
+        responder(false, 'Este modulo esta deshabilitado temporalmente.');
+    }
+}
+
 // Verifica que el rol tenga permiso sobre modulo+accion — o detiene ejecucion
 function verificarPermiso(int $id_rol, string $modulo, string $accion): void
 {
+    verificarModuloActivo($modulo);
+    if ($id_rol === 1) { return; } // El Administrador siempre posee todos los permisos
     $db   = getDB();
     $stmt = $db->prepare("SELECT id FROM permisos_rol WHERE id_rol = ? AND modulo = ? AND accion = ?");
     $stmt->execute([$id_rol, $modulo, $accion]);

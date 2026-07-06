@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menú — Sistema Empresarial</title>
+    <title>Frame 4 — Sistema Empresarial</title>
     <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css?v=7">
     <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/dashboard.css?v=7">
     <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/components.css?v=7">
@@ -12,19 +12,17 @@
 
     <main class="contenido">
         <div class="breadcrumb">
-            <span>Inicio</span><span>›</span><span>Menú</span>
+            <span>Inicio</span><span>›</span><span>Frame 4</span>
         </div>
 
         <div class="pag-titulo-wrap">
-            <div>
-                <h1 class="pag-titulo">Menú</h1>
-                <p class="pag-subtitulo">Organice su menú personal: cree SuperMenus y arrastre los elementos. Los cambios se guardan automáticamente.</p>
-            </div>
-            <button class="btn btn-primary" id="btnNuevoSuper">+ Nuevo SuperMenu</button>
+            <h1 class="pag-titulo">Frame 4</h1>
         </div>
 
-        <div id="organizadorMenu">
-            <p class="text-muted text-center">Cargando...</p>
+        <div class="card">
+            <div class="card-body">
+                <p class="text-center text-muted" style="padding:3rem 1rem;font-size:1.1rem">Aquí va un Frame</p>
+            </div>
         </div>
     </main>
 
@@ -34,7 +32,12 @@
     <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js?v=7"></script>
     <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js?v=7"></script>
     <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js?v=7"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/menu-personal.js?v=7"></script>
-    <script>document.addEventListener('DOMContentLoaded', iniciarMenuPersonal);</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const ok = await Router.proteger();
+            if (!ok) return;
+            Router.verificarPermiso('frame4', 'leer');
+        });
+    </script>
 </body>
 </html>

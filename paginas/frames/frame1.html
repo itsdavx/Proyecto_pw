@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frame 1 · Tareas — Sistema Empresarial</title>
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css?v=7">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/dashboard.css?v=7">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/components.css?v=7">
+</head>
+<body class="pag-contenido">
+
+    <main class="contenido">
+        <div class="breadcrumb">
+            <span>Inicio</span><span>›</span><span>Frame 1</span>
+        </div>
+
+        <div class="pag-titulo-wrap">
+            <div>
+                <h1 class="pag-titulo">Frame 1 — Tareas</h1>
+                <p class="pag-subtitulo">CRUD de ejemplo con permisos RBAC por operación</p>
+            </div>
+        </div>
+
+        <div class="card mb-2" id="cardFormTarea">
+            <div class="card-header">
+                <span class="card-titulo">Nueva / Editar tarea</span>
+            </div>
+            <div class="card-body">
+                <form id="formTarea" novalidate>
+                    <div class="form-grid">
+                        <div class="form-grupo">
+                            <label class="form-label" for="txtTitulo">Título</label>
+                            <input class="form-control" type="text" id="txtTitulo" placeholder="Título de la tarea">
+                            <span class="form-error"></span>
+                        </div>
+                        <div class="form-grupo">
+                            <label class="form-label" for="txtDescripcion">Descripción</label>
+                            <input class="form-control" type="text" id="txtDescripcion" placeholder="Descripción opcional">
+                        </div>
+                    </div>
+                    <div class="form-acciones">
+                        <button type="submit" class="btn btn-primary" id="btnGuardarTarea">Guardar Tarea</button>
+                        <button type="button" class="btn btn-secondary d-none" id="btnCancelarEdicion">Cancelar edición</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-titulo">Listado de Tareas</span>
+            </div>
+            <div class="tabla-wrap">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Título</th>
+                            <th>Descripción</th>
+                            <th>Creada por</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyTareas">
+                        <tr><td colspan="5" class="tabla-vacia">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div id="alerta-global"></div>
+
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/config.js?v=7"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js?v=7"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js?v=7"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/validaciones.js?v=7"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js?v=7"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/frame1.js?v=7"></script>
+    <script>document.addEventListener('DOMContentLoaded', iniciarFrame1);</script>
+</body>
+</html>

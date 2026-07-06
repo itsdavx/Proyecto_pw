@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roles — Sistema Empresarial</title>
+    <title>Configurar Menús — Sistema Empresarial</title>
     <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css?v=7">
     <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/dashboard.css?v=7">
     <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/components.css?v=7">
@@ -12,38 +12,32 @@
 
     <main class="contenido">
         <div class="breadcrumb">
-            <span>Inicio</span><span>›</span><span>Roles</span>
+            <span>Inicio</span><span>›</span><span>Configurar Menús</span>
         </div>
 
         <div class="pag-titulo-wrap">
             <div>
-                <h1 class="pag-titulo">Roles</h1>
-                <p class="pag-subtitulo">Gestión de roles del sistema</p>
+                <h1 class="pag-titulo">Configurar Menús</h1>
+                <p class="pag-subtitulo">Disponibilidad global de los ItemMenu. Un ItemMenu inactivo no aparece ni puede abrirse por ningún usuario.</p>
             </div>
-            <button class="btn btn-primary" id="btnNuevoRol">+ Nuevo Rol</button>
         </div>
 
         <div class="card">
             <div class="card-header">
-                <span class="card-titulo">Listado de Roles</span>
-                <div class="busqueda-wrap">
-                    <span class="busqueda-icono">⊙</span>
-                    <input type="text" id="txtBuscar" placeholder="Buscar rol...">
-                </div>
+                <span class="card-titulo">ItemMenu del sistema</span>
             </div>
             <div class="tabla-wrap">
                 <table class="tabla">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Nombre del Rol</th>
-                            <th>Descripción</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
+                            <th>ItemMenu</th>
+                            <th>Módulo</th>
+                            <th>Disponibilidad</th>
                         </tr>
                     </thead>
-                    <tbody id="tbodyRoles">
-                        <tr><td colspan="5" class="tabla-vacia">Cargando...</td></tr>
+                    <tbody id="tbodyConfigMenu">
+                        <tr><td colspan="4" class="tabla-vacia">Cargando...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -56,7 +50,7 @@
     <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js?v=7"></script>
     <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js?v=7"></script>
     <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js?v=7"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/roles.js?v=7"></script>
-    <script>document.addEventListener('DOMContentLoaded', iniciarListaRoles);</script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/menu-config.js?v=7"></script>
+    <script>document.addEventListener('DOMContentLoaded', iniciarConfigMenus);</script>
 </body>
 </html>

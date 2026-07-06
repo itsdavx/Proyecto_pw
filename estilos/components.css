@@ -430,6 +430,47 @@ select.form-control { cursor: pointer; }
     accent-color: var(--primary);
 }
 
+/* ── Organizador de menú personal (Drag & Drop) ──────────── */
+.om-zona {
+    list-style: none;
+    padding:    .8rem;
+    margin:     0;
+    min-height: 52px;
+    display:        flex;
+    flex-direction: column;
+    gap:            .4rem;
+}
+.om-zona-hover { background: var(--primary-light); }
+
+.om-item {
+    display:       flex;
+    align-items:   center;
+    gap:           .6rem;
+    padding:       .55rem .8rem;
+    background:    #f8fafc;
+    border:        1px solid var(--border);
+    border-radius: var(--radius);
+    cursor:        grab;
+}
+.om-item.om-arrastrando { opacity: .4; }
+
+.om-arrastre {
+    color:  var(--text-muted);
+    cursor: grab;
+}
+
+.om-vacio {
+    color:         var(--text-muted);
+    font-style:    italic;
+    font-size:     .85rem;
+    text-align:    center;
+    padding:       .8rem;
+    border:        1.5px dashed var(--border);
+    border-radius: var(--radius);
+}
+
+.om-super-header { cursor: grab; }
+
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 600px) {
     .form-grid { grid-template-columns: 1fr; }

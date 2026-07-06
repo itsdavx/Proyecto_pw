@@ -32,7 +32,6 @@ try {
         [4, 'Roles',          'fa-id-badge',     '/NRC30713-Web/Proyecto_pw/paginas/roles/index.html',     2,    'roles',     2],
         [5, 'Permisos',       'fa-lock',         '/NRC30713-Web/Proyecto_pw/paginas/permisos/index.html',  2,    'permisos',  3],
         [6, 'Menú',           'fa-bars',         '/NRC30713-Web/Proyecto_pw/paginas/menu/index.html',      2,    'menu',      4],
-        [7, 'Opciones',       'fa-list',         '/NRC30713-Web/Proyecto_pw/paginas/opciones/index.html',  2,    'opciones',  5],
         [8, 'Mi Perfil',      'fa-circle-user',  '#',                                                     null,  'perfil',    3],
         [9, 'Cambiar Contraseña','fa-key',       '/NRC30713-Web/Proyecto_pw/paginas/perfil/frmCambiarPassword.html', 8, 'perfil', 1],
     ];

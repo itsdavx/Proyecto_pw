@@ -8,7 +8,10 @@ async function iniciarListaUsuarios() {
     if (!ok) return;
     if (!Router.verificarPermiso('usuarios', 'leer')) return;
 
-    cargarMenuYRenderizar('Usuarios');
+    if (!Sesion.tienePermiso('usuarios', 'crear')) {
+        document.getElementById('btnNuevoUsuario')?.classList.add('d-none');
+    }
+
     await cargarUsuarios();
 
     document.getElementById('btnNuevoUsuario')?.addEventListener('click', () => {
@@ -98,7 +101,6 @@ async function iniciarFormUsuario(modo) {
     if (!ok) return;
     if (!Router.verificarPermiso('usuarios', modo === 'editar' ? 'editar' : 'crear')) return;
 
-    cargarMenuYRenderizar(modo === 'editar' ? 'Editar Usuario' : 'Nuevo Usuario');
     await cargarRolesEnSelect();
 
     if (modo === 'editar') {

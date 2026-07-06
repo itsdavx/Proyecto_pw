@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Sistema Empresarial</title>
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css?v=7">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/dashboard.css?v=7">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/components.css?v=7">
+</head>
+<body class="pag-contenido">
+
+    <main class="contenido">
+        <div class="breadcrumb">
+            <span>Inicio</span>
+            <span>›</span>
+            <span>Dashboard</span>
+        </div>
+
+        <div class="pag-titulo-wrap">
+            <div>
+                <h1 class="pag-titulo" id="saludoUsuario">Bienvenido</h1>
+                <p class="pag-subtitulo" id="fechaActual"></p>
+            </div>
+            <span class="badge badge-primary" id="rolUsuario"></span>
+        </div>
+
+        <div class="card mb-2">
+            <div class="card-header">
+                <span class="card-titulo">Acceso rápido</span>
+            </div>
+            <div class="card-body">
+                <div class="btn-group" id="accesosRapidos"></div>
+            </div>
+        </div>
+
+        <div class="stats-grid" id="seccionStats">
+            <div class="stat-card">
+                <div class="stat-icono">◈</div>
+                <div>
+                    <div class="stat-info-label">Usuarios</div>
+                    <div class="stat-info-num" id="statUsuarios">—</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icono">◆</div>
+                <div>
+                    <div class="stat-info-label">Roles</div>
+                    <div class="stat-info-num" id="statRoles">—</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icono">■</div>
+                <div>
+                    <div class="stat-info-label">Permisos</div>
+                    <div class="stat-info-num" id="statPermisos">—</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="alerta-global"></div>
+
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/config.js?v=7"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js?v=7"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js?v=7"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js?v=7"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/dashboard.js?v=7"></script>
+</body>
+</html>

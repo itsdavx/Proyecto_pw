@@ -9,7 +9,6 @@ const MENU_ICONOS_MOD = {
     roles:      '◆',
     permisos:   '■',
     menu:       '≡',
-    opciones:   '☰',
     perfil:     '◐',
 };
 

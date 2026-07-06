@@ -27,6 +27,7 @@ const APP = {
 const RUTAS = {
     login:           '/NRC30713-Web/Proyecto_pw/paginas/auth/frmLogin.html',
     dashboard:       '/NRC30713-Web/Proyecto_pw/paginas/dashboard/index.html',
+    dashboardInicio: '/NRC30713-Web/Proyecto_pw/paginas/dashboard/inicio.html',
     usuarios:        '/NRC30713-Web/Proyecto_pw/paginas/usuarios/index.html',
     usuariosCrear:   '/NRC30713-Web/Proyecto_pw/paginas/usuarios/frmCrear.html',
     usuariosEditar:  '/NRC30713-Web/Proyecto_pw/paginas/usuarios/frmEditar.html',
@@ -35,12 +36,14 @@ const RUTAS = {
     permisos:        '/NRC30713-Web/Proyecto_pw/paginas/permisos/index.html',
     menu:            '/NRC30713-Web/Proyecto_pw/paginas/menu/index.html',
     menuCrear:       '/NRC30713-Web/Proyecto_pw/paginas/menu/frmCrear.html',
-    opciones:        '/NRC30713-Web/Proyecto_pw/paginas/opciones/index.html',
     cambiarPassword: '/NRC30713-Web/Proyecto_pw/paginas/perfil/frmCambiarPassword.html',
 };
 
 // Endpoints PHP (solo operaciones de BD)
 const API = {
+    dashboard: {
+        estadisticas: APP.api + 'dashboard/estadisticas.php',
+    },
     auth: {
         login:           APP.api + 'auth/login.php',
         logout:          APP.api + 'auth/logout.php',
@@ -60,19 +63,26 @@ const API = {
     permisos: {
         listar:  APP.api + 'permisos/listar.php',
         asignar: APP.api + 'permisos/asignar.php',
+        frames:  APP.api + 'permisos/frames.php',
     },
     menu: {
-        listar:   APP.api + 'menu/listar.php',
-        crear:    APP.api + 'menu/crear.php',
-        editar:   APP.api + 'menu/editar.php',
-        eliminar: APP.api + 'menu/eliminar.php',
+        listar:         APP.api + 'menu/listar.php',
+        miMenu:         APP.api + 'menu/mi_menu.php',
+        organizar:      APP.api + 'menu/organizar.php',
+        superCrear:     APP.api + 'menu/super_crear.php',
+        superRenombrar: APP.api + 'menu/super_renombrar.php',
+        superEliminar:  APP.api + 'menu/super_eliminar.php',
+        configListar:   APP.api + 'menu/config_listar.php',
+        configEstado:   APP.api + 'menu/config_estado.php',
     },
-    opciones: {
-        listar:   APP.api + 'opciones/listar.php',
-        crear:    APP.api + 'opciones/crear.php',
-        eliminar: APP.api + 'opciones/eliminar.php',
+    tareas: {
+        listar:   APP.api + 'tareas/listar.php',
+        crear:    APP.api + 'tareas/crear.php',
+        editar:   APP.api + 'tareas/editar.php',
+        eliminar: APP.api + 'tareas/eliminar.php',
     },
     perfil: {
         cambiarPassword: APP.api + 'perfil/cambiar_password.php',
+        ver:             APP.api + 'perfil/ver.php',
     },
 };

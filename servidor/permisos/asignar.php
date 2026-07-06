@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__DIR__) . '/config.php';
+require_once __DIR__ . '/registro.php';
 
 $input  = getInput();
 $token  = $input['token'] ?? '';
@@ -20,8 +21,11 @@ if (!is_array($lista)) {
     responder(false, 'Formato de permisos invalido.');
 }
 
-$modulosValidos  = ['dashboard','usuarios','roles','permisos','menu','opciones','perfil'];
-$accionesValidas = ['leer','crear','editar','eliminar'];
+// Módulos y acciones válidos se derivan del registro central de Frames
+$accionesPorModulo = [];
+foreach (obtenerRegistroFrames() as $f) {
+    $accionesPorModulo[$f['modulo']] = array_merge(['leer'], array_column($f['acciones'], 'accion'));
+}
 
 $db = getDB();
 $db->beginTransaction();
@@ -33,7 +37,7 @@ try {
     foreach ($lista as $p) {
         $modulo = $p['modulo'] ?? '';
         $accion = $p['accion'] ?? '';
-        if (in_array($modulo, $modulosValidos) && in_array($accion, $accionesValidas)) {
+        if (isset($accionesPorModulo[$modulo]) && in_array($accion, $accionesPorModulo[$modulo])) {
             $stmt->execute([$id_rol, $modulo, $accion]);
         }
     }

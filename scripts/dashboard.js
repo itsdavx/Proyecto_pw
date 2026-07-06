@@ -1,14 +1,32 @@
 /* ============================================================
-   DASHBOARD.JS — Página principal del sistema
+   DASHBOARD.JS — Página de inicio: saludo y estadísticas
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', async () => {
     const ok = await Router.proteger();
     if (!ok) return;
 
-    await cargarMenuYRenderizar('Dashboard');
     mostrarBienvenida();
+    generarAccesosRapidos();
+
+    /* Estadísticas e información administrativa: solo Administrador */
+    if (Sesion.usuario()?.id_rol === 1) {
+        cargarEstadisticas();
+    } else {
+        document.getElementById('seccionStats')?.classList.add('d-none');
+    }
 });
+
+/* Accesos rápidos según el menú permitido al rol del usuario */
+function generarAccesosRapidos() {
+    const cont = document.getElementById('accesosRapidos');
+    if (!cont) return;
+    const items = Sesion.menuData().filter(m => m.url && m.modulo !== 'dashboard');
+    cont.innerHTML = items.map(m => `
+        <a href="${esc(m.url)}" class="btn btn-outline">
+            ${resolverIcono(m.icono)} ${esc(m.nombre)}
+        </a>`).join('');
+}
 
 function mostrarBienvenida() {
     const user = Sesion.usuario();
@@ -29,4 +47,20 @@ function mostrarBienvenida() {
 
     const rolEl = document.getElementById('rolUsuario');
     if (rolEl) rolEl.textContent = user?.rol || '';
+}
+
+/* ── Conteos exactos por módulo ──────────────────────────────── */
+async function cargarEstadisticas() {
+    try {
+        const r = await postJSON(API.dashboard.estadisticas, { token: Sesion.token() });
+        if (!r.ok) return;
+        _ponerConteo('statUsuarios', r.data.usuarios);
+        _ponerConteo('statRoles',    r.data.roles);
+        _ponerConteo('statPermisos', r.data.permisos);
+    } catch { /* si falla, se mantienen los guiones */ }
+}
+
+function _ponerConteo(id, valor) {
+    const el = document.getElementById(id);
+    if (el && valor !== undefined && valor !== null) el.textContent = valor;
 }

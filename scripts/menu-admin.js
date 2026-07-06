@@ -2,17 +2,23 @@
    MENU-ADMIN.JS — Administración de ítems de menú
    ============================================================ */
 
+let _itemsMenu = [];
+
 async function iniciarListaMenu() {
     const ok = await Router.proteger();
     if (!ok) return;
     if (!Router.verificarPermiso('menu', 'leer')) return;
 
-    cargarMenuYRenderizar('Administrar Menú');
+    if (!Sesion.tienePermiso('menu', 'crear')) {
+        document.getElementById('btnNuevoMenu')?.classList.add('d-none');
+    }
+
     await cargarItemsMenu();
 
     document.getElementById('btnNuevoMenu')?.addEventListener('click', () => {
         Router.irA(RUTAS.menuCrear);
     });
+    document.getElementById('btnGuardarOrden')?.addEventListener('click', guardarOrdenUsuario);
 }
 
 async function cargarItemsMenu() {
@@ -32,6 +38,8 @@ function renderizarTablaMenu(lista) {
     const tbody = document.getElementById('tbodyMenu');
     if (!tbody) return;
 
+    _itemsMenu = lista || [];
+
     if (!lista || lista.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="tabla-vacia">No hay ítems de menú.</td></tr>`;
         return;
@@ -39,6 +47,35 @@ function renderizarTablaMenu(lista) {
 
     const puedEditar  = Sesion.tienePermiso('menu', 'editar');
     const puedElim    = Sesion.tienePermiso('menu', 'eliminar');
+
+    /* Usuarios sin permisos de administración solo reordenan su propio menú */
+    const modoOrden = !puedEditar && !puedElim && !Sesion.tienePermiso('menu', 'crear');
+    document.getElementById('btnGuardarOrden')?.classList.toggle('d-none', !modoOrden);
+
+    if (modoOrden) {
+        tbody.innerHTML = lista.map((m, i) => `
+            <tr>
+                <td>${esc(m.id_menu)}</td>
+                <td>
+                    ${m.padre_id ? '<span style="padding-left:1.5rem">└ </span>' : ''}
+                    ${esc(m.nombre)}
+                </td>
+                <td><code>${esc(m.url || '—')}</code></td>
+                <td><span class="badge badge-primary">${esc(m.modulo || '—')}</span></td>
+                <td>${i + 1}</td>
+                <td><span class="badge badge-activo">Activo</span></td>
+                <td>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-outline" ${i === 0 ? 'disabled' : ''}
+                            onclick="moverItemMenu(${i}, -1)">↑</button>
+                        <button class="btn btn-sm btn-outline" ${i === lista.length - 1 ? 'disabled' : ''}
+                            onclick="moverItemMenu(${i}, 1)">↓</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+        return;
+    }
 
     tbody.innerHTML = lista.map(m => `
         <tr>
@@ -65,6 +102,22 @@ function renderizarTablaMenu(lista) {
     `).join('');
 }
 
+function moverItemMenu(i, dir) {
+    const j = i + dir;
+    if (j < 0 || j >= _itemsMenu.length) return;
+    [_itemsMenu[i], _itemsMenu[j]] = [_itemsMenu[j], _itemsMenu[i]];
+    renderizarTablaMenu(_itemsMenu);
+}
+
+async function guardarOrdenUsuario() {
+    const items = _itemsMenu.map((m, i) => ({ id_menu: m.id_menu, orden: i + 1 }));
+    try {
+        const r = await postJSON(API.menu.ordenar, { token: Sesion.token(), items });
+        if (r.ok) mostrarAlerta(r.msg, 'ok');
+        else mostrarAlerta(r.msg, 'error');
+    } catch { mostrarAlerta('Error de conexión.', 'error'); }
+}
+
 function irEditarMenu(id) {
     Router.irA(`${RUTAS.menuCrear}?id=${id}`);
 }
@@ -87,7 +140,6 @@ async function iniciarFormMenu() {
     const modo = id ? 'editar' : 'crear';
 
     if (!Router.verificarPermiso('menu', modo)) return;
-    cargarMenuYRenderizar(modo === 'editar' ? 'Editar Ítem de Menú' : 'Nuevo Ítem de Menú');
 
     await cargarMenuPadresSelect();
     if (modo === 'editar') await precargarMenu(id);
