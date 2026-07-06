@@ -196,7 +196,7 @@ async function submitLogin(e) {
 
 function mostrarError(inputEl, msg) {
     inputEl.classList.add('campo-error');
-    const errEl = inputEl.parentElement.querySelector('.mensaje-error');
+    const errEl = inputEl.closest('.campo-grupo')?.querySelector('.mensaje-error');
     if (errEl) { errEl.textContent = msg; errEl.classList.add('visible'); }
 }
 
@@ -238,9 +238,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     [inUser, inPass, inCap].forEach(el => {
         el.addEventListener('input', () => {
             el.classList.remove('campo-error');
-            const errEl = el.parentElement.querySelector('.mensaje-error');
+            const errEl = el.closest('.campo-grupo')?.querySelector('.mensaje-error');
             if (errEl) { errEl.textContent = ''; errEl.classList.remove('visible'); }
         });
+    });
+
+    /* Mostrar/ocultar contraseña sin perder el foco del campo */
+    const btnToggle = document.getElementById('togglePassword');
+    btnToggle?.addEventListener('mousedown', e => e.preventDefault());
+    btnToggle?.addEventListener('click', () => {
+        inPass.type = inPass.type === 'password' ? 'text' : 'password';
+        btnToggle.textContent = inPass.type === 'password' ? '👁' : '🙈';
+        btnToggle.setAttribute('aria-label',
+            inPass.type === 'password' ? 'Mostrar contraseña' : 'Ocultar contraseña');
     });
 
     setInterval(actualizarUiBloqueo, 1000);

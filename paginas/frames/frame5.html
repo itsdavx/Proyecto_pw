@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frame 5 — Sistema Genérico</title>
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css?v=11">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/dashboard.css?v=11">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/components.css?v=11">
+</head>
+<body class="pag-contenido">
+
+    <main class="contenido">
+        <div class="breadcrumb">
+            <span>Inicio</span><span>›</span><span>Frame 5</span>
+        </div>
+
+        <div class="pag-titulo-wrap">
+            <h1 class="pag-titulo">Frame 5</h1>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <p class="text-center text-muted" style="padding:3rem 1rem;font-size:1.1rem">Aquí va un Frame</p>
+            </div>
+        </div>
+    </main>
+
+    <div id="alerta-global"></div>
+
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/config.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js?v=11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const ok = await Router.proteger();
+            if (!ok) return;
+            Router.verificarPermiso('frame5', 'leer');
+        });
+    </script>
+</body>
+</html>

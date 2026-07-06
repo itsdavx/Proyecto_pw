@@ -3,67 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menú — Sistema Empresarial</title>
-    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css">
-    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/dashboard.css">
-    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/components.css">
+    <title>Menú — Sistema Genérico</title>
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css?v=11">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/dashboard.css?v=11">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/components.css?v=11">
 </head>
-<body class="pag-dashboard">
+<body class="pag-contenido">
 
-    <aside class="sidebar" id="sidebar"></aside>
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <main class="contenido">
+        <div class="breadcrumb">
+            <span>Inicio</span><span>›</span><span>Menú</span>
+        </div>
 
-    <div class="main-wrap">
-        <header class="topbar" id="topbar"></header>
-
-        <main class="contenido">
-            <div class="breadcrumb">
-                <span>Inicio</span><span>›</span><span>Administrar Menú</span>
+        <div class="pag-titulo-wrap">
+            <div>
+                <h1 class="pag-titulo">Menú</h1>
+                <p class="pag-subtitulo">Organice su menú personal: cree SuperMenus y arrastre los elementos. Los cambios se guardan automáticamente.</p>
             </div>
-
-            <div class="pag-titulo-wrap">
-                <div>
-                    <h1 class="pag-titulo">Administrar Menú</h1>
-                    <p class="pag-subtitulo">Configuración de ítems del menú de navegación</p>
-                </div>
-                <button class="btn btn-primary" id="btnNuevoMenu">+ Nuevo Ítem</button>
+            <div class="btn-group">
+                <button class="btn btn-outline" id="btnNuevoSuper">+ Nuevo SuperMenu</button>
+                <button class="btn btn-primary" id="btnGuardarMenu">Guardar</button>
             </div>
+        </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-titulo">Ítems de Menú</span>
-                </div>
-                <div class="tabla-wrap">
-                    <table class="tabla">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Nombre</th>
-                                <th>URL</th>
-                                <th>Módulo</th>
-                                <th>Orden</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbodyMenu">
-                            <tr><td colspan="7" class="tabla-vacia">Cargando...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </main>
-    </div>
+        <div id="organizadorMenu">
+            <p class="text-muted text-center">Cargando...</p>
+        </div>
+    </main>
 
     <div id="alerta-global"></div>
 
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/config.js"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/menu.js"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/auth.js"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/menu-admin.js"></script>
-    <script>document.addEventListener('DOMContentLoaded', iniciarListaMenu);</script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/config.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/menu-personal.js?v=11"></script>
+    <script>document.addEventListener('DOMContentLoaded', iniciarMenuPersonal);</script>
 </body>
 </html>

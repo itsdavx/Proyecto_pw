@@ -55,12 +55,23 @@ if (!$user['estado']) {
     responder(false, 'Usuario inactivo. Contacta al administrador.');
 }
 
+// Un rol inactivo bloquea el acceso de todos sus usuarios
+$stmt = $db->prepare("SELECT estado FROM roles WHERE id_rol = ?");
+$stmt->execute([$user['id_rol']]);
+$rolEstado = $stmt->fetch();
+if (!$rolEstado || !$rolEstado['estado']) {
+    responder(false, 'Su rol esta inactivo. Contacta al administrador.');
+}
+
 // ── Login exitoso: limpiar intentos ──────────────────────────
 $db->prepare("DELETE FROM login_intentos WHERE username = ? AND ip = ?")
    ->execute([$username, $ip]);
 
 $db->prepare("DELETE FROM sesiones WHERE id_user = ?")
    ->execute([$user['id_user']]);
+
+// Purgar sesiones caducadas de cualquier usuario (housekeeping)
+$db->exec("DELETE FROM sesiones WHERE expires_at < NOW()");
 
 // ── Crear token de sesion ─────────────────────────────────────
 $token  = bin2hex(random_bytes(32));

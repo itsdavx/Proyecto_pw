@@ -1,0 +1,7 @@
+# Durante desarrollo: el navegador debe revalidar JS/CSS/HTML en cada carga
+# (con ETag/Last-Modified responde 304 si no cambiaron, así que sigue siendo rápido)
+<IfModule mod_headers.c>
+    <FilesMatch "\.(js|css|html)$">
+        Header set Cache-Control "no-cache, must-revalidate"
+    </FilesMatch>
+</IfModule>

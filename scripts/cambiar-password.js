@@ -7,7 +7,6 @@ async function iniciarCambiarPassword() {
     if (!ok) return;
 
     const user = Sesion.usuario();
-    cargarMenuYRenderizar('Cambiar Contraseña');
 
     if (user?.primer_login == 1) {
         const aviso = document.getElementById('avisoObligatorio');

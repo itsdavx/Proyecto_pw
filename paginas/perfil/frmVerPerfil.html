@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil — Sistema Genérico</title>
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css?v=11">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/dashboard.css?v=11">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/components.css?v=11">
+</head>
+<body class="pag-contenido">
+
+    <main class="contenido">
+        <div class="breadcrumb">
+            <span>Inicio</span><span>›</span><span>Mi Perfil</span>
+        </div>
+
+        <div class="pag-titulo-wrap">
+            <div>
+                <h1 class="pag-titulo">Mi Perfil</h1>
+                <p class="pag-subtitulo">Información de su cuenta</p>
+            </div>
+            <span class="badge badge-primary" id="perfilRol"></span>
+        </div>
+
+        <div class="card" style="max-width:520px">
+            <div class="card-header">
+                <span class="card-titulo">Datos personales</span>
+            </div>
+            <div class="tabla-wrap">
+                <table class="tabla">
+                    <tbody>
+                        <tr><td class="text-muted">Nombre</td><td><strong id="perfilNombre">—</strong></td></tr>
+                        <tr><td class="text-muted">Usuario</td><td id="perfilUsername">—</td></tr>
+                        <tr><td class="text-muted">Correo</td><td id="perfilEmail">—</td></tr>
+                        <tr><td class="text-muted">Rol</td><td id="perfilRol2">—</td></tr>
+                        <tr><td class="text-muted">Miembro desde</td><td id="perfilCreado">—</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div id="alerta-global"></div>
+
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/config.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js?v=11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const ok = await Router.proteger();
+            if (!ok) return;
+            if (!Router.verificarPermiso('perfil', 'leer')) return;
+
+            try {
+                const r = await postJSON(API.perfil.ver, { token: Sesion.token() });
+                if (!r.ok) { mostrarAlerta(r.msg, 'error'); return; }
+                document.getElementById('perfilNombre').textContent   = r.data.nombre;
+                document.getElementById('perfilUsername').textContent = r.data.username;
+                document.getElementById('perfilEmail').textContent    = r.data.email;
+                document.getElementById('perfilRol').textContent      = r.data.nombre_rol;
+                document.getElementById('perfilRol2').textContent     = r.data.nombre_rol;
+                document.getElementById('perfilCreado').textContent   = formatFecha(r.data.created_at);
+            } catch { mostrarAlerta('Error de conexión.', 'error'); }
+        });
+    </script>
+</body>
+</html>

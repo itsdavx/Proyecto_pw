@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard — Sistema Empresarial</title>
-    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css">
-    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/dashboard.css">
-    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/components.css">
+    <title>Sistema Genérico</title>
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/main.css?v=11">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/dashboard.css?v=11">
+    <link rel="stylesheet" href="/NRC30713-Web/Proyecto_pw/estilos/components.css?v=11">
 </head>
 <body class="pag-dashboard">
 
@@ -16,77 +16,19 @@
     <div class="main-wrap">
         <header class="topbar" id="topbar"></header>
 
-        <main class="contenido">
-            <div class="breadcrumb">
-                <span>Inicio</span>
-                <span>›</span>
-                <span>Dashboard</span>
-            </div>
-
-            <div class="pag-titulo-wrap">
-                <div>
-                    <h1 class="pag-titulo" id="saludoUsuario">Bienvenido</h1>
-                    <p class="pag-subtitulo" id="fechaActual"></p>
-                </div>
-                <span class="badge badge-primary" id="rolUsuario"></span>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icono">◈</div>
-                    <div>
-                        <div class="stat-info-label">Módulo</div>
-                        <div class="stat-info-num" style="font-size:1rem">Usuarios</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icono">◆</div>
-                    <div>
-                        <div class="stat-info-label">Módulo</div>
-                        <div class="stat-info-num" style="font-size:1rem">Roles</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icono">■</div>
-                    <div>
-                        <div class="stat-info-label">Módulo</div>
-                        <div class="stat-info-num" style="font-size:1rem">Permisos</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icono">≡</div>
-                    <div>
-                        <div class="stat-info-label">Módulo</div>
-                        <div class="stat-info-num" style="font-size:1rem">Menú</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-titulo">Acceso rápido</span>
-                </div>
-                <div class="card-body">
-                    <div class="btn-group">
-                        <a href="/NRC30713-Web/Proyecto_pw/paginas/usuarios/index.html" class="btn btn-outline">◈ Usuarios</a>
-                        <a href="/NRC30713-Web/Proyecto_pw/paginas/roles/index.html"    class="btn btn-outline">◆ Roles</a>
-                        <a href="/NRC30713-Web/Proyecto_pw/paginas/permisos/index.html" class="btn btn-outline">■ Permisos</a>
-                        <a href="/NRC30713-Web/Proyecto_pw/paginas/menu/index.html"     class="btn btn-outline">≡ Menú</a>
-                        <a href="/NRC30713-Web/Proyecto_pw/paginas/perfil/frmCambiarPassword.html" class="btn btn-outline">⊛ Cambiar contraseña</a>
-                    </div>
-                </div>
-            </div>
+        <main class="frame-wrap">
+            <iframe id="frameContenido" title="Contenido del sistema"></iframe>
         </main>
     </div>
 
     <div id="alerta-global"></div>
 
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/config.js"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/menu.js"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/auth.js"></script>
-    <script src="/NRC30713-Web/Proyecto_pw/scripts/dashboard.js"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/config.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/utils.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/session.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/router.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/menu.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/auth.js?v=11"></script>
+    <script src="/NRC30713-Web/Proyecto_pw/scripts/shell.js?v=11"></script>
 </body>
 </html>
