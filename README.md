@@ -1,223 +1,131 @@
-# 🖥️ Sistema Genérico
+# Sistema Genérico
 
-Sistema web de administración con **control de acceso basado en roles (RBAC)**, menús personalizables por usuario y arquitectura SPA *shell + frames* — construido sin frameworks, con JavaScript puro y PHP.
+Sistema web de administración con control de acceso basado en roles (RBAC) granular, menús personalizables por usuario y arquitectura de página única (shell con marco interno). Construido sin frameworks: JavaScript vanilla en el cliente y PHP con PDO en el servidor.
 
-![PHP](https://img.shields.io/badge/PHP-7.3%2B-777BB4?logo=php&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?logo=javascript&logoColor=black)
-![HTML5](https://img.shields.io/badge/HTML5-CSS3-E34F26?logo=html5&logoColor=white)
-![Licencia](https://img.shields.io/badge/Licencia-MIT-green)
-![Estado](https://img.shields.io/badge/Estado-Funcional%20y%20documentado-success)
+## Descripción
 
-> 🎓 Proyecto académico — NRC 30713 · Programación Web
+El sistema resuelve la administración de acceso a pantallas y operaciones dentro de una aplicación multiusuario: qué rol puede ver cada módulo (Frame) y qué acciones internas puede ejecutar dentro de él (crear, editar, eliminar, etc.), configurable desde la interfaz sin modificar código.
 
----
+Cada usuario, además, organiza libremente su propio menú de navegación (agrupaciones propias y orden mediante arrastrar y soltar), y el Administrador controla por separado la disponibilidad global de cada opción del sistema, independientemente de los permisos por rol.
 
-## 📋 Descripción
+## Características principales
 
-**Sistema Genérico** resuelve un problema común en aplicaciones empresariales: administrar **quién puede ver qué pantalla y ejecutar qué operación**, sin tocar código cada vez que cambian los permisos.
+- Inicio de sesión con captcha propio (generado en canvas) y bloqueo temporal tras intentos fallidos.
+- Sesiones con token de expiración, únicas por usuario, verificadas en cada operación.
+- Cambio de contraseña obligatorio en el primer acceso, con política de seguridad e indicador de fortaleza.
+- RBAC granular: cada acción de cada módulo (por ejemplo, editar usuario, desactivar usuario, cambiar rol) es un permiso independiente, configurable por rol.
+- Navegación sin recargas: la estructura general (menú lateral y barra superior) se carga una sola vez; cada módulo se muestra en un marco interno.
+- Menú personalizable por usuario: creación de agrupaciones propias, reordenamiento y reagrupado mediante arrastrar y soltar; persistencia individual por usuario.
+- Configuración global de disponibilidad de módulos, independiente de los permisos por rol.
+- Dashboard con contenido diferenciado por rol: estadísticas del sistema para el Administrador, frase motivadora aleatoria para el resto.
+- Accesos rápidos del Dashboard configurables de forma individual, sin afectar los permisos del usuario.
+- Gestión de Usuarios (crear, editar, activar/desactivar, filtros combinables por rol y estado) y de Roles (crear, editar, eliminar con validación de dependencias).
+- Confirmación reforzada para eliminaciones permanentes: exige escribir el nombre exacto del elemento antes de habilitar el botón de eliminar.
+- Numeración visual consecutiva (columna N°) en las tablas administrativas, independiente del identificador real de la base de datos.
+- Módulo de ejemplo (Frame 1) con un CRUD de tareas cuyos botones se habilitan según los permisos del rol, más cuatro Frames de demostración.
 
-Es una aplicación web de tipo **SPA (Single Page Application)** donde:
+## Tecnologías utilizadas
 
-- El **Administrador** configura visualmente el acceso de cada rol a cada pantalla (*Frame*) y a cada operación interna (crear, editar, eliminar).
-- Cada **usuario** organiza libremente su propio menú de navegación mediante *drag & drop* y personaliza su Dashboard.
-- El sistema de módulos es **extensible**: agregar un Frame nuevo solo requiere registrarlo en el catálogo central — la matriz de permisos, la configuración de menús y la navegación lo incorporan automáticamente.
+- HTML5 y CSS3, sin frameworks de estilos.
+- JavaScript sin librerías ni frameworks (vanilla).
+- PHP 7.3 o superior, con PDO y sentencias preparadas.
+- MySQL 8.0 o MariaDB.
+- Comunicación cliente-servidor mediante `fetch` y JSON.
+- Contraseñas cifradas con bcrypt.
+- Servidor de referencia: Apache (entorno de desarrollo probado con AppServ).
 
----
+## Requisitos
 
-## ✨ Características principales
+- Servidor Apache con soporte para PHP 7.3 o superior.
+- Extensión PDO de PHP habilitada.
+- MySQL 8.0 o MariaDB.
+- Navegador con soporte de JavaScript moderno, `sessionStorage` e `iframe`.
 
-- 🔐 Autenticación con **captcha propio**, bloqueo por intentos fallidos (5 intentos → 15 min) y sesiones con token de expiración única por usuario.
-- 🛡️ **RBAC de dos niveles**: acceso por pantalla + permisos por operación, validados siempre en el servidor.
-- 🧭 Navegación **sin recargas** (shell único con marco interno), con sección activa resaltada y *deep-linking*.
-- 🗂️ **Menú 100 % personalizable por usuario**: agrupaciones propias (SuperMenus), reordenamiento y agrupado por *drag & drop*.
-- ⚙️ **Configurar Menús**: el Administrador habilita/deshabilita módulos globalmente (ideal para mantenimientos).
-- 📊 Dashboard diferenciado por rol: estadísticas para el Administrador, frases motivadoras para los demás.
-- ⚡ **Accesos rápidos configurables** individualmente sin afectar permisos.
-- 👤 Mi Perfil: consulta de datos propios y cambio de contraseña con política de seguridad e indicador de fortaleza.
-- 👥 Gestión de usuarios con búsqueda en vivo y filtros combinables por rol y estado.
-- 📝 CRUD de tareas de ejemplo con permisos por operación + 4 Frames de demostración.
-- 🌱 **Menú inicial automático** al crear cada usuario, personalizable después y nunca sobrescrito.
-- 🎨 Diseño *glassmorphism* uniforme y adaptable a móviles.
+## Instalación
 
----
+1. Clonar el repositorio dentro del directorio servido por Apache, respetando la ruta `NRC30713-Web/Proyecto_pw`, ya que las rutas internas del sistema están ancladas a ese prefijo.
+2. Crear una base de datos llamada `proyecto_pw` y crear en ella las tablas descritas en la sección Base de Datos (el repositorio no incluye actualmente un archivo de exportación; debe generarse desde el entorno de desarrollo o crearse manualmente según esa estructura).
+3. Configurar las credenciales de conexión en `servidor/config.php` (host, puerto, nombre de base de datos, usuario y contraseña).
+4. Si el servidor Apache no usa el puerto 8080, ajustar `baseUrl` y `api` en `scripts/config.js`.
+5. Crear manualmente el primer usuario Administrador directamente en la tabla `pw_user` (con contraseña cifrada con bcrypt) y su rol correspondiente en `roles`, ya que el sistema no ofrece registro público de cuentas.
+6. Acceder a la aplicación desde el navegador en la ruta correspondiente al proyecto e iniciar sesión con esa cuenta.
 
-## 🛠️ Tecnologías utilizadas
-
-| Capa | Tecnología |
-|---|---|
-| Frontend | HTML5 · CSS3 (glassmorphism, diseño responsive) · JavaScript **vanilla** (sin frameworks ni librerías) |
-| Backend | PHP 7.3+ · PDO (sentencias preparadas) |
-| Base de datos | MySQL 8.0 / MariaDB |
-| Comunicación | `fetch` + JSON (un endpoint por operación) |
-| Seguridad | bcrypt · tokens de sesión · captcha canvas · RBAC |
-| Servidor | Apache (entorno de referencia: AppServ) |
-
----
-
-## 🏗️ Arquitectura
-
-Arquitectura cliente–servidor de tres capas con patrón **shell + frames**:
-
-```
-Navegador                          Servidor PHP                    MySQL
-┌─────────────────────┐            ┌─────────────────────┐         ┌──────────┐
-│ Shell (menú+topbar) │  fetch     │ Endpoint por         │  PDO   │ 11 tablas│
-│  └── iframe ────────┼──────────► │ operación:           ├──────► │ con FKs  │
-│       Frame actual  │   JSON     │ sesión → permiso →   │        │ íntegras │
-│                     │ ◄──────────┤ consulta → respuesta │ ◄──────┤          │
-└─────────────────────┘            └─────────────────────┘         └──────────┘
-```
-
-- **Vistas** (`paginas/`): una página HTML por Frame; el shell (`paginas/dashboard/index.html`) renderiza la estructura una sola vez y carga cada Frame en su marco interno.
-- **Controladores del cliente** (`scripts/`): un archivo JS por módulo + núcleo compartido (configuración, sesión, navegación/guardias, utilidades, validaciones).
-- **Lógica y acceso a datos** (`servidor/`): endpoints PHP que siguen el patrón `verificar sesión → verificar permiso → verificar disponibilidad del módulo → consulta PDO → respuesta JSON`.
-- **Utilidades compartidas del servidor**: `config.php` (conexión y autorización), `permisos/registro.php` (catálogo central de Frames y acciones) y `menu/semilla.php` (menú inicial).
-
----
-
-## 🧩 Funcionalidades
-
-| Módulo | Descripción | Acceso |
-|---|---|---|
-| **Inicio de sesión** | Credenciales + captcha, bloqueo por intentos, cambio de contraseña obligatorio en primer acceso | Visitante |
-| **Dashboard** | Saludo contextual, accesos rápidos, estadísticas (admin) o frase motivadora (usuarios) | Todos |
-| **Usuarios** | Listado con búsqueda y filtros; crear, editar y activar/desactivar cuentas | Lectura: todos · Escritura: admin |
-| **Roles** | Listado, creación y edición de roles; desactivar un rol bloquea a sus usuarios | Solo admin |
-| **Permisos** | Matriz de acceso a Frames + acciones internas por Frame habilitado, por rol | Solo admin |
-| **Configurar Menús** | Disponibilidad global de cada módulo del sistema | Solo admin |
-| **Menú** | Organizador personal con SuperMenus y drag & drop | Todos |
-| **Mi Perfil** | Ver Perfil y Cambiar Contraseña | Todos |
-| **Frame 1 — Tareas** | CRUD de ejemplo con permisos por operación | Según rol |
-| **Frames 2–5** | Pantallas de demostración del control de acceso | Según rol |
-
----
-
-## 🛡️ Sistema RBAC
-
-El control de acceso funciona en **cuatro piezas que se complementan**:
-
-1. **Roles** — cada usuario pertenece a un rol (`Admin`, `Rol1`…`Rol7`). El rol **Admin posee todos los permisos de forma implícita** y no es configurable.
-2. **Permisos (dos niveles)** — para cada rol, el Administrador define:
-   - *Nivel 1 — Acceso a Frames*: casilla **Habilitar** por pantalla. Sin ella, el Frame no aparece en el menú ni puede abrirse por ningún medio.
-   - *Nivel 2 — Acciones internas*: para cada Frame habilitado que tenga operaciones (crear/editar/eliminar), se autorizan individualmente. La interfaz oculta lo no permitido y **el servidor revalida cada operación**.
-3. **Configurar Menús** — interruptor global por módulo: un módulo deshabilitado desaparece para **todos** los usuarios (incluido el admin) hasta reactivarlo, sin perder permisos ni personalizaciones.
-4. **Menú personalizado** — sobre las opciones que el RBAC le concede, cada usuario organiza su menú con agrupaciones propias y orden libre (el Dashboard nunca se agrupa). La organización es individual y persiste entre sesiones.
-
-> El flujo completo: **Configurar Menús** decide si un módulo existe → **Permisos** decide qué rol lo usa y con qué operaciones → **Menú** decide cómo lo organiza visualmente cada usuario.
-
----
-
-## 🗄️ Base de datos
-
-- **Motor:** MySQL 8.0 (compatible con MariaDB) — base de datos `proyecto_pw`, 11 tablas con claves foráneas e integridad referencial completa.
-
-**Importar el esquema:**
-
-1. Abrir **phpMyAdmin** → pestaña *Importar*.
-2. Seleccionar el archivo `proyecto_pw.sql` y ejecutar.
-
-**Configurar la conexión** en [`servidor/config.php`](servidor/config.php):
-
-```php
-define('DB_HOST',    'localhost');
-define('DB_PORT',    '3306');
-define('DB_NAME',    'proyecto_pw');
-define('DB_USER',    'root');
-define('DB_PASS',    'su_contraseña');
-```
-
----
-
-## 🚀 Instalación
-
-Requisitos: **Apache + PHP 7.3+ + MySQL 8** (por ejemplo AppServ, XAMPP o WAMP).
-
-```bash
-# 1. Clonar el repositorio dentro del directorio web del servidor
-#    (la ruta debe quedar: <htdocs>/NRC30713-Web/Proyecto_pw)
-cd C:/AppServ/www/NRC30713-Web
-git clone https://github.com/itsdavx/Proyecto_pw.git
-```
-
-2. **Importar la base de datos** `proyecto_pw.sql` desde phpMyAdmin (sección anterior).
-3. **Configurar la conexión** en `servidor/config.php` (credenciales de MySQL) y, si el puerto de Apache no es `8080`, ajustar `baseUrl` y `api` en [`scripts/config.js`](scripts/config.js).
-4. **Abrir el proyecto** en el navegador:
-
-```
-http://localhost:8080/NRC30713-Web/Proyecto_pw/
-```
-
-5. **Iniciar sesión** con la cuenta administradora (`admin`) y comenzar a crear usuarios, roles y permisos.
-
-> ⚠️ Las rutas internas están ancladas al prefijo `/NRC30713-Web/Proyecto_pw/`, por lo que la carpeta debe conservar esa ubicación y nombre.
-
----
-
-## 📁 Estructura del proyecto
+## Estructura general del proyecto
 
 ```
 Proyecto_pw/
-├── index.html              # Redirección inicial al login
-├── estilos/                # CSS: base, login, shell y componentes
-├── imagenes/               # Recursos gráficos (fondo del sistema)
+├── index.html              Redirección inicial al login
+├── LICENSE
+├── estilos/                Hojas de estilo (base, login, shell, componentes)
+├── imagenes/                Recursos gráficos
 ├── paginas/
-│   ├── auth/               # Inicio de sesión
-│   ├── dashboard/          # Shell de navegación + pantalla de inicio
-│   ├── usuarios/           # Listado y formularios de usuarios
-│   ├── roles/              # Listado y formulario de roles
-│   ├── permisos/           # Matriz de permisos por rol
-│   ├── menu/               # Organizador personal + configuración global
-│   ├── perfil/             # Ver perfil y cambiar contraseña
-│   └── frames/             # Frames de ejemplo 1–5
-├── scripts/                # JS del cliente (núcleo + un controlador por módulo)
-├── servidor/               # Endpoints PHP (uno por operación) + librerías
-│   ├── auth/  usuarios/  roles/  permisos/  menu/  perfil/  dashboard/  tareas/
-│   └── config.php          # Conexión, sesión y autorización
-└── documentacion/          # IEEE 830 (LaTeX) + diagrama de casos de uso
+│   ├── auth/                Inicio de sesión
+│   ├── dashboard/           Shell de navegación e inicio
+│   ├── usuarios/            Listado y formularios de usuarios
+│   ├── roles/               Listado y formulario de roles
+│   ├── permisos/            Matriz de permisos por rol
+│   ├── menu/                Organizador personal y configuración global de menús
+│   ├── perfil/              Ver perfil y cambiar contraseña
+│   └── frames/              Frames de ejemplo (1 a 5)
+├── scripts/                 Lógica del cliente: núcleo compartido y un controlador por módulo
+├── servidor/                Endpoints PHP (uno por operación) organizados por módulo
+│   └── config.php           Conexión a la base de datos, sesión y autorización
+└── documentacion/           Especificación de requerimientos (IEEE 830) y diagrama de casos de uso
 ```
 
----
+## Base de datos
 
-## 📖 Manual rápido de uso
+Motor: MySQL 8.0, compatible con MariaDB. La base de datos `proyecto_pw` está compuesta por once tablas:
 
-| Quiero… | Cómo |
+| Tabla | Propósito |
 |---|---|
-| **Entrar al sistema** | Abrir la URL del proyecto, ingresar usuario, contraseña y el captcha. En el primer acceso se exige cambiar la contraseña. |
-| **Crear un usuario** | *Usuarios → + Nuevo Usuario* → completar datos y rol. El usuario nace con su menú inicial y contraseña temporal. |
-| **Crear un rol y darle permisos** | *Roles → + Nuevo Rol* → luego en *Permisos*, seleccionar el rol, habilitar sus Frames y marcar las operaciones permitidas → *Guardar Permisos*. |
-| **Deshabilitar un módulo en mantenimiento** | *Configurar Menús* → desmarcar la casilla *Activo* del módulo → *Guardar*. Nadie podrá verlo ni abrirlo hasta reactivarlo. |
-| **Organizar mi menú** | *Menú* → crear SuperMenus con *+ Nuevo SuperMenu* y arrastrar las opciones a gusto. Cada movimiento se guarda solo; *Guardar* refresca el menú lateral al instante. |
-| **Personalizar mi Dashboard** | En la tarjeta *Acceso rápido* → *⚙ Personalizar* → marcar/desmarcar accesos → *Guardar*. |
-| **Cambiar mi contraseña** | *Mi Perfil → Cambiar Contraseña* → ingresar la actual y la nueva (mínimo 8 caracteres, mayúscula, número y símbolo). |
-| **Probar el RBAC** | Entrar con un usuario de Rol1 o Rol2 al *Frame 1 — Tareas*: los botones disponibles cambian según las operaciones autorizadas al rol. |
+| `pw_user` | Cuentas de usuario: credenciales, datos personales, rol, estado y marca de primer acceso. |
+| `roles` | Roles del sistema (nombre único, descripción, estado). |
+| `permisos_rol` | Permisos otorgados a cada rol, como pares módulo-acción independientes. |
+| `menu` | Opciones de menú globales (ItemMenu): nombre, ícono, página que abren, módulo asociado y disponibilidad. |
+| `menu_super_usuario` | Agrupaciones personales (SuperMenus) creadas por cada usuario, con su orden y protección contra eliminación cuando corresponde. |
+| `menu_orden_usuario` | Organización personal del menú: posición de cada opción y agrupación a la que pertenece, por usuario. |
+| `accesos_ocultos_usuario` | Accesos rápidos que cada usuario decidió ocultar de su Dashboard. |
+| `sesiones` | Sesiones activas: token, usuario, origen y expiración. |
+| `login_intentos` | Registro de intentos fallidos de acceso, para el bloqueo temporal. |
+| `frases` | Frases motivadoras mostradas en el Dashboard, con autor y estado. |
+| `tareas` | Tareas del módulo de ejemplo (Frame 1), con su creador. |
 
----
+Las relaciones cuentan con claves foráneas con reglas de borrado explícitas: al eliminar un usuario o un rol se limpian en cascada (o se bloquea la operación, según el caso) sus datos asociados, sin dejar registros huérfanos.
 
-## 📚 Documentación
+## Módulos principales
 
-El proyecto incluye documentación formal completa en [`documentacion/`](documentacion/):
+- **Inicio de sesión**: autenticación con captcha, bloqueo por intentos fallidos y cambio de contraseña obligatorio en el primer acceso.
+- **Dashboard**: saludo contextual, accesos rápidos configurables y contenido diferenciado por rol (estadísticas o frase motivadora).
+- **Usuarios**: listado con búsqueda y filtros combinables por rol y estado; creación, edición, activación y desactivación de cuentas.
+- **Roles**: listado, creación, edición y eliminación de roles, con verificación de usuarios y permisos asociados antes de eliminar.
+- **Permisos**: matriz de acceso a cada Frame y de sus acciones internas, configurable de forma independiente por rol.
+- **Configurar Menús**: disponibilidad global de cada opción del sistema, además de su creación, edición y eliminación.
+- **Menú**: organización personal del menú de cada usuario mediante agrupaciones propias y arrastrar y soltar.
+- **Mi Perfil**: consulta de los datos propios y cambio de contraseña.
+- **Frame 1 (Tareas)**: CRUD de ejemplo con permisos independientes por operación.
+- **Frames 2 a 5**: pantallas de demostración del control de acceso por rol.
 
-- 📄 **Especificación de Requerimientos de Software (IEEE 830)** — proyecto LaTeX modular listo para Overleaf (`main.tex`): 20 RF, 10 RNF, 15 casos de uso, 23 reglas de negocio y anexos técnicos (modelo de datos, matriz de permisos, catálogo de módulos).
-- 📐 **Diagrama de Casos de Uso** — `diagrama-casos-de-uso.drawio`, importable directamente en [draw.io](https://app.diagrams.net).
-- 📘 **README** — este documento.
+## Sistema de permisos (RBAC)
 
----
+El control de acceso se resuelve en cuatro niveles complementarios:
 
-## 👨‍💻 Autor
+1. **Rol**: cada usuario pertenece a un rol. El rol Administrador posee todos los permisos de forma implícita y no se configura.
+2. **Permisos granulares**: por cada rol distinto del Administrador, se define el acceso a cada Frame y, de forma completamente independiente, cada una de sus acciones internas. Ninguna acción representa más de una operación; por ejemplo, en el módulo Usuarios, editar datos, desactivar una cuenta y cambiar el rol son tres permisos separados. El servidor valida cada operación contra su acción específica, sin depender de la interfaz.
+3. **Configurar Menús**: control global, independiente del rol, sobre si una opción del sistema está disponible. Una opción deshabilitada desaparece para todos los usuarios y no puede abrirse por ningún medio hasta reactivarla.
+4. **Menú personal**: sobre las opciones que los tres niveles anteriores permiten, cada usuario decide cómo organizarlas visualmente (agrupaciones y orden), sin afectar a los demás usuarios.
 
-**David Alejandro Bonilla Caiza**
+El catálogo de módulos y sus acciones se mantiene en un registro central del servidor, de modo que agregar un módulo nuevo solo requiere registrarlo ahí: la matriz de permisos y la configuración de menús lo incorporan automáticamente.
+
+## Documentación disponible
+
+El proyecto incluye documentación técnica en la carpeta `documentacion/`:
+
+- Especificación de Requerimientos de Software bajo el estándar IEEE 830, en un proyecto LaTeX modular (archivo principal `main.tex`), con requerimientos funcionales y no funcionales, casos de uso, reglas de negocio y anexos técnicos.
+- Diagrama de casos de uso en formato `.drawio`, importable directamente en draw.io (diagrams.net).
+
+## Autor
+
+David Alejandro Bonilla Caiza
 Ingeniería de Software
 Universidad de las Fuerzas Armadas ESPE
-
----
-
-## 📄 Licencia
-
-Este proyecto se distribuye bajo la **Licencia MIT** — ver el archivo [`LICENSE`](LICENSE) para más detalles.
-
----
-
-## ✅ Estado del proyecto
-
-**Completamente funcional y documentado.** Todos los módulos descritos están implementados, verificados y respaldados por la especificación IEEE 830 incluida en el repositorio.
