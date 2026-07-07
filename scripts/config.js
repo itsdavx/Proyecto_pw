@@ -1,7 +1,7 @@
 // Constantes y configuración global del sistema
 const APP = {
     nombre:         'Sistema Genérico',
-    version:        '1.0.0',
+    version:        '2.0.0',
     baseUrl:        'http://localhost:8080/NRC30713-Web/Proyecto_pw/',
     api:            'http://localhost:8080/NRC30713-Web/Proyecto_pw/servidor/',
 
@@ -59,9 +59,10 @@ const API = {
         estado:  APP.api + 'usuarios/estado.php',
     },
     roles: {
-        listar:  APP.api + 'roles/listar.php',
-        crear:   APP.api + 'roles/crear.php',
-        editar:  APP.api + 'roles/editar.php',
+        listar:   APP.api + 'roles/listar.php',
+        crear:    APP.api + 'roles/crear.php',
+        editar:   APP.api + 'roles/editar.php',
+        eliminar: APP.api + 'roles/eliminar.php',
     },
     permisos: {
         listar:  APP.api + 'permisos/listar.php',
@@ -77,6 +78,9 @@ const API = {
         superEliminar:  APP.api + 'menu/super_eliminar.php',
         configListar:   APP.api + 'menu/config_listar.php',
         configEstado:   APP.api + 'menu/config_estado.php',
+        configCrear:    APP.api + 'menu/config_crear.php',
+        configEditar:   APP.api + 'menu/config_editar.php',
+        configEliminar: APP.api + 'menu/config_eliminar.php',
     },
     tareas: {
         listar:   APP.api + 'tareas/listar.php',

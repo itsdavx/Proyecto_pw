@@ -39,6 +39,16 @@ const Validaciones = {
         return true;
     },
 
+    /* Validar ruta interna de un ItemMenu: debe iniciar con "/" */
+    ruta(inputEl) {
+        const v = inputEl.value.trim();
+        if (!/^\/[A-Za-z0-9_\-\/.]+$/.test(v)) {
+            this.mostrar(inputEl, 'La URL debe iniciar con "/" y contener solo letras, números, guiones, puntos y "/".');
+            return false;
+        }
+        return true;
+    },
+
     /* Validar email */
     email(inputEl) {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

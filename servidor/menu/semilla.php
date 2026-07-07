@@ -54,16 +54,19 @@ function sembrarMenuInicial(PDO $db, int $id_user, int $id_rol): void
             $porClave[$clave($it)] = $it;
         }
 
-        // SuperMenus iniciales y su contenido, en orden
+        // SuperMenus iniciales y su contenido, en orden.
+        // "Mi Perfil" es obligatorio: se marca protegido para que el
+        // usuario nunca pueda eliminarlo (si puede reorganizarlo y
+        // moverle o quitarle ItemMenu libremente).
         $grupos = [
-            ['nombre' => 'Mi Perfil', 'claves' => ['verperfil', 'cambiarpassword', 'menu']],
+            ['nombre' => 'Mi Perfil', 'claves' => ['verperfil', 'cambiarpassword', 'menu'], 'protegido' => true],
         ];
         if ($id_rol === 1) {
             $grupos[] = ['nombre' => 'Administración', 'claves' => ['roles', 'permisos', 'usuarios', 'configmenu']];
             $grupos[] = ['nombre' => 'Frames', 'claves' => ['frame1', 'frame2', 'frame3', 'frame4', 'frame5']];
         }
 
-        $insSuper = $db->prepare("INSERT INTO menu_super_usuario (id_user, nombre, orden) VALUES (?, ?, ?)");
+        $insSuper = $db->prepare("INSERT INTO menu_super_usuario (id_user, nombre, orden, protegido) VALUES (?, ?, ?, ?)");
         $insItem  = $db->prepare("REPLACE INTO menu_orden_usuario (id_user, id_menu, orden, id_super) VALUES (?, ?, ?, ?)");
 
         /* La raíz usa una secuencia de orden única donde ItemMenus y
@@ -86,7 +89,7 @@ function sembrarMenuInicial(PDO $db, int $id_user, int $id_rol): void
             }));
             if (empty($presentes)) { continue; }
 
-            $insSuper->execute([$id_user, $g['nombre'], $orden++]);
+            $insSuper->execute([$id_user, $g['nombre'], $orden++, !empty($g['protegido']) ? 1 : 0]);
             $idSuper = (int)$db->lastInsertId();
 
             $ordenItem = 1;

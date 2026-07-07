@@ -26,7 +26,7 @@ if ($esAdmin) {
 }
 $items = $stmt->fetchAll();
 
-$stmt = $db->prepare("SELECT id_super, nombre, orden FROM menu_super_usuario WHERE id_user = ? ORDER BY orden ASC");
+$stmt = $db->prepare("SELECT id_super, nombre, orden, protegido FROM menu_super_usuario WHERE id_user = ? ORDER BY orden ASC");
 $stmt->execute([$sesion['id_user']]);
 $supers = $stmt->fetchAll();
 

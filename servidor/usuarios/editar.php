@@ -30,6 +30,18 @@ if ($id_rol === 1 && $sesion['id_rol'] !== 1) {
 
 $db = getDB();
 
+// Cambiar el rol es una accion independiente: solo se exige el permiso
+// especifico si el rol enviado realmente difiere del que el usuario tiene.
+$stmt = $db->prepare("SELECT id_rol FROM pw_user WHERE id_user = ?");
+$stmt->execute([$id_user]);
+$actual = $stmt->fetch();
+if (!$actual) {
+    responder(false, 'Usuario no encontrado.');
+}
+if ((int)$actual['id_rol'] !== $id_rol) {
+    verificarPermiso($sesion['id_rol'], 'usuarios', 'cambiar_rol');
+}
+
 // Username unico excluyendo el propio usuario
 $stmt = $db->prepare("SELECT id_user FROM pw_user WHERE username = ? AND id_user != ?");
 $stmt->execute([$username, $id_user]);

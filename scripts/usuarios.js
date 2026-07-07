@@ -40,16 +40,17 @@ function renderizarTablaUsuarios(lista) {
     if (!tbody) return;
 
     if (!lista || lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="tabla-vacia">No hay usuarios registrados.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="tabla-vacia">No hay usuarios registrados.</td></tr>`;
         return;
     }
 
     const puedeEditar  = Sesion.tienePermiso('usuarios', 'editar');
-    const puedeEstado  = Sesion.tienePermiso('usuarios', 'editar');
+    const puedeEstado  = Sesion.tienePermiso('usuarios', 'desactivar');
 
     tbody.innerHTML = lista.map(u => `
         <tr data-buscar="${esc(u.username)} ${esc(u.nombre)} ${esc(u.email)} ${esc(u.rol)}"
             data-rol="${esc(u.id_rol)}" data-estado="${u.estado == 1 ? 1 : 0}">
+            <td class="col-num"></td>
             <td>${esc(u.id_user)}</td>
             <td>
                 <strong>${esc(u.nombre)}</strong>
@@ -103,6 +104,7 @@ function aplicarFiltros() {
             && (est === '' || tr.dataset.estado === est);
         tr.style.display = coincide ? '' : 'none';
     });
+    renumerarFilas(document.getElementById('tbodyUsuarios'));
 }
 
 function irEditar(id) {
@@ -159,7 +161,14 @@ async function precargarUsuario(id) {
         document.getElementById('txtNombre').value   = u.nombre;
         document.getElementById('txtUsername').value = u.username;
         document.getElementById('txtEmail').value    = u.email;
-        document.getElementById('selRol').value      = u.id_rol;
+
+        const selRol = document.getElementById('selRol');
+        selRol.value = u.id_rol;
+        // Cambiar el rol es una acción independiente: sin ese permiso,
+        // el campo queda visible pero bloqueado en su valor actual.
+        if (!Sesion.tienePermiso('usuarios', 'cambiar_rol')) {
+            selRol.disabled = true;
+        }
 
         const h = document.getElementById('hdnIdUser');
         if (h) h.value = id;

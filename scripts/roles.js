@@ -29,19 +29,33 @@ async function cargarRoles() {
     }
 }
 
+let _rolesData = [];
+
 function renderizarTablaRoles(lista) {
     const tbody = document.getElementById('tbodyRoles');
     if (!tbody) return;
 
+    _rolesData = lista || [];
+
     if (!lista || lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="tabla-vacia">No hay roles registrados.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="tabla-vacia">No hay roles registrados.</td></tr>`;
         return;
     }
 
-    const puedeEditar = Sesion.tienePermiso('roles', 'editar');
+    const puedeEditar   = Sesion.tienePermiso('roles', 'editar');
+    const puedeEliminar = Sesion.tienePermiso('roles', 'eliminar');
 
-    tbody.innerHTML = lista.map(r => `
+    tbody.innerHTML = lista.map(r => {
+        const acciones = [
+            (puedeEditar && r.id_rol != 1)
+                ? `<button class="btn btn-sm btn-outline" onclick="irEditarRol(${r.id_rol})">Editar</button>` : '',
+            (puedeEliminar && r.id_rol != 1)
+                ? `<button class="btn btn-sm btn-danger" onclick="eliminarRol(${r.id_rol})">Eliminar</button>` : '',
+        ].filter(Boolean).join('');
+
+        return `
         <tr data-buscar="${esc(r.nombre_rol)} ${esc(r.descripcion || '')}">
+            <td class="col-num"></td>
             <td>${esc(r.id_rol)}</td>
             <td><strong>${esc(r.nombre_rol)}</strong></td>
             <td>${esc(r.descripcion || '—')}</td>
@@ -51,12 +65,29 @@ function renderizarTablaRoles(lista) {
                 </span>
             </td>
             <td>
-                ${puedeEditar && r.id_rol != 1
-                    ? `<button class="btn btn-sm btn-outline" onclick="irEditarRol(${r.id_rol})">Editar</button>`
-                    : '<span class="text-muted">—</span>'}
+                ${acciones ? `<div class="btn-group">${acciones}</div>` : '<span class="text-muted">—</span>'}
             </td>
-        </tr>
-    `).join('');
+        </tr>`;
+    }).join('');
+
+    renumerarFilas(tbody);
+}
+
+function eliminarRol(id) {
+    const rol = _rolesData.find(r => r.id_rol == id);
+    if (!rol) return;
+
+    confirmarEliminacionCritica({
+        tipo:   'Rol',
+        nombre: rol.nombre_rol,
+        accion: async () => {
+            try {
+                const r = await postJSON(API.roles.eliminar, { token: Sesion.token(), id_rol: id });
+                if (r.ok) { mostrarAlerta(r.msg, 'ok'); await cargarRoles(); }
+                else mostrarAlerta(r.msg, 'error');
+            } catch { mostrarAlerta('Error de conexión.', 'error'); }
+        },
+    });
 }
 
 function irEditarRol(id) {
@@ -68,6 +99,7 @@ function filtrarRoles() {
     document.querySelectorAll('#tbodyRoles tr[data-buscar]').forEach(tr => {
         tr.style.display = tr.dataset.buscar.toLowerCase().includes(q) ? '' : 'none';
     });
+    renumerarFilas(document.getElementById('tbodyRoles'));
 }
 
 /* ── Formulario Crear/Editar rol ─────────────────────────────── */

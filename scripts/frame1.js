@@ -40,15 +40,16 @@ function renderizarTablaTareas(lista) {
     _tareas = lista || [];
 
     if (!lista || lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="tabla-vacia">No hay tareas registradas.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="tabla-vacia">No hay tareas registradas.</td></tr>`;
         return;
     }
 
     const puedeEditar   = Sesion.tienePermiso('frame1', 'editar');
     const puedeEliminar = Sesion.tienePermiso('frame1', 'eliminar');
 
-    tbody.innerHTML = lista.map(t => `
+    tbody.innerHTML = lista.map((t, i) => `
         <tr>
+            <td class="col-num">${i + 1}</td>
             <td>${esc(t.id_tarea)}</td>
             <td><strong>${esc(t.titulo)}</strong></td>
             <td>${esc(t.descripcion || '—')}</td>
@@ -117,11 +118,19 @@ async function submitTarea(e) {
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
 }
 
-async function eliminarTarea(id) {
-    if (!confirmar('¿Eliminar esta tarea?')) return;
-    try {
-        const r = await postJSON(API.tareas.eliminar, { token: Sesion.token(), id_tarea: id });
-        if (r.ok) { mostrarAlerta(r.msg, 'ok'); await cargarTareas(); }
-        else mostrarAlerta(r.msg, 'error');
-    } catch { mostrarAlerta('Error de conexión.', 'error'); }
+function eliminarTarea(id) {
+    const tarea = _tareas.find(t => t.id_tarea == id);
+    if (!tarea) return;
+
+    confirmarEliminacionCritica({
+        tipo:   'Tarea',
+        nombre: tarea.titulo,
+        accion: async () => {
+            try {
+                const r = await postJSON(API.tareas.eliminar, { token: Sesion.token(), id_tarea: id });
+                if (r.ok) { mostrarAlerta(r.msg, 'ok'); await cargarTareas(); }
+                else mostrarAlerta(r.msg, 'error');
+            } catch { mostrarAlerta('Error de conexión.', 'error'); }
+        },
+    });
 }

@@ -96,3 +96,18 @@ function esc(txt) {
 function confirmar(mensaje) {
     return window.confirm(mensaje);
 }
+
+/* ── Numeración visual (columna N°) ──────────────────────────────
+   Renumera consecutivamente (1, 2, 3...) la celda `.col-num` de
+   cada fila VISIBLE de una tabla. Es puramente de interfaz: no
+   se guarda en la base de datos ni sustituye al ID real. Debe
+   invocarse de nuevo tras cualquier render, filtro o búsqueda. */
+function renumerarFilas(tbody) {
+    if (!tbody) return;
+    let n = 0;
+    tbody.querySelectorAll('tr').forEach(tr => {
+        if (tr.style.display === 'none') return;
+        const celda = tr.querySelector('td.col-num');
+        if (celda) celda.textContent = ++n;
+    });
+}

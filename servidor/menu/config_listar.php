@@ -8,7 +8,7 @@ verificarPermiso($sesion['id_rol'], 'configmenu', 'leer');
 
 $db   = getDB();
 $stmt = $db->prepare("
-    SELECT id_menu, nombre, icono, modulo, estado
+    SELECT id_menu, nombre, icono, url, modulo, estado
     FROM   menu
     WHERE  url IS NOT NULL
     ORDER  BY id_menu ASC

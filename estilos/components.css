@@ -140,6 +140,13 @@
 
 .tabla tbody tr:hover { background: #f8fafc; }
 
+/* Columna N°: posición visual consecutiva, no es el ID real */
+.tabla td.col-num {
+    width:      2.5rem;
+    text-align: center;
+    color:      var(--text-muted);
+}
+
 .tabla-vacia {
     text-align:  center;
     color:       var(--text-muted);
@@ -342,6 +349,41 @@ select.form-control { cursor: pointer; }
     display:      flex;
     gap:          .8rem;
     justify-content: flex-end;
+}
+
+/* ── Modal de confirmación crítica (eliminaciones irreversibles) ── */
+.modal-peligro {
+    border-top: 4px solid var(--danger);
+}
+
+.modal-peligro .modal-body p {
+    margin-bottom: .7rem;
+}
+
+.ce-elemento {
+    background:    var(--danger-light);
+    border:        1px solid #fca5a5;
+    border-radius: var(--radius);
+    padding:       .6rem .9rem;
+    font-weight:   600;
+    color:         var(--text-main);
+}
+
+.ce-advertencia {
+    color:       var(--danger);
+    font-weight: 700;
+}
+
+.ce-nombre-esperado {
+    display:        inline-block;
+    font-family:    monospace;
+    font-weight:    700;
+    font-size:      .95rem;
+    background:     #f8fafc;
+    border:         1.5px dashed var(--border);
+    border-radius:  var(--radius);
+    padding:        .45rem .8rem;
+    user-select:    all;
 }
 
 /* ── Tarjetas de estadísticas (dashboard) ────────────────── */

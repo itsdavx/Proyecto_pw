@@ -4,7 +4,7 @@ require_once dirname(__DIR__) . '/config.php';
 $input  = getInput();
 $token  = $input['token']  ?? '';
 $sesion = verificarSesion($token);
-verificarPermiso($sesion['id_rol'], 'usuarios', 'editar');
+verificarPermiso($sesion['id_rol'], 'usuarios', 'desactivar');
 
 $id_user = (int)($input['id_user'] ?? 0);
 

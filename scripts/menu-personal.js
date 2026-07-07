@@ -16,6 +16,14 @@ async function iniciarMenuPersonal() {
     if (!ok) return;
     if (!Router.verificarPermiso('menu', 'leer')) return;
 
+    // Cada botón consulta únicamente su propio permiso, independiente del resto
+    if (!Sesion.tienePermiso('menu', 'crear')) {
+        document.getElementById('btnNuevoSuper')?.classList.add('d-none');
+    }
+    if (!Sesion.tienePermiso('menu', 'reordenar')) {
+        document.getElementById('btnGuardarMenu')?.classList.add('d-none');
+    }
+
     document.getElementById('btnNuevoSuper')?.addEventListener('click', crearSuper);
     document.getElementById('btnGuardarMenu')?.addEventListener('click', guardarMenu);
     await cargarMiMenu();
@@ -54,8 +62,13 @@ function renderOrganizador() {
     const cont = document.getElementById('organizadorMenu');
     if (!cont) return;
 
+    // Cada control consulta únicamente su propio permiso, de forma independiente
+    const puedeReordenar     = Sesion.tienePermiso('menu', 'reordenar');
+    const puedeRenombrar     = Sesion.tienePermiso('menu', 'renombrar');
+    const puedeEliminarSuper = Sesion.tienePermiso('menu', 'eliminar');
+
     const itemLi = it => `
-        <li class="om-item" draggable="true" data-item="${it.id_menu}">
+        <li class="om-item" draggable="${puedeReordenar}" data-item="${it.id_menu}">
             <span class="om-arrastre">⠿</span>
             <span class="nav-icono">${resolverIcono(it.icono)}</span>
             <span>${esc(it.nombre)}</span>
@@ -66,11 +79,13 @@ function renderOrganizador() {
             <ul class="om-zona om-raiz" id="zonaRaiz">
                 ${_raiz.map(n => n.tipo === 'item' ? itemLi(n.item) : `
                 <li class="om-super-nodo" data-super="${n.super.id_super}">
-                    <div class="om-super-cab" draggable="true" data-superdrag="${n.super.id_super}">
+                    <div class="om-super-cab" draggable="${puedeReordenar}" data-superdrag="${n.super.id_super}">
                         <span class="card-titulo"><span class="om-arrastre">⠿</span> ${esc(n.super.nombre)}</span>
                         <div class="btn-group">
-                            <button class="btn btn-sm btn-outline" data-renombrar="${n.super.id_super}">✎ Renombrar</button>
-                            ${n.items.length === 0
+                            ${puedeRenombrar
+                                ? `<button class="btn btn-sm btn-outline" data-renombrar="${n.super.id_super}">✎ Renombrar</button>`
+                                : ''}
+                            ${(puedeEliminarSuper && Number(n.super.protegido) !== 1)
                                 ? `<button class="btn btn-sm btn-danger" data-eliminar="${n.super.id_super}">Eliminar</button>`
                                 : ''}
                         </div>
@@ -237,14 +252,20 @@ async function guardarMenu() {
         if (!r.ok) { mostrarAlerta(r.msg, 'error'); return; }
 
         await cargarMiMenu();
+        await _refrescarShellMenu();
+        mostrarAlerta('Menú guardado y actualizado.', 'ok');
+    } catch { mostrarAlerta('Error al guardar el menú.', 'error'); }
+}
 
+/* Refleja los cambios en el sidebar del shell de inmediato, sin cerrar sesión */
+async function _refrescarShellMenu() {
+    try {
         const p = window.parent;
         if (p !== window && typeof p.cargarMenuYRenderizar === 'function') {
             await p.cargarMenuYRenderizar(document.title.split('—')[0].trim());
             p.Shell?.marcarActivo?.(window.location.pathname);
         }
-        mostrarAlerta('Menú guardado y actualizado.', 'ok');
-    } catch { mostrarAlerta('Error al guardar el menú.', 'error'); }
+    } catch { /* fuera del shell no hay sidebar que refrescar */ }
 }
 
 async function crearSuper() {
@@ -268,11 +289,25 @@ async function renombrarSuper(id) {
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
 }
 
-async function eliminarSuper(id) {
-    if (!confirmar('¿Eliminar este SuperMenu vacío?')) return;
-    try {
-        const r = await postJSON(API.menu.superEliminar, { token: Sesion.token(), id_super: id });
-        if (r.ok) { mostrarAlerta(r.msg, 'ok'); await cargarMiMenu(); }
-        else mostrarAlerta(r.msg, 'error');
-    } catch { mostrarAlerta('Error de conexión.', 'error'); }
+function eliminarSuper(id) {
+    const nodo = _raiz.find(n => n.tipo === 'super' && n.super.id_super === id);
+    if (!nodo) return;
+
+    confirmarEliminacionCritica({
+        tipo:        'SuperMenu',
+        nombre:      nodo.super.nombre,
+        advertencia: 'Sus elementos pasarán a Elementos sin agrupar; no se eliminarán.',
+        accion: async () => {
+            try {
+                const r = await postJSON(API.menu.superEliminar, { token: Sesion.token(), id_super: id });
+                if (r.ok) {
+                    mostrarAlerta(r.msg, 'ok');
+                    await cargarMiMenu();
+                    await _refrescarShellMenu();
+                } else {
+                    mostrarAlerta(r.msg, 'error');
+                }
+            } catch { mostrarAlerta('Error de conexión.', 'error'); }
+        },
+    });
 }
