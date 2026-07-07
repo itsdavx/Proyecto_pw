@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 07-07-2026 a las 14:27:12
+-- Tiempo de generación: 07-07-2026 a las 15:23:53
 -- Versión del servidor: 8.0.17
 -- Versión de PHP: 7.3.10
 
@@ -307,13 +307,6 @@ CREATE TABLE `sesiones` (
   `expires_at` datetime NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Volcado de datos para la tabla `sesiones`
---
-
-INSERT INTO `sesiones` (`token`, `id_user`, `ip`, `expires_at`, `created_at`) VALUES
-('d81136a4a22d6fafb281bf49e70719f49adfb643c9d415466c2b2c7c29d0225f', 1, '::1', '2026-07-07 14:49:09', '2026-07-07 08:49:09');
 
 -- --------------------------------------------------------
 

@@ -29,11 +29,25 @@ const Router = {
         return true;
     },
 
-    /* Llamar en la página de login: si ya está autenticado → dashboard */
+    /* Llamar en la página de login: si ya está autenticado → dashboard.
+       Devuelve true si redirigió (la página de login no debe seguir
+       inicializándose en ese caso). */
     async redirigirSiAutenticado() {
-        if (!Sesion.activa()) return;
+        if (!Sesion.activa()) return false;
         const ok = await Sesion.verificar();
-        if (ok) window.location.replace(RUTAS.dashboard);
+        if (ok) { window.location.replace(RUTAS.dashboard); return true; }
+        return false;
+    },
+
+    /* Oculta la ruta real de la página superior (login, shell o cambio
+       de contraseña obligatorio) para que la barra de direcciones
+       siempre muestre la raíz del proyecto. No aplica dentro del frame
+       del shell: ahí la ruta real de cada módulo sigue siendo necesaria
+       para sincronizar el ítem activo y el refresco (ver shell.js). */
+    enmascarar() {
+        if (window.self !== window.top) return;
+        const actual = window.location.pathname + window.location.search;
+        if (actual !== RUTAS.base) history.replaceState(null, '', RUTAS.base);
     },
 
     /* Verificar permiso para acceder a un módulo; si no tiene → dashboard.

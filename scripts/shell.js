@@ -7,10 +7,12 @@
 const Shell = {
 
     frame: null,
+    _CLAVE_RUTA: 'shell_ruta_actual',
 
     async iniciar() {
         const ok = await Router.proteger();
         if (!ok) return;
+        Router.enmascarar();
 
         this.frame = document.getElementById('frameContenido');
 
@@ -29,9 +31,11 @@ const Shell = {
 
         this.frame.addEventListener('load', () => this._alCargarFrame());
 
-        /* Página inicial: hash de la URL (permite refrescar sin perder
-           la sección actual) o la página de inicio del dashboard */
-        let inicial = decodeURIComponent((window.location.hash || '').replace(/^#/, ''));
+        /* Página inicial: última sección guardada (permite refrescar sin
+           perder la sección actual) o la página de inicio del dashboard.
+           Se guarda en sessionStorage y no en la URL para que la barra
+           de direcciones nunca muestre rutas internas. */
+        let inicial = sessionStorage.getItem(this._CLAVE_RUTA);
         if (!this._esRutaInterna(inicial)) inicial = RUTAS.dashboardInicio;
         this.cargar(inicial);
     },
@@ -77,11 +81,11 @@ const Shell = {
         if (el && titulo) el.textContent = titulo;
         if (doc.title) document.title = doc.title;
 
-        /* Sincronizar ítem activo y hash (la navegación también puede
-           originarse con enlaces dentro del propio frame) */
+        /* Sincronizar ítem activo y última ruta (la navegación también
+           puede originarse con enlaces dentro del propio frame) */
         const rutaFrame = doc.location.pathname + doc.location.search;
         this.marcarActivo(rutaFrame);
-        history.replaceState(null, '', '#' + rutaFrame);
+        sessionStorage.setItem(this._CLAVE_RUTA, rutaFrame);
     },
 
     marcarActivo(url) {

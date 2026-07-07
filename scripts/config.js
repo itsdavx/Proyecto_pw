@@ -26,6 +26,7 @@ const APP = {
 
 // Rutas relativas a cada página HTML
 const RUTAS = {
+    base:            '/NRC30713/Proyecto_pw/',
     login:           '/NRC30713/Proyecto_pw/paginas/auth/frmLogin.html',
     dashboard:       '/NRC30713/Proyecto_pw/paginas/dashboard/index.html',
     dashboardInicio: '/NRC30713/Proyecto_pw/paginas/dashboard/inicio.html',

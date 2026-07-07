@@ -5,6 +5,7 @@
 async function iniciarCambiarPassword() {
     const ok = await Router.proteger();
     if (!ok) return;
+    Router.enmascarar();
 
     const user = Sesion.usuario();
 

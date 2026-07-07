@@ -220,7 +220,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const form = document.getElementById('formLogin');
     if (!form) return; // auth.js se incluye en todas las páginas; aquí solo ejecuta en login
 
-    await Router.redirigirSiAutenticado();
+    const redirigido = await Router.redirigirSiAutenticado();
+    if (redirigido) return;
+    Router.enmascarar();
+
     leerBloqueo();
     actualizarUiBloqueo();
     generarCaptcha();
