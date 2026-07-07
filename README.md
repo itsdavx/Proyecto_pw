@@ -44,11 +44,10 @@ Cada usuario, además, organiza libremente su propio menú de navegación (agrup
 ## Instalación
 
 1. Clonar el repositorio dentro del directorio servido por Apache, respetando la ruta `NRC30713-Web/Proyecto_pw`, ya que las rutas internas del sistema están ancladas a ese prefijo.
-2. Crear una base de datos llamada `proyecto_pw` y crear en ella las tablas descritas en la sección Base de Datos (el repositorio no incluye actualmente un archivo de exportación; debe generarse desde el entorno de desarrollo o crearse manualmente según esa estructura).
+2. Crear una base de datos llamada `proyecto_pw` e importar en ella el script `database/proyecto_pw.sql`, que incluye la estructura completa descrita en la sección Base de Datos junto con el usuario Administrador y el catálogo de menús, permisos y frases motivadoras listos para usar.
 3. Configurar las credenciales de conexión en `servidor/config.php` (host, puerto, nombre de base de datos, usuario y contraseña).
 4. Si el servidor Apache no usa el puerto 8080, ajustar `baseUrl` y `api` en `scripts/config.js`.
-5. Crear manualmente el primer usuario Administrador directamente en la tabla `pw_user` (con contraseña cifrada con bcrypt) y su rol correspondiente en `roles`, ya que el sistema no ofrece registro público de cuentas.
-6. Acceder a la aplicación desde el navegador en la ruta correspondiente al proyecto e iniciar sesión con esa cuenta.
+5. Acceder a la aplicación desde el navegador en la ruta correspondiente al proyecto e iniciar sesión con el usuario Administrador incluido en el script (el sistema no ofrece registro público de cuentas; para producción, cambiar su contraseña por defecto en el primer acceso).
 
 ## Estructura general del proyecto
 
@@ -56,6 +55,7 @@ Cada usuario, además, organiza libremente su propio menú de navegación (agrup
 Proyecto_pw/
 ├── index.html              Redirección inicial al login
 ├── LICENSE
+├── database/                Script de importación de la base de datos (estructura y datos base)
 ├── estilos/                Hojas de estilo (base, login, shell, componentes)
 ├── imagenes/                Recursos gráficos
 ├── paginas/
@@ -92,6 +92,8 @@ Motor: MySQL 8.0, compatible con MariaDB. La base de datos `proyecto_pw` está c
 | `tareas` | Tareas del módulo de ejemplo (Frame 1), con su creador. |
 
 Las relaciones cuentan con claves foráneas con reglas de borrado explícitas: al eliminar un usuario o un rol se limpian en cascada (o se bloquea la operación, según el caso) sus datos asociados, sin dejar registros huérfanos.
+
+El script de importación (`database/proyecto_pw.sql`) crea las once tablas con sus índices y restricciones, e incluye únicamente los datos base de una instalación nueva: el rol Administrador con todos los permisos, el usuario Administrador, el catálogo completo de menús y veinte frases motivadoras.
 
 ## Módulos principales
 
