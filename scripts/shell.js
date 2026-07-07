@@ -53,7 +53,7 @@ const Shell = {
         try {
             const u = new URL(ruta, window.location.origin);
             return u.origin === window.location.origin
-                && u.pathname.startsWith('/NRC30713-Web/Proyecto_pw/paginas/');
+                && u.pathname.startsWith('/NRC30713/Proyecto_pw/paginas/');
         } catch { return false; }
     },
 

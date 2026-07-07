@@ -2,8 +2,8 @@
 const APP = {
     nombre:         'Sistema Genérico',
     version:        '2.0.0',
-    baseUrl:        'http://localhost:8080/NRC30713-Web/Proyecto_pw/',
-    api:            'http://localhost:8080/NRC30713-Web/Proyecto_pw/servidor/',
+    baseUrl:        'http://localhost:8080/NRC30713/Proyecto_pw/',
+    api:            'http://localhost:8080/NRC30713/Proyecto_pw/servidor/',
 
     // Claves de almacenamiento en sessionStorage
     keys: {
@@ -26,17 +26,17 @@ const APP = {
 
 // Rutas relativas a cada página HTML
 const RUTAS = {
-    login:           '/NRC30713-Web/Proyecto_pw/paginas/auth/frmLogin.html',
-    dashboard:       '/NRC30713-Web/Proyecto_pw/paginas/dashboard/index.html',
-    dashboardInicio: '/NRC30713-Web/Proyecto_pw/paginas/dashboard/inicio.html',
-    usuarios:        '/NRC30713-Web/Proyecto_pw/paginas/usuarios/index.html',
-    usuariosCrear:   '/NRC30713-Web/Proyecto_pw/paginas/usuarios/frmCrear.html',
-    usuariosEditar:  '/NRC30713-Web/Proyecto_pw/paginas/usuarios/frmEditar.html',
-    roles:           '/NRC30713-Web/Proyecto_pw/paginas/roles/index.html',
-    rolesCrear:      '/NRC30713-Web/Proyecto_pw/paginas/roles/frmCrear.html',
-    permisos:        '/NRC30713-Web/Proyecto_pw/paginas/permisos/index.html',
-    menu:            '/NRC30713-Web/Proyecto_pw/paginas/menu/index.html',
-    cambiarPassword: '/NRC30713-Web/Proyecto_pw/paginas/perfil/frmCambiarPassword.html',
+    login:           '/NRC30713/Proyecto_pw/paginas/auth/frmLogin.html',
+    dashboard:       '/NRC30713/Proyecto_pw/paginas/dashboard/index.html',
+    dashboardInicio: '/NRC30713/Proyecto_pw/paginas/dashboard/inicio.html',
+    usuarios:        '/NRC30713/Proyecto_pw/paginas/usuarios/index.html',
+    usuariosCrear:   '/NRC30713/Proyecto_pw/paginas/usuarios/frmCrear.html',
+    usuariosEditar:  '/NRC30713/Proyecto_pw/paginas/usuarios/frmEditar.html',
+    roles:           '/NRC30713/Proyecto_pw/paginas/roles/index.html',
+    rolesCrear:      '/NRC30713/Proyecto_pw/paginas/roles/frmCrear.html',
+    permisos:        '/NRC30713/Proyecto_pw/paginas/permisos/index.html',
+    menu:            '/NRC30713/Proyecto_pw/paginas/menu/index.html',
+    cambiarPassword: '/NRC30713/Proyecto_pw/paginas/perfil/frmCambiarPassword.html',
 };
 
 // Endpoints PHP (solo operaciones de BD)

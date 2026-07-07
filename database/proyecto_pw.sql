@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 07-07-2026 a las 14:13:54
+-- Tiempo de generación: 07-07-2026 a las 14:27:12
 -- Versión del servidor: 8.0.17
 -- Versión de PHP: 7.3.10
 
@@ -125,19 +125,19 @@ CREATE TABLE `menu` (
 --
 
 INSERT INTO `menu` (`id_menu`, `nombre`, `icono`, `url`, `modulo`, `orden`, `estado`) VALUES
-(1, 'Dashboard', 'fa-gauge', '/NRC30713-Web/Proyecto_pw/paginas/dashboard/index.html', 'dashboard', 1, 1),
-(2, 'Usuarios', 'fa-users', '/NRC30713-Web/Proyecto_pw/paginas/usuarios/index.html', 'usuarios', 2, 1),
-(3, 'Roles', 'fa-id-badge', '/NRC30713-Web/Proyecto_pw/paginas/roles/index.html', 'roles', 2, 1),
-(4, 'Permisos', 'fa-lock', '/NRC30713-Web/Proyecto_pw/paginas/permisos/index.html', 'permisos', 3, 1),
-(5, 'Menu', 'fa-bars', '/NRC30713-Web/Proyecto_pw/paginas/menu/index.html', 'menu', 4, 1),
-(6, 'Cambiar Password', 'fa-key', '/NRC30713-Web/Proyecto_pw/paginas/perfil/frmCambiarPassword.html', 'perfil', 1, 1),
-(7, 'Ver Perfil', 'fa-circle-user', '/NRC30713-Web/Proyecto_pw/paginas/perfil/frmVerPerfil.html', 'perfil', 0, 1),
-(8, 'Frame 1', 'fa-list', '/NRC30713-Web/Proyecto_pw/paginas/frames/frame1.html', 'frame1', 4, 1),
-(9, 'Frame 2', 'fa-chart-bar', '/NRC30713-Web/Proyecto_pw/paginas/frames/frame2.html', 'frame2', 5, 1),
-(10, 'Frame 3', 'fa-chart-bar', '/NRC30713-Web/Proyecto_pw/paginas/frames/frame3.html', 'frame3', 6, 1),
-(11, 'Frame 4', 'fa-chart-bar', '/NRC30713-Web/Proyecto_pw/paginas/frames/frame4.html', 'frame4', 7, 1),
-(12, 'Frame 5', 'fa-chart-bar', '/NRC30713-Web/Proyecto_pw/paginas/frames/frame5.html', 'frame5', 8, 1),
-(13, 'Configurar Menús', 'fa-gear', '/NRC30713-Web/Proyecto_pw/paginas/menu/configurar.html', 'configmenu', 9, 1);
+(1, 'Dashboard', 'fa-gauge', '/NRC30713/Proyecto_pw/paginas/dashboard/index.html', 'dashboard', 1, 1),
+(2, 'Usuarios', 'fa-users', '/NRC30713/Proyecto_pw/paginas/usuarios/index.html', 'usuarios', 2, 1),
+(3, 'Roles', 'fa-id-badge', '/NRC30713/Proyecto_pw/paginas/roles/index.html', 'roles', 2, 1),
+(4, 'Permisos', 'fa-lock', '/NRC30713/Proyecto_pw/paginas/permisos/index.html', 'permisos', 3, 1),
+(5, 'Menu', 'fa-bars', '/NRC30713/Proyecto_pw/paginas/menu/index.html', 'menu', 4, 1),
+(6, 'Cambiar Password', 'fa-key', '/NRC30713/Proyecto_pw/paginas/perfil/frmCambiarPassword.html', 'perfil', 1, 1),
+(7, 'Ver Perfil', 'fa-circle-user', '/NRC30713/Proyecto_pw/paginas/perfil/frmVerPerfil.html', 'perfil', 0, 1),
+(8, 'Frame 1', 'fa-list', '/NRC30713/Proyecto_pw/paginas/frames/frame1.html', 'frame1', 4, 1),
+(9, 'Frame 2', 'fa-chart-bar', '/NRC30713/Proyecto_pw/paginas/frames/frame2.html', 'frame2', 5, 1),
+(10, 'Frame 3', 'fa-chart-bar', '/NRC30713/Proyecto_pw/paginas/frames/frame3.html', 'frame3', 6, 1),
+(11, 'Frame 4', 'fa-chart-bar', '/NRC30713/Proyecto_pw/paginas/frames/frame4.html', 'frame4', 7, 1),
+(12, 'Frame 5', 'fa-chart-bar', '/NRC30713/Proyecto_pw/paginas/frames/frame5.html', 'frame5', 8, 1),
+(13, 'Configurar Menús', 'fa-gear', '/NRC30713/Proyecto_pw/paginas/menu/configurar.html', 'configmenu', 9, 1);
 
 -- --------------------------------------------------------
 

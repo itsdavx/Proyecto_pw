@@ -43,7 +43,7 @@ Cada usuario, además, organiza libremente su propio menú de navegación (agrup
 
 ## Instalación
 
-1. Clonar el repositorio dentro del directorio servido por Apache, respetando la ruta `NRC30713-Web/Proyecto_pw`, ya que las rutas internas del sistema están ancladas a ese prefijo.
+1. Clonar el repositorio dentro del directorio servido por Apache, respetando la ruta `NRC30713/Proyecto_pw`, ya que las rutas internas del sistema están ancladas a ese prefijo.
 2. Crear una base de datos llamada `proyecto_pw` e importar en ella el script `database/proyecto_pw.sql`, que incluye la estructura completa descrita en la sección Base de Datos junto con el usuario Administrador y el catálogo de menús, permisos y frases motivadoras listos para usar.
 3. Configurar las credenciales de conexión en `servidor/config.php` (host, puerto, nombre de base de datos, usuario y contraseña).
 4. Si el servidor Apache no usa el puerto 8080, ajustar `baseUrl` y `api` en `scripts/config.js`.
