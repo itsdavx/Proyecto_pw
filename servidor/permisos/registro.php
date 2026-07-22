@@ -41,14 +41,24 @@ function obtenerRegistroFrames(): array
         ['modulo' => 'perfil', 'nombre' => 'Mi Perfil', 'acciones' => [
             ['accion' => 'editar', 'nombre' => 'Cambiar contraseña'],
         ]],
-        ['modulo' => 'frame1', 'nombre' => 'Frame 1 — Tareas', 'acciones' => [
-            ['accion' => 'crear',    'nombre' => 'Guardar tarea'],
-            ['accion' => 'editar',   'nombre' => 'Editar tarea'],
-            ['accion' => 'eliminar', 'nombre' => 'Eliminar tarea'],
+        // Historial de solo lectura: el acceso se controla con 'leer'
+        ['modulo' => 'frame1', 'nombre' => 'Registrar movimientos', 'acciones' => []],
+        ['modulo' => 'frame2', 'nombre' => 'Facturación Electrónica', 'acciones' => [
+            ['accion' => 'crear',  'nombre' => 'Generar factura'],
+            ['accion' => 'editar', 'nombre' => 'Editar datos del emisor'],
         ]],
-        ['modulo' => 'frame2', 'nombre' => 'Frame 2', 'acciones' => []],
-        ['modulo' => 'frame3', 'nombre' => 'Frame 3', 'acciones' => []],
-        ['modulo' => 'frame4', 'nombre' => 'Frame 4', 'acciones' => []],
+        ['modulo' => 'frame3', 'nombre' => 'Inventario', 'acciones' => [
+            ['accion' => 'crear',    'nombre' => 'Crear producto'],
+            ['accion' => 'editar',   'nombre' => 'Editar producto'],
+            ['accion' => 'estado',   'nombre' => 'Activar / desactivar producto'],
+            ['accion' => 'eliminar', 'nombre' => 'Eliminar producto'],
+        ]],
+        ['modulo' => 'frame4', 'nombre' => 'Clientes', 'acciones' => [
+            ['accion' => 'crear',    'nombre' => 'Crear cliente'],
+            ['accion' => 'editar',   'nombre' => 'Editar cliente'],
+            ['accion' => 'estado',   'nombre' => 'Activar / desactivar cliente'],
+            ['accion' => 'eliminar', 'nombre' => 'Eliminar cliente'],
+        ]],
         ['modulo' => 'frame5', 'nombre' => 'Frame 5', 'acciones' => []],
     ];
 

@@ -6,7 +6,7 @@
  *   - Dashboard como ItemMenu independiente de nivel raíz (nunca agrupado).
  *   - SuperMenu "Mi Perfil": Ver Perfil, Cambiar Contraseña, Menú.
  *   - Solo Administrador: SuperMenu "Administración" (Roles, Permisos,
- *     Usuarios, Configurar Menús) y SuperMenu "Frames" (Frame1..Frame5).
+ *     Usuarios, Configurar Menús) y SuperMenu "Módulo Facturación" (Frame1..Frame5).
  *   - El resto de ItemMenu habilitados para el rol, sin agrupar.
  *
  * Si el usuario ya tiene organización personal, no hace nada: las
@@ -63,7 +63,7 @@ function sembrarMenuInicial(PDO $db, int $id_user, int $id_rol): void
         ];
         if ($id_rol === 1) {
             $grupos[] = ['nombre' => 'Administración', 'claves' => ['roles', 'permisos', 'usuarios', 'configmenu']];
-            $grupos[] = ['nombre' => 'Frames', 'claves' => ['frame1', 'frame2', 'frame3', 'frame4', 'frame5']];
+            $grupos[] = ['nombre' => 'Módulo Facturación', 'claves' => ['frame1', 'frame2', 'frame3', 'frame4', 'frame5']];
         }
 
         $insSuper = $db->prepare("INSERT INTO menu_super_usuario (id_user, nombre, orden, protegido) VALUES (?, ?, ?, ?)");

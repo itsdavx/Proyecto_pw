@@ -89,16 +89,33 @@ function verificarSesion(string $token): array
     return $sesion;
 }
 
-// Verifica que el modulo (ItemMenu) este activo globalmente — o detiene ejecucion.
-// Un ItemMenu desactivado en "Configurar Menus" no es accesible para nadie.
-function verificarModuloActivo(string $modulo): void
+// Indica si el modulo (ItemMenu) esta activo globalmente. Un ItemMenu
+// desactivado en "Configurar Menus" no es accesible para nadie.
+function moduloActivo(string $modulo): bool
 {
     $db   = getDB();
     $stmt = $db->prepare("SELECT COUNT(*) AS total, COALESCE(SUM(estado = 1), 0) AS activos
                           FROM menu WHERE modulo = ? AND url IS NOT NULL");
     $stmt->execute([$modulo]);
     $r = $stmt->fetch();
-    if ((int)$r['total'] > 0 && (int)$r['activos'] === 0) {
+    return !((int)$r['total'] > 0 && (int)$r['activos'] === 0);
+}
+
+// Indica si el rol tiene permiso sobre modulo+accion, sin detener la
+// ejecucion (para endpoints validos desde mas de un modulo).
+function rolTienePermiso(int $id_rol, string $modulo, string $accion): bool
+{
+    if ($id_rol === 1) { return true; } // El Administrador siempre posee todos los permisos
+    $db   = getDB();
+    $stmt = $db->prepare("SELECT id FROM permisos_rol WHERE id_rol = ? AND modulo = ? AND accion = ?");
+    $stmt->execute([$id_rol, $modulo, $accion]);
+    return (bool)$stmt->fetch();
+}
+
+// Verifica que el modulo este activo globalmente — o detiene ejecucion
+function verificarModuloActivo(string $modulo): void
+{
+    if (!moduloActivo($modulo)) {
         responder(false, 'Este modulo esta deshabilitado temporalmente.');
     }
 }
@@ -107,11 +124,7 @@ function verificarModuloActivo(string $modulo): void
 function verificarPermiso(int $id_rol, string $modulo, string $accion): void
 {
     verificarModuloActivo($modulo);
-    if ($id_rol === 1) { return; } // El Administrador siempre posee todos los permisos
-    $db   = getDB();
-    $stmt = $db->prepare("SELECT id FROM permisos_rol WHERE id_rol = ? AND modulo = ? AND accion = ?");
-    $stmt->execute([$id_rol, $modulo, $accion]);
-    if (!$stmt->fetch()) {
+    if (!rolTienePermiso($id_rol, $modulo, $accion)) {
         responder(false, 'Sin permiso para esta accion.');
     }
 }

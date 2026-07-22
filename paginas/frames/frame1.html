@@ -3,83 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frame 1 · Tareas — Sistema Genérico</title>
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/main.css?v=19">
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/dashboard.css?v=19">
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=19">
+    <title>Registrar movimientos — Sistema Genérico</title>
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/main.css?v=25">
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/dashboard.css?v=25">
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=25">
 </head>
 <body class="pag-contenido">
 
     <main class="contenido">
         <div class="breadcrumb">
-            <span>Inicio</span><span>›</span><span>Frame 1</span>
+            <span>Inicio</span><span>›</span><span>Registrar movimientos</span>
         </div>
 
         <div class="pag-titulo-wrap">
             <div>
-                <h1 class="pag-titulo">Frame 1 — Tareas</h1>
-                <p class="pag-subtitulo">CRUD de ejemplo con permisos RBAC por operación</p>
+                <h1 class="pag-titulo">Registrar movimientos</h1>
+                <p class="pag-subtitulo">Historial de comprobantes electrónicos y movimientos de inventario — Ficha Técnica SRI v2.32</p>
             </div>
         </div>
 
-        <div class="card mb-2" id="cardFormTarea">
-            <div class="card-header">
-                <span class="card-titulo">Nueva / Editar tarea</span>
-            </div>
-            <div class="card-body">
-                <form id="formTarea" novalidate>
-                    <div class="form-grid">
-                        <div class="form-grupo">
-                            <label class="form-label" for="txtTitulo">Título</label>
-                            <input class="form-control" type="text" id="txtTitulo" placeholder="Título de la tarea">
-                            <span class="form-error"></span>
-                        </div>
-                        <div class="form-grupo">
-                            <label class="form-label" for="txtDescripcion">Descripción</label>
-                            <input class="form-control" type="text" id="txtDescripcion" placeholder="Descripción opcional">
-                        </div>
-                    </div>
-                    <div class="form-acciones">
-                        <button type="submit" class="btn btn-primary" id="btnGuardarTarea">Guardar Tarea</button>
-                        <button type="button" class="btn btn-secondary d-none" id="btnCancelarEdicion">Cancelar edición</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <nav class="tabs-nav">
+            <button type="button" class="tab-btn activo" data-tab="tabComprobantes">Comprobantes electrónicos</button>
+            <button type="button" class="tab-btn" data-tab="tabInventario">Movimientos de inventario</button>
+        </nav>
 
-        <div class="card">
-            <div class="card-header">
-                <span class="card-titulo">Listado de Tareas</span>
+        <!-- ============ COMPROBANTES ============ -->
+        <section class="tab-panel" id="tabComprobantes">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-titulo">Comprobantes electrónicos emitidos</span>
+                    <div class="toolbar">
+                        <label class="form-label" for="selFiltroTipo">Tipo de comprobante</label>
+                        <select class="form-control" id="selFiltroTipo" style="max-width:340px"></select>
+                    </div>
+                </div>
+                <div class="tabla-wrap">
+                    <table class="tabla">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Tipo</th>
+                                <th>Documento / Clave de acceso</th>
+                                <th>Fecha emisión</th>
+                                <th>Receptor</th>
+                                <th>Importe</th>
+                                <th>Estado</th>
+                                <th>Registrado por</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyComprobantes">
+                            <tr><td colspan="8" class="tabla-vacia">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="tabla-wrap">
-                <table class="tabla">
-                    <thead>
-                        <tr>
-                            <th>N°</th>
-                            <th>ID</th>
-                            <th>Título</th>
-                            <th>Descripción</th>
-                            <th>Creada por</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbodyTareas">
-                        <tr><td colspan="6" class="tabla-vacia">Cargando...</td></tr>
-                    </tbody>
-                </table>
+        </section>
+
+        <!-- ============ INVENTARIO ============ -->
+        <section class="tab-panel d-none" id="tabInventario">
+            <div class="card">
+                <div class="card-header"><span class="card-titulo">Movimientos de inventario</span></div>
+                <div class="tabla-wrap">
+                    <table class="tabla">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Fecha</th>
+                                <th>Código</th>
+                                <th>Producto</th>
+                                <th>Movimiento</th>
+                                <th>Cantidad</th>
+                                <th>Documento</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyInventario">
+                            <tr><td colspan="7" class="tabla-vacia">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+        </section>
     </main>
 
     <div id="alerta-global"></div>
 
-    <script src="/NRC30713/Proyecto_pw/scripts/config.js?v=19"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/utils.js?v=19"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/session.js?v=19"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/validaciones.js?v=19"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/router.js?v=19"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/confirmacion.js?v=19"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/frame1.js?v=19"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/config.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/utils.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/session.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/router.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/frame1.js?v=25"></script>
     <script>document.addEventListener('DOMContentLoaded', iniciarFrame1);</script>
 </body>
 </html>

@@ -36,7 +36,7 @@ body.pag-dashboard {
     overflow-y:     auto;
     overflow-x:     hidden;
     z-index:        100;
-    transition:     transform var(--transition);
+    transition:     transform var(--transition), width var(--transition);
 }
 
 .sidebar-logo {
@@ -51,12 +51,16 @@ body.pag-dashboard {
     color:       #f1f5f9;
     display:     block;
     line-height: 1.3;
+    white-space: nowrap;
+    transition:  opacity var(--transition);
 }
 
 .sidebar-logo .logo-version {
     font-size:  .7rem;
     color:      #64748b;
     margin-top: .1rem;
+    white-space: nowrap;
+    transition:  opacity var(--transition);
 }
 
 /* ── Menú de navegación ──────────────────────────────────── */
@@ -92,6 +96,17 @@ body.pag-dashboard {
     width:          100%;
     text-align:     left;
     position:       relative;
+    white-space:    nowrap;
+}
+
+/* El texto del ítem se recorta con elipsis (y se desvanece al
+   contraer el sidebar) en lugar de saltar de línea */
+.nav-item > span:not(.nav-icono):not(.flecha) {
+    flex:          1 1 auto;
+    min-width:     0;
+    overflow:      hidden;
+    text-overflow: ellipsis;
+    transition:    opacity var(--transition);
 }
 
 .nav-item:hover {
@@ -132,7 +147,7 @@ body.pag-dashboard {
 .nav-item-padre .flecha {
     margin-left: auto;
     font-size:   .7rem;
-    transition:  transform .2s;
+    transition:  transform .2s, opacity var(--transition);
 }
 .nav-item-padre.abierto .flecha {
     transform: rotate(180deg);
@@ -152,12 +167,15 @@ body.pag-dashboard {
     white-space:   nowrap;
     overflow:      hidden;
     text-overflow: ellipsis;
+    transition:    opacity var(--transition);
 }
 
 .sidebar-user-rol {
     font-size:  .72rem;
     color:      #94a3b8;
     margin-top: .15rem;
+    white-space: nowrap;
+    transition:  opacity var(--transition);
 }
 
 /* ── Topbar: panel flotante oscuro ───────────────────────── */
@@ -208,15 +226,66 @@ body.pag-dashboard {
     color:        #fca5a5;
 }
 
-/* ── Botón hamburguesa (móvil) ───────────────────────────── */
+/* ── Botón hamburguesa ───────────────────────────────────────
+   Móvil: desliza el sidebar sobre el contenido.
+   Escritorio: contrae/expande el sidebar (solo iconos). */
 .btn-menu-toggle {
-    display:    none;
+    display:    block;
     background: none;
     border:     none;
     font-size:  1.3rem;
     cursor:     pointer;
     color:      #f1f5f9;
     padding:    .3rem;
+}
+
+/* ── Sidebar contraído (solo escritorio) ─────────────────── */
+@media (min-width: 769px) {
+    .sidebar.colapsado {
+        width: var(--sidebar-w-min);
+    }
+
+    /* Solo permanecen visibles los iconos: el resto de textos
+       se desvanece mientras el ancho se anima */
+    .sidebar.colapsado .logo-nombre,
+    .sidebar.colapsado .logo-version,
+    .sidebar.colapsado .sidebar-user-nombre,
+    .sidebar.colapsado .sidebar-user-rol,
+    .sidebar.colapsado .nav-item > span:not(.nav-icono) {
+        opacity: 0;
+    }
+
+    /* Los iconos de los hijos se alinean con los de los padres */
+    .sidebar.colapsado .nav-item-hijo {
+        padding-left: .9rem;
+    }
+}
+
+/* ── Tooltip del sidebar contraído ───────────────────────────
+   position: fixed lo saca del recorte (overflow) del sidebar;
+   pointer-events: none evita que interfiera con la navegación.
+   Aparece de inmediato (sin retardo ni transición). */
+.sidebar-tooltip {
+    position:      fixed;
+    z-index:       1000;
+    transform:     translateY(-50%);
+    background:              rgba(15, 23, 42, 0.92);
+    backdrop-filter:         blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border:        1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    box-shadow:    0 4px 16px rgba(0, 0, 0, 0.35);
+    padding:       .35rem .7rem;
+    color:         #f1f5f9;
+    font-size:     .8rem;
+    white-space:   nowrap;
+    pointer-events: none;
+    opacity:       0;
+    visibility:    hidden;
+}
+.sidebar-tooltip.visible {
+    opacity:    1;
+    visibility: visible;
 }
 
 /* ── Área del frame de contenido ─────────────────────────── */
@@ -294,9 +363,6 @@ body.pag-contenido {
         transform: translateX(0);
     }
     .sidebar-overlay.visible {
-        display: block;
-    }
-    .btn-menu-toggle {
         display: block;
     }
     .topbar {

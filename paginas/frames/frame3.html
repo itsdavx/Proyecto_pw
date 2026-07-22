@@ -3,41 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frame 3 — Sistema Genérico</title>
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/main.css?v=19">
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/dashboard.css?v=19">
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=19">
+    <title>Inventario — Sistema Genérico</title>
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/main.css?v=25">
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/dashboard.css?v=25">
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=25">
 </head>
 <body class="pag-contenido">
 
     <main class="contenido">
         <div class="breadcrumb">
-            <span>Inicio</span><span>›</span><span>Frame 3</span>
+            <span>Inicio</span><span>›</span><span>Inventario</span>
         </div>
 
         <div class="pag-titulo-wrap">
-            <h1 class="pag-titulo">Frame 3</h1>
+            <div>
+                <h1 class="pag-titulo">Inventario</h1>
+                <p class="pag-subtitulo">Administración de productos: existencias, categorías y unidades de medida</p>
+            </div>
+        </div>
+
+        <div class="card mb-2" id="cardFormProducto">
+            <div class="card-header"><span class="card-titulo">Nuevo / Editar producto</span></div>
+            <div class="card-body">
+                <form id="formProducto" novalidate>
+                    <div class="form-grid">
+                        <div class="form-grupo">
+                            <label class="form-label" for="txtCodigoProducto">Código principal</label>
+                            <input class="form-control" type="text" id="txtCodigoProducto">
+                            <span class="form-error"></span>
+                        </div>
+                        <div class="form-grupo">
+                            <label class="form-label" for="txtDescripcionProducto">Descripción</label>
+                            <input class="form-control" type="text" id="txtDescripcionProducto">
+                            <span class="form-error"></span>
+                        </div>
+                        <div class="form-grupo">
+                            <label class="form-label" for="txtPrecioProducto">Precio unitario (USD)</label>
+                            <input class="form-control" type="number" id="txtPrecioProducto" min="0" step="0.000001">
+                            <span class="form-error"></span>
+                        </div>
+                        <div class="form-grupo">
+                            <label class="form-label" for="selIvaProducto">IVA</label>
+                            <select class="form-control" id="selIvaProducto"></select>
+                        </div>
+                        <div class="form-grupo">
+                            <label class="form-label" for="selCategoriaProducto">Categoría</label>
+                            <select class="form-control" id="selCategoriaProducto"></select>
+                        </div>
+                        <div class="form-grupo">
+                            <label class="form-label" for="selUnidadProducto">Unidad de medida</label>
+                            <select class="form-control" id="selUnidadProducto"></select>
+                        </div>
+                        <div class="form-grupo">
+                            <label class="form-label" for="txtStockProducto">Stock disponible</label>
+                            <input class="form-control" type="number" id="txtStockProducto" min="0" step="0.01" value="0">
+                        </div>
+                    </div>
+                    <div class="form-acciones">
+                        <button type="submit" class="btn btn-primary" id="btnGuardarProducto">Guardar Producto</button>
+                        <button type="button" class="btn btn-secondary d-none" id="btnCancelarProducto">Cancelar edición</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <div class="card">
-            <div class="card-body">
-                <p class="text-center text-muted" style="padding:3rem 1rem;font-size:1.1rem">Aquí va un Frame</p>
+            <div class="card-header">
+                <span class="card-titulo">Productos en inventario</span>
+                <div class="toolbar">
+                    <input class="form-control" type="text" id="txtBuscarInventario" placeholder="Buscar por código, producto o categoría..." style="max-width:300px">
+                    <select class="form-control" id="selFiltroCategoria" style="max-width:220px"></select>
+                </div>
+            </div>
+            <div class="tabla-wrap">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>Categoría</th>
+                            <th>Unidad de medida</th>
+                            <th>Stock disponible</th>
+                            <th>Precio</th>
+                            <th>IVA</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyInventario">
+                        <tr><td colspan="10" class="tabla-vacia">Cargando...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </main>
 
     <div id="alerta-global"></div>
 
-    <script src="/NRC30713/Proyecto_pw/scripts/config.js?v=19"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/utils.js?v=19"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/session.js?v=19"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/router.js?v=19"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const ok = await Router.proteger();
-            if (!ok) return;
-            Router.verificarPermiso('frame3', 'leer');
-        });
-    </script>
+    <script src="/NRC30713/Proyecto_pw/scripts/config.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/utils.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/session.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/validaciones.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/router.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/confirmacion.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/frame3.js?v=25"></script>
+    <script>document.addEventListener('DOMContentLoaded', iniciarFrame3);</script>
 </body>
 </html>

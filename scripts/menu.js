@@ -4,12 +4,12 @@
 
 /* ── Mapa de módulos → íconos ────────────────────────────────── */
 const MENU_ICONOS_MOD = {
-    dashboard:  '◉',
-    usuarios:   '◈',
-    roles:      '◆',
-    permisos:   '■',
+    dashboard:  '🏠︎',
+    usuarios:   '👥︎',
+    roles:      '⛨',
+    permisos:   '🔒︎',
     menu:       '≡',
-    perfil:     '◐',
+    perfil:     '👤︎',
 };
 
 /* ── Renderizar sidebar completo ─────────────────────────────── */
@@ -49,8 +49,8 @@ function _construirNav(nav, items) {
         if (hijosDePadre.length === 0) {
             // Elemento sin hijos → enlace directo
             nav.insertAdjacentHTML('beforeend', `
-                <a class="nav-item ${activo}" href="${esc(padre.url || '#')}">
-                    <span class="nav-icono">${icono}</span>
+                <a class="nav-item ${activo}" href="${esc(padre.url || '#')}" aria-label="${esc(padre.nombre)}">
+                    <span class="nav-icono" aria-hidden="true">${icono}</span>
                     <span>${esc(padre.nombre)}</span>
                 </a>
             `);
@@ -61,17 +61,17 @@ function _construirNav(nav, items) {
             const abierto = tieneHijoActivo ? 'abierto' : '';
 
             nav.insertAdjacentHTML('beforeend', `
-                <button class="nav-item nav-item-padre ${abierto}" data-grupo="${grupoId}">
-                    <span class="nav-icono">${icono}</span>
+                <button class="nav-item nav-item-padre ${abierto}" data-grupo="${grupoId}" aria-label="${esc(padre.nombre)}">
+                    <span class="nav-icono" aria-hidden="true">${icono}</span>
                     <span>${esc(padre.nombre)}</span>
-                    <span class="flecha">▾</span>
+                    <span class="flecha" aria-hidden="true">▾</span>
                 </button>
                 <div class="nav-grupo ${abierto}" id="${grupoId}">
                     ${hijosDePadre.map(h => {
                         const act = _estaActivo(h.url) ? 'activo' : '';
                         const ico = resolverIcono(h.icono) || '▸';
-                        return `<a class="nav-item nav-item-hijo ${act}" href="${esc(h.url || '#')}">
-                            <span class="nav-icono">${ico}</span>
+                        return `<a class="nav-item nav-item-hijo ${act}" href="${esc(h.url || '#')}" aria-label="${esc(h.nombre)}">
+                            <span class="nav-icono" aria-hidden="true">${ico}</span>
                             <span>${esc(h.nombre)}</span>
                         </a>`;
                     }).join('')}
@@ -109,7 +109,7 @@ function renderizarTopbar(titulo) {
     const user = Sesion.usuario();
     header.innerHTML = `
         <div style="display:flex;align-items:center;gap:.8rem">
-            <button class="btn-menu-toggle" id="btnMenuToggle">☰</button>
+            <button class="btn-menu-toggle" id="btnMenuToggle" title="Contraer / expandir menú">☰</button>
             <span class="topbar-titulo">${esc(titulo || APP.nombre)}</span>
         </div>
         <div class="topbar-acciones">
@@ -122,12 +122,84 @@ function renderizarTopbar(titulo) {
     document.getElementById('btnMenuToggle')?.addEventListener('click', _toggleSidebar);
 }
 
-/* ── Sidebar móvil ───────────────────────────────────────────── */
+/* ── Toggle del sidebar ──────────────────────────────────────
+   Móvil: desliza el panel sobre el contenido (overlay).
+   Escritorio: contrae/expande el panel dejando solo los iconos.
+   El estado se persiste en sessionStorage, igual que la última
+   ruta del shell (ver shell.js). */
+const CLAVE_SIDEBAR_COLAPSADO = 'sidebar_colapsado';
+
+function _esPantallaMovil() {
+    return window.matchMedia('(max-width: 768px)').matches;
+}
+
 function _toggleSidebar() {
-    const sidebar  = document.querySelector('.sidebar');
-    const overlay  = document.getElementById('sidebarOverlay');
-    sidebar?.classList.toggle('abierto');
-    overlay?.classList.toggle('visible');
+    const sidebar = document.querySelector('.sidebar');
+    if (!sidebar) return;
+
+    if (_esPantallaMovil()) {
+        sidebar.classList.toggle('abierto');
+        document.getElementById('sidebarOverlay')?.classList.toggle('visible');
+        return;
+    }
+
+    const colapsado = sidebar.classList.toggle('colapsado');
+    sessionStorage.setItem(CLAVE_SIDEBAR_COLAPSADO, colapsado ? '1' : '0');
+}
+
+/* Restaurar el estado guardado (el shell se carga una sola vez;
+   esto solo aplica al refrescar la página) */
+function aplicarEstadoSidebar() {
+    document.querySelector('.sidebar')
+        ?.classList.toggle('colapsado', sessionStorage.getItem(CLAVE_SIDEBAR_COLAPSADO) === '1');
+}
+
+/* ── Tooltip del sidebar contraído ───────────────────────────
+   Con el panel contraído solo se ven los iconos: al pasar el
+   cursor (o enfocar con teclado) un ítem, muestra su nombre de
+   inmediato junto al icono. Los listeners se delegan en el
+   <aside>, que sobrevive a los re-renderizados del menú. */
+function _inicializarTooltipSidebar() {
+    const aside = document.getElementById('sidebar');
+    if (!aside || aside.dataset.tooltipListo) return;
+    aside.dataset.tooltipListo = '1';
+
+    let tip = document.getElementById('sidebarTooltip');
+    if (!tip) {
+        tip = document.createElement('div');
+        tip.id = 'sidebarTooltip';
+        tip.className = 'sidebar-tooltip';
+        tip.setAttribute('role', 'tooltip');
+        document.body.appendChild(tip);
+    }
+
+    const mostrar = (item) => {
+        if (_esPantallaMovil() || !aside.classList.contains('colapsado')) return;
+        const nombre = item.getAttribute('aria-label');
+        if (!nombre) return;
+        const r = item.getBoundingClientRect();
+        tip.textContent  = nombre;
+        tip.style.top    = (r.top + r.height / 2) + 'px';
+        tip.style.left   = (r.right + 10) + 'px';
+        tip.classList.add('visible');
+    };
+    const ocultar = () => tip.classList.remove('visible');
+
+    aside.addEventListener('mouseover', e => {
+        const item = e.target.closest('.nav-item');
+        if (item) mostrar(item);
+    });
+    aside.addEventListener('mouseout', e => {
+        const item = e.target.closest('.nav-item');
+        if (item && item.contains(e.relatedTarget)) return; // sigue dentro del ítem
+        ocultar();
+    });
+    aside.addEventListener('focusin', e => {
+        const item = e.target.closest('.nav-item');
+        if (item) mostrar(item);
+    });
+    aside.addEventListener('focusout', ocultar);
+    aside.addEventListener('click', ocultar);
 }
 
 function _inicializarOverlay() {
@@ -147,6 +219,7 @@ async function cargarMenuYRenderizar(tituloPagina) {
     renderizarSidebar();
     renderizarTopbar(tituloPagina);
     _inicializarOverlay();
+    _inicializarTooltipSidebar();
 
     // Refrescar datos del menú desde el servidor
     try {
@@ -157,3 +230,7 @@ async function cargarMenuYRenderizar(tituloPagina) {
         }
     } catch { /* Si falla, se usa la caché */ }
 }
+
+/* Aplicar el estado guardado antes del primer pintado para que el
+   sidebar no "salte" de expandido a contraído al refrescar */
+aplicarEstadoSidebar();

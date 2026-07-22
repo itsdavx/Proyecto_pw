@@ -30,6 +30,7 @@
     --radius:           6px;
     --radius-lg:        10px;
     --sidebar-w:        240px;
+    --sidebar-w-min:    68px;
     --topbar-h:         60px;
     --transition:       .2s ease;
     --font:             -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;

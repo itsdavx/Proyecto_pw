@@ -538,6 +538,32 @@ select.form-control { cursor: pointer; }
     padding: .6rem .6rem .6rem 1.8rem;
 }
 
+/* ── Pestañas (tabs) ─────────────────────────────────────── */
+.tabs-nav {
+    display:       flex;
+    gap:           .4rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.4rem;
+    flex-wrap:     wrap;
+}
+
+.tab-btn {
+    padding:       .65rem 1.1rem;
+    border:        none;
+    background:    transparent;
+    color:         var(--text-muted);
+    font-size:     .88rem;
+    font-weight:   600;
+    cursor:        pointer;
+    border-bottom: 2px solid transparent;
+    transition:    color var(--transition), border-color var(--transition);
+}
+.tab-btn:hover  { color: var(--text-main); }
+.tab-btn.activo {
+    color:               var(--primary);
+    border-bottom-color: var(--primary);
+}
+
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 600px) {
     .form-grid { grid-template-columns: 1fr; }

@@ -3,41 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frame 4 — Sistema Genérico</title>
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/main.css?v=19">
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/dashboard.css?v=19">
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=19">
+    <title>Clientes — Sistema Genérico</title>
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/main.css?v=25">
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/dashboard.css?v=25">
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=25">
 </head>
 <body class="pag-contenido">
 
     <main class="contenido">
         <div class="breadcrumb">
-            <span>Inicio</span><span>›</span><span>Frame 4</span>
+            <span>Inicio</span><span>›</span><span>Clientes</span>
         </div>
 
         <div class="pag-titulo-wrap">
-            <h1 class="pag-titulo">Frame 4</h1>
+            <div>
+                <h1 class="pag-titulo">Clientes</h1>
+                <p class="pag-subtitulo">Administración de los clientes del sistema de facturación</p>
+            </div>
+        </div>
+
+        <div class="card mb-2" id="cardFormCliente">
+            <div class="card-header"><span class="card-titulo">Nuevo / Editar cliente</span></div>
+            <div class="card-body">
+                <form id="formCliente" novalidate>
+                    <div class="form-grid">
+                        <div class="form-grupo">
+                            <label class="form-label" for="selTipoIdCliente">Tipo de identificación</label>
+                            <select class="form-control" id="selTipoIdCliente"></select>
+                        </div>
+                        <div class="form-grupo">
+                            <label class="form-label" for="txtIdentificacionCliente">Identificación</label>
+                            <input class="form-control" type="text" id="txtIdentificacionCliente">
+                            <span class="form-error"></span>
+                        </div>
+                        <div class="form-grupo">
+                            <label class="form-label" for="txtRazonSocialCliente">Razón social / Nombre</label>
+                            <input class="form-control" type="text" id="txtRazonSocialCliente">
+                            <span class="form-error"></span>
+                        </div>
+                        <div class="form-grupo">
+                            <label class="form-label" for="txtDireccionCliente">Dirección</label>
+                            <input class="form-control" type="text" id="txtDireccionCliente">
+                        </div>
+                        <div class="form-grupo">
+                            <label class="form-label" for="txtEmailCliente">Email</label>
+                            <input class="form-control" type="email" id="txtEmailCliente">
+                        </div>
+                        <div class="form-grupo">
+                            <label class="form-label" for="txtTelefonoCliente">Teléfono</label>
+                            <input class="form-control" type="text" id="txtTelefonoCliente">
+                        </div>
+                    </div>
+                    <div class="form-acciones">
+                        <button type="submit" class="btn btn-primary" id="btnGuardarCliente">Guardar Cliente</button>
+                        <button type="button" class="btn btn-secondary d-none" id="btnCancelarCliente">Cancelar edición</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <div class="card">
-            <div class="card-body">
-                <p class="text-center text-muted" style="padding:3rem 1rem;font-size:1.1rem">Aquí va un Frame</p>
+            <div class="card-header">
+                <span class="card-titulo">Listado de Clientes</span>
+                <div class="toolbar">
+                    <input class="form-control" type="text" id="txtBuscarCliente" placeholder="Buscar por identificación, nombre, email..." style="max-width:300px">
+                </div>
+            </div>
+            <div class="tabla-wrap">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Tipo Id.</th>
+                            <th>Identificación</th>
+                            <th>Razón social</th>
+                            <th>Dirección</th>
+                            <th>Contacto</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyClientes">
+                        <tr><td colspan="8" class="tabla-vacia">Cargando...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </main>
 
     <div id="alerta-global"></div>
 
-    <script src="/NRC30713/Proyecto_pw/scripts/config.js?v=19"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/utils.js?v=19"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/session.js?v=19"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/router.js?v=19"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const ok = await Router.proteger();
-            if (!ok) return;
-            Router.verificarPermiso('frame4', 'leer');
-        });
-    </script>
+    <script src="/NRC30713/Proyecto_pw/scripts/config.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/utils.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/session.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/validaciones.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/router.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/confirmacion.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/frame4.js?v=25"></script>
+    <script>document.addEventListener('DOMContentLoaded', iniciarFrame4);</script>
 </body>
 </html>

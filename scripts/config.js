@@ -83,14 +83,33 @@ const API = {
         configEditar:   APP.api + 'menu/config_editar.php',
         configEliminar: APP.api + 'menu/config_eliminar.php',
     },
-    tareas: {
-        listar:   APP.api + 'tareas/listar.php',
-        crear:    APP.api + 'tareas/crear.php',
-        editar:   APP.api + 'tareas/editar.php',
-        eliminar: APP.api + 'tareas/eliminar.php',
+    movimientos: {
+        listar: APP.api + 'movimientos/listar.php',
+    },
+    inventario: {
+        listar:   APP.api + 'inventario/listar.php',
+        crear:    APP.api + 'inventario/crear.php',
+        editar:   APP.api + 'inventario/editar.php',
+        estado:   APP.api + 'inventario/estado.php',
+        eliminar: APP.api + 'inventario/eliminar.php',
+    },
+    clientes: {
+        listar:   APP.api + 'clientes/listar.php',
+        crear:    APP.api + 'clientes/crear.php',
+        editar:   APP.api + 'clientes/editar.php',
+        estado:   APP.api + 'clientes/estado.php',
+        eliminar: APP.api + 'clientes/eliminar.php',
     },
     perfil: {
         cambiarPassword: APP.api + 'perfil/cambiar_password.php',
         ver:             APP.api + 'perfil/ver.php',
+    },
+    frame2: {
+        facturasListar:  APP.api + 'facturacion/facturas_listar.php',
+        facturasCrear:   APP.api + 'facturacion/facturas_crear.php',
+        facturasObtener: APP.api + 'facturacion/facturas_obtener.php',
+        facturasPdf:     APP.api + 'facturacion/facturas_pdf.php',
+        emisorObtener:   APP.api + 'facturacion/emisor_obtener.php',
+        emisorGuardar:   APP.api + 'facturacion/emisor_guardar.php',
     },
 };

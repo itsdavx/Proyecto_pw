@@ -1,136 +1,102 @@
 /* ============================================================
-   FRAME1.JS — CRUD de tareas con permisos RBAC por operación
+   FRAME1.JS — Registrar movimientos: historial de comprobantes
+   electrónicos (Tabla 3 de la Ficha Técnica SRI v2.32) y de
+   movimientos de inventario registrados en el sistema.
+   Vista de solo lectura; el acceso se controla con frame1/leer.
    ============================================================ */
 
-let _tareas     = [];
-let _editandoId = null;
+let _movTipos        = {};
+let _movComprobantes = [];
+let _movInventario   = [];
 
 async function iniciarFrame1() {
     const ok = await Router.proteger();
     if (!ok) return;
     if (!Router.verificarPermiso('frame1', 'leer')) return;
 
-    if (!Sesion.tienePermiso('frame1', 'crear') && !Sesion.tienePermiso('frame1', 'editar')) {
-        document.getElementById('cardFormTarea')?.classList.add('d-none');
-    }
+    inicializarTabs();
+    document.getElementById('selFiltroTipo')?.addEventListener('change', renderizarComprobantes);
 
-    await cargarTareas();
-
-    document.getElementById('formTarea')?.addEventListener('submit', submitTarea);
-    document.getElementById('btnCancelarEdicion')?.addEventListener('click', cancelarEdicion);
+    await cargarMovimientos();
 }
 
-async function cargarTareas() {
-    mostrarCargando(true);
+async function cargarMovimientos() {
     try {
-        const r = await postJSON(API.tareas.listar, { token: Sesion.token() });
-        mostrarCargando(false);
-        if (r.ok) renderizarTablaTareas(r.data);
-        else mostrarAlerta(r.msg, 'error');
-    } catch {
-        mostrarCargando(false);
-        mostrarAlerta('Error al cargar tareas.', 'error');
+        const r = await postJSON(API.movimientos.listar, { token: Sesion.token() });
+        if (!r.ok) { mostrarAlerta(r.msg, 'error'); return; }
+        _movTipos        = r.data.tipos        || {};
+        _movComprobantes = r.data.comprobantes || [];
+        _movInventario   = r.data.inventario   || [];
+        llenarFiltroTipos();
+        renderizarComprobantes();
+        renderizarInventario();
+    } catch { mostrarAlerta('Error al cargar los movimientos.', 'error'); }
+}
+
+/* ── Filtro por tipo de comprobante (Tabla 3 SRI) ────────────── */
+function llenarFiltroTipos() {
+    const sel = document.getElementById('selFiltroTipo');
+    if (!sel) return;
+    const seleccionado = sel.value;
+    sel.innerHTML = '<option value="">Todos los tipos</option>' +
+        Object.entries(_movTipos)
+            .map(([cod, nombre]) => `<option value="${cod}">${cod} — ${esc(nombre)}</option>`)
+            .join('');
+    if (seleccionado && [...sel.options].some(o => o.value === seleccionado)) {
+        sel.value = seleccionado;
     }
 }
 
-function renderizarTablaTareas(lista) {
-    const tbody = document.getElementById('tbodyTareas');
+/* ── Comprobantes electrónicos ───────────────────────────────── */
+function renderizarComprobantes() {
+    const tbody = document.getElementById('tbodyComprobantes');
     if (!tbody) return;
 
-    _tareas = lista || [];
+    const filtro = document.getElementById('selFiltroTipo')?.value || '';
+    const lista  = filtro ? _movComprobantes.filter(c => c.cod_doc === filtro) : _movComprobantes;
 
-    if (!lista || lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="tabla-vacia">No hay tareas registradas.</td></tr>`;
+    if (lista.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="tabla-vacia">${
+            filtro ? 'No hay comprobantes registrados de este tipo.' : 'No hay comprobantes registrados.'
+        }</td></tr>`;
         return;
     }
 
-    const puedeEditar   = Sesion.tienePermiso('frame1', 'editar');
-    const puedeEliminar = Sesion.tienePermiso('frame1', 'eliminar');
-
-    tbody.innerHTML = lista.map((t, i) => `
+    tbody.innerHTML = lista.map((c, i) => `
         <tr>
             <td class="col-num">${i + 1}</td>
-            <td>${esc(t.id_tarea)}</td>
-            <td><strong>${esc(t.titulo)}</strong></td>
-            <td>${esc(t.descripcion || '—')}</td>
-            <td>${esc(t.creador || '—')}</td>
-            <td>
-                <div class="btn-group">
-                    ${puedeEditar ? `<button class="btn btn-sm btn-outline" onclick="editarTarea(${t.id_tarea})">Editar</button>` : ''}
-                    ${puedeEliminar ? `<button class="btn btn-sm btn-danger" onclick="eliminarTarea(${t.id_tarea})">Eliminar</button>` : ''}
-                </div>
-            </td>
+            <td><span class="badge badge-primary">${esc(c.cod_doc)}</span> ${esc(c.tipo)}</td>
+            <td>${esc(c.documento)}<br><span class="text-muted" style="font-size:.72rem" title="Clave de acceso">${esc(c.clave_acceso)}</span></td>
+            <td>${formatFecha(c.fecha_emision)}</td>
+            <td>${esc(c.receptor)}<br><span class="text-muted">${esc(c.identificacion_receptor)}</span></td>
+            <td><strong>$${Number(c.importe_total).toFixed(2)}</strong></td>
+            <td><span class="badge ${c.ambiente == 2 ? 'badge-activo' : 'badge-warning'}">${c.ambiente == 2 ? 'Producción' : 'Pruebas'}</span> <span class="badge badge-primary">${esc(c.estado)}</span></td>
+            <td>${esc(c.registrado_por || '—')}</td>
         </tr>
     `).join('');
+    renumerarFilas(tbody);
 }
 
-function editarTarea(id) {
-    const t = _tareas.find(x => x.id_tarea == id);
-    if (!t) return;
-    _editandoId = id;
-    document.getElementById('txtTitulo').value      = t.titulo;
-    document.getElementById('txtDescripcion').value = t.descripcion || '';
-    document.getElementById('btnGuardarTarea').textContent = 'Actualizar Tarea';
-    document.getElementById('btnCancelarEdicion')?.classList.remove('d-none');
-    document.getElementById('cardFormTarea')?.classList.remove('d-none');
-}
+/* ── Movimientos de inventario ───────────────────────────────── */
+function renderizarInventario() {
+    const tbody = document.getElementById('tbodyInventario');
+    if (!tbody) return;
 
-function cancelarEdicion() {
-    _editandoId = null;
-    document.getElementById('formTarea')?.reset();
-    document.getElementById('btnGuardarTarea').textContent = 'Guardar Tarea';
-    document.getElementById('btnCancelarEdicion')?.classList.add('d-none');
-    if (!Sesion.tienePermiso('frame1', 'crear') && !Sesion.tienePermiso('frame1', 'editar')) {
-        document.getElementById('cardFormTarea')?.classList.add('d-none');
-    }
-}
-
-async function submitTarea(e) {
-    e.preventDefault();
-    const form = e.target;
-    Validaciones.limpiar(form);
-
-    const titulo = document.getElementById('txtTitulo');
-    if (!Validaciones.requerido(titulo, 'Título')) return;
-
-    const accion = _editandoId ? 'editar' : 'crear';
-    if (!Sesion.tienePermiso('frame1', accion)) {
-        mostrarAlerta(`No tiene permiso para ${accion} tareas.`, 'error');
+    if (_movInventario.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="tabla-vacia">No hay movimientos de inventario registrados.</td></tr>`;
         return;
     }
 
-    const datos = {
-        token:       Sesion.token(),
-        titulo:      titulo.value.trim(),
-        descripcion: document.getElementById('txtDescripcion').value.trim(),
-    };
-    if (_editandoId) datos.id_tarea = _editandoId;
-
-    try {
-        const r = await postJSON(_editandoId ? API.tareas.editar : API.tareas.crear, datos);
-        if (r.ok) {
-            mostrarAlerta(r.msg, 'ok');
-            cancelarEdicion();
-            await cargarTareas();
-        } else {
-            mostrarAlerta(r.msg, 'error');
-        }
-    } catch { mostrarAlerta('Error de conexión.', 'error'); }
-}
-
-function eliminarTarea(id) {
-    const tarea = _tareas.find(t => t.id_tarea == id);
-    if (!tarea) return;
-
-    confirmarEliminacionCritica({
-        tipo:   'Tarea',
-        nombre: tarea.titulo,
-        accion: async () => {
-            try {
-                const r = await postJSON(API.tareas.eliminar, { token: Sesion.token(), id_tarea: id });
-                if (r.ok) { mostrarAlerta(r.msg, 'ok'); await cargarTareas(); }
-                else mostrarAlerta(r.msg, 'error');
-            } catch { mostrarAlerta('Error de conexión.', 'error'); }
-        },
-    });
+    tbody.innerHTML = _movInventario.map((m, i) => `
+        <tr>
+            <td class="col-num">${i + 1}</td>
+            <td>${formatFecha(m.fecha_emision)}</td>
+            <td>${esc(m.codigo_principal)}</td>
+            <td>${esc(m.descripcion)}</td>
+            <td><span class="badge badge-warning">${esc(m.tipo_movimiento)}</span></td>
+            <td>${Number(m.cantidad).toFixed(2)} ${esc(m.unidad || '')}</td>
+            <td>${esc(m.documento)}</td>
+        </tr>
+    `).join('');
+    renumerarFilas(tbody);
 }

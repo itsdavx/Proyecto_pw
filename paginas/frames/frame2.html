@@ -3,41 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frame 2 — Sistema Genérico</title>
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/main.css?v=19">
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/dashboard.css?v=19">
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=19">
+    <title>Facturación Electrónica — Sistema Genérico</title>
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/main.css?v=25">
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/dashboard.css?v=25">
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=25">
 </head>
 <body class="pag-contenido">
 
     <main class="contenido">
         <div class="breadcrumb">
-            <span>Inicio</span><span>›</span><span>Frame 2</span>
+            <span>Inicio</span><span>›</span><span>Facturación Electrónica</span>
         </div>
 
         <div class="pag-titulo-wrap">
-            <h1 class="pag-titulo">Frame 2</h1>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                <p class="text-center text-muted" style="padding:3rem 1rem;font-size:1.1rem">Aquí va un Frame</p>
+            <div>
+                <h1 class="pag-titulo">Facturación Electrónica (SRI)</h1>
+                <p class="pag-subtitulo">Facturas (codDoc 01) — Ficha Técnica SRI v2.32</p>
             </div>
         </div>
+
+        <nav class="tabs-nav">
+            <button type="button" class="tab-btn activo" data-tab="tabFacturas">Facturas</button>
+            <button type="button" class="tab-btn" data-tab="tabNueva">Nueva Factura</button>
+            <button type="button" class="tab-btn" data-tab="tabEmisor">Emisor</button>
+        </nav>
+
+        <!-- ============ FACTURAS ============ -->
+        <section class="tab-panel" id="tabFacturas">
+            <div class="card">
+                <div class="card-header"><span class="card-titulo">Facturas emitidas</span></div>
+                <div class="tabla-wrap">
+                    <table class="tabla">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Estab-PtoEmi-Secuencial</th>
+                                <th>Fecha</th>
+                                <th>Comprador</th>
+                                <th>Subtotal</th>
+                                <th>IVA</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyFacturas">
+                            <tr><td colspan="9" class="tabla-vacia">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ NUEVA FACTURA ============ -->
+        <section class="tab-panel d-none" id="tabNueva">
+            <div class="card mb-2" id="cardNuevaFactura">
+                <div class="card-header"><span class="card-titulo">Generar nueva factura</span></div>
+                <div class="card-body">
+                    <form id="formFactura" novalidate>
+                        <div class="form-grid">
+                            <div class="form-grupo">
+                                <label class="form-label" for="selCliente">Cliente</label>
+                                <select class="form-control" id="selCliente"></select>
+                                <span class="form-error"></span>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="selFormaPago">Forma de pago</label>
+                                <select class="form-control" id="selFormaPago"></select>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtPropina">Propina (opcional)</label>
+                                <input class="form-control" type="number" id="txtPropina" min="0" step="0.01" value="0">
+                            </div>
+                        </div>
+
+                        <div class="mb-2" style="margin-top:1.4rem">
+                            <div class="toolbar">
+                                <span class="card-titulo">Detalle</span>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btnAgregarItem">+ Agregar ítem</button>
+                            </div>
+                            <div class="tabla-wrap">
+                                <table class="tabla">
+                                    <thead>
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th>Desc. (%)</th>
+                                            <th>Subtotal</th>
+                                            <th>IVA</th>
+                                            <th>Total</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyItems">
+                                        <tr><td colspan="7" class="tabla-vacia">Sin ítems. Agregue al menos uno.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="form-grid" style="margin-top:1rem">
+                            <div class="form-grupo">
+                                <span class="form-label">Subtotal sin impuestos</span>
+                                <span id="totSubtotal">0.00</span>
+                            </div>
+                            <div class="form-grupo">
+                                <span class="form-label">Descuento total</span>
+                                <span id="totDescuento">0.00</span>
+                            </div>
+                            <div class="form-grupo">
+                                <span class="form-label">Total IVA</span>
+                                <span id="totIva">0.00</span>
+                            </div>
+                            <div class="form-grupo">
+                                <span class="form-label">Importe total (USD)</span>
+                                <span id="totImporte" style="font-weight:800;font-size:1.1rem">0.00</span>
+                            </div>
+                        </div>
+
+                        <div class="form-acciones">
+                            <button type="submit" class="btn btn-primary" id="btnGenerarFactura">Generar Factura</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ EMISOR ============ -->
+        <section class="tab-panel d-none" id="tabEmisor">
+            <div class="card">
+                <div class="card-header"><span class="card-titulo">Datos del emisor</span></div>
+                <div class="card-body">
+                    <p class="form-ayuda mb-2">Estos datos identifican a la empresa emisora en la Clave de Acceso y en el XML de cada factura.</p>
+                    <form id="formEmisor" novalidate>
+                        <div class="form-grid">
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtRucEmisor">RUC</label>
+                                <input class="form-control" type="text" id="txtRucEmisor" maxlength="13">
+                                <span class="form-error"></span>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtRazonSocialEmisor">Razón social</label>
+                                <input class="form-control" type="text" id="txtRazonSocialEmisor">
+                                <span class="form-error"></span>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtNombreComercialEmisor">Nombre comercial (opcional)</label>
+                                <input class="form-control" type="text" id="txtNombreComercialEmisor">
+                            </div>
+                            <div class="form-grupo full">
+                                <label class="form-label" for="txtDirMatrizEmisor">Dirección matriz</label>
+                                <input class="form-control" type="text" id="txtDirMatrizEmisor">
+                                <span class="form-error"></span>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="selAmbienteEmisor">Ambiente</label>
+                                <select class="form-control" id="selAmbienteEmisor">
+                                    <option value="1">1 — Pruebas</option>
+                                    <option value="2">2 — Producción</option>
+                                </select>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="selTipoEmisionEmisor">Tipo de emisión</label>
+                                <select class="form-control" id="selTipoEmisionEmisor">
+                                    <option value="1">1 — Normal</option>
+                                </select>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtEstablecimientoEmisor">Establecimiento</label>
+                                <input class="form-control" type="text" id="txtEstablecimientoEmisor" maxlength="3">
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtPtoEmisionEmisor">Punto de emisión</label>
+                                <input class="form-control" type="text" id="txtPtoEmisionEmisor" maxlength="3">
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="selObligadoEmisor">Obligado a llevar contabilidad</label>
+                                <select class="form-control" id="selObligadoEmisor">
+                                    <option value="NO">NO</option>
+                                    <option value="SI">SI</option>
+                                </select>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtContribuyenteEmisor">Contribuyente especial (opcional)</label>
+                                <input class="form-control" type="text" id="txtContribuyenteEmisor">
+                            </div>
+                        </div>
+                        <div class="form-acciones">
+                            <button type="submit" class="btn btn-primary" id="btnGuardarEmisor">Guardar Datos del Emisor</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
     </main>
 
     <div id="alerta-global"></div>
 
-    <script src="/NRC30713/Proyecto_pw/scripts/config.js?v=19"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/utils.js?v=19"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/session.js?v=19"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/router.js?v=19"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const ok = await Router.proteger();
-            if (!ok) return;
-            Router.verificarPermiso('frame2', 'leer');
-        });
-    </script>
+    <script src="/NRC30713/Proyecto_pw/scripts/config.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/utils.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/session.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/validaciones.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/router.js?v=25"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/frame2.js?v=25"></script>
+    <script>document.addEventListener('DOMContentLoaded', iniciarFrame2);</script>
 </body>
 </html>
