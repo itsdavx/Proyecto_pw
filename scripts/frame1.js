@@ -1,5 +1,5 @@
 /* ============================================================
-   FRAME1.JS — Registrar movimientos: historial de comprobantes
+   FRAME1.JS — Movimientos: historial de comprobantes
    electrónicos (Tabla 3 de la Ficha Técnica SRI v2.32) y de
    movimientos de inventario registrados en el sistema.
    Vista de solo lectura; el acceso se controla con frame1/leer.
@@ -8,6 +8,8 @@
 let _movTipos        = {};
 let _movComprobantes = [];
 let _movInventario   = [];
+let _pagComprobantes = null;
+let _pagInventario   = null;
 
 async function iniciarFrame1() {
     const ok = await Router.proteger();
@@ -15,7 +17,10 @@ async function iniciarFrame1() {
     if (!Router.verificarPermiso('frame1', 'leer')) return;
 
     inicializarTabs();
-    document.getElementById('selFiltroTipo')?.addEventListener('change', renderizarComprobantes);
+    document.getElementById('selFiltroTipo')?.addEventListener('change', () => renderizarComprobantes(true));
+
+    _pagComprobantes = crearPaginador({ clave: 'mov-comprobantes', tbodyId: 'tbodyComprobantes', etiqueta: 'comprobantes', pintar: _pintarComprobantes });
+    _pagInventario   = crearPaginador({ clave: 'mov-inventario',   tbodyId: 'tbodyInventario',   etiqueta: 'movimientos', pintar: _pintarInventario });
 
     await cargarMovimientos();
 }
@@ -48,14 +53,18 @@ function llenarFiltroTipos() {
 }
 
 /* ── Comprobantes electrónicos ───────────────────────────────── */
-function renderizarComprobantes() {
+function renderizarComprobantes(reiniciar = false) {
+    const filtro = document.getElementById('selFiltroTipo')?.value || '';
+    const lista  = filtro ? _movComprobantes.filter(c => c.cod_doc === filtro) : _movComprobantes;
+    _pagComprobantes.render(lista, { reiniciar });
+}
+
+function _pintarComprobantes(lista, offset) {
     const tbody = document.getElementById('tbodyComprobantes');
     if (!tbody) return;
 
-    const filtro = document.getElementById('selFiltroTipo')?.value || '';
-    const lista  = filtro ? _movComprobantes.filter(c => c.cod_doc === filtro) : _movComprobantes;
-
     if (lista.length === 0) {
+        const filtro = document.getElementById('selFiltroTipo')?.value || '';
         tbody.innerHTML = `<tr><td colspan="8" class="tabla-vacia">${
             filtro ? 'No hay comprobantes registrados de este tipo.' : 'No hay comprobantes registrados.'
         }</td></tr>`;
@@ -64,7 +73,7 @@ function renderizarComprobantes() {
 
     tbody.innerHTML = lista.map((c, i) => `
         <tr>
-            <td class="col-num">${i + 1}</td>
+            <td class="col-num">${offset + i + 1}</td>
             <td><span class="badge badge-primary">${esc(c.cod_doc)}</span> ${esc(c.tipo)}</td>
             <td>${esc(c.documento)}<br><span class="text-muted" style="font-size:.72rem" title="Clave de acceso">${esc(c.clave_acceso)}</span></td>
             <td>${formatFecha(c.fecha_emision)}</td>
@@ -74,22 +83,25 @@ function renderizarComprobantes() {
             <td>${esc(c.registrado_por || '—')}</td>
         </tr>
     `).join('');
-    renumerarFilas(tbody);
 }
 
 /* ── Movimientos de inventario ───────────────────────────────── */
 function renderizarInventario() {
+    _pagInventario.render(_movInventario);
+}
+
+function _pintarInventario(lista, offset) {
     const tbody = document.getElementById('tbodyInventario');
     if (!tbody) return;
 
-    if (_movInventario.length === 0) {
+    if (lista.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="tabla-vacia">No hay movimientos de inventario registrados.</td></tr>`;
         return;
     }
 
-    tbody.innerHTML = _movInventario.map((m, i) => `
+    tbody.innerHTML = lista.map((m, i) => `
         <tr>
-            <td class="col-num">${i + 1}</td>
+            <td class="col-num">${offset + i + 1}</td>
             <td>${formatFecha(m.fecha_emision)}</td>
             <td>${esc(m.codigo_principal)}</td>
             <td>${esc(m.descripcion)}</td>
@@ -98,5 +110,4 @@ function renderizarInventario() {
             <td>${esc(m.documento)}</td>
         </tr>
     `).join('');
-    renumerarFilas(tbody);
 }

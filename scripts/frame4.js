@@ -17,6 +17,7 @@ const TIPO_ID_CLIENTE = {
 
 let _cliProductosLista = []; // listado completo de clientes
 let _cliEditando       = null;
+let _pagClientes       = null;
 
 async function iniciarFrame4() {
     const ok = await Router.proteger();
@@ -34,10 +35,11 @@ async function iniciarFrame4() {
             .join('');
     }
 
-    document.getElementById('txtBuscarCliente')?.addEventListener('input', renderizarTablaClientes);
+    document.getElementById('txtBuscarCliente')?.addEventListener('input', () => renderizarTablaClientes(true));
     document.getElementById('formCliente')?.addEventListener('submit', submitCliente);
     document.getElementById('btnCancelarCliente')?.addEventListener('click', cancelarEdicionCliente);
 
+    _pagClientes = crearPaginador({ clave: 'clientes', tbodyId: 'tbodyClientes', etiqueta: 'clientes', pintar: _pintarFilasClientes });
     await cargarClientesFrame4();
 }
 
@@ -49,15 +51,18 @@ async function cargarClientesFrame4() {
     } catch { mostrarAlerta('Error al cargar clientes.', 'error'); }
 }
 
-function renderizarTablaClientes() {
-    const tbody = document.getElementById('tbodyClientes');
-    if (!tbody) return;
-
+function renderizarTablaClientes(reiniciar = false) {
     const busqueda = (document.getElementById('txtBuscarCliente')?.value || '').toLowerCase().trim();
     const lista = busqueda
         ? _cliProductosLista.filter(c =>
             `${c.identificacion} ${c.razon_social} ${c.email || ''} ${c.telefono || ''}`.toLowerCase().includes(busqueda))
         : _cliProductosLista;
+    _pagClientes.render(lista, { reiniciar });
+}
+
+function _pintarFilasClientes(lista, offset) {
+    const tbody = document.getElementById('tbodyClientes');
+    if (!tbody) return;
 
     if (lista.length === 0) {
         tbody.innerHTML = `<tr><td colspan="8" class="tabla-vacia">No hay clientes que coincidan con la búsqueda.</td></tr>`;
@@ -70,7 +75,7 @@ function renderizarTablaClientes() {
 
     tbody.innerHTML = lista.map((c, i) => `
         <tr>
-            <td class="col-num">${i + 1}</td>
+            <td class="col-num">${offset + i + 1}</td>
             <td>${esc(c.tipo_identificacion)} — ${esc(TIPO_ID_CLIENTE[c.tipo_identificacion] || '')}</td>
             <td>${esc(c.identificacion)}</td>
             <td><strong>${esc(c.razon_social)}</strong></td>
@@ -86,7 +91,6 @@ function renderizarTablaClientes() {
             </td>
         </tr>
     `).join('');
-    renumerarFilas(tbody);
 }
 
 /* ── Crear / editar cliente ──────────────────────────────────── */

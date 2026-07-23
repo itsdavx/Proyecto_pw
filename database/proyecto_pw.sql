@@ -273,7 +273,7 @@ INSERT INTO `menu` (`id_menu`, `nombre`, `icono`, `url`, `modulo`, `orden`, `est
 (5, 'Menu', 'fa-bars', '/NRC30713/Proyecto_pw/paginas/menu/index.html', 'menu', 4, 1),
 (6, 'Cambiar Password', 'fa-key', '/NRC30713/Proyecto_pw/paginas/perfil/frmCambiarPassword.html', 'perfil', 1, 1),
 (7, 'Ver Perfil', 'fa-circle-user', '/NRC30713/Proyecto_pw/paginas/perfil/frmVerPerfil.html', 'perfil', 0, 1),
-(8, 'Registrar movimientos', 'fa-list', '/NRC30713/Proyecto_pw/paginas/frames/frame1.html', 'frame1', 4, 1),
+(8, 'Movimientos', 'fa-list', '/NRC30713/Proyecto_pw/paginas/frames/frame1.html', 'frame1', 4, 1),
 (9, 'Facturación Electrónica', 'fa-file-invoice', '/NRC30713/Proyecto_pw/paginas/frames/frame2.html', 'frame2', 5, 1),
 (10, 'Inventario', 'fa-box', '/NRC30713/Proyecto_pw/paginas/frames/frame3.html', 'frame3', 6, 1),
 (11, 'Clientes', 'fa-address-book', '/NRC30713/Proyecto_pw/paginas/frames/frame4.html', 'frame4', 7, 1),

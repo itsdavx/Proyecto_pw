@@ -29,6 +29,7 @@ let _productos    = [];
 let _facturas     = [];
 let _itemsFactura = [];
 let _itemUidSeq   = 0;
+let _pagFacturas  = null;
 
 /* ── Inicio ──────────────────────────────────────────────────── */
 async function iniciarFrame2() {
@@ -41,6 +42,7 @@ async function iniciarFrame2() {
 
     inicializarTabs();
     llenarSelect('selFormaPago', FRAME2_FORMA_PAGO, (cod, nombre) => `${cod} — ${nombre}`);
+    _pagFacturas = crearPaginador({ clave: 'facturas', tbodyId: 'tbodyFacturas', etiqueta: 'facturas', pintar: _pintarFacturas });
 
     await Promise.all([cargarClientes(), cargarProductos(), cargarFacturas(), cargarEmisor()]);
 
@@ -157,17 +159,21 @@ async function cargarFacturas() {
 }
 
 function renderizarTablaFacturas() {
+    _pagFacturas.render(_facturas);
+}
+
+function _pintarFacturas(lista, offset) {
     const tbody = document.getElementById('tbodyFacturas');
     if (!tbody) return;
 
-    if (_facturas.length === 0) {
+    if (lista.length === 0) {
         tbody.innerHTML = `<tr><td colspan="9" class="tabla-vacia">No hay facturas generadas.</td></tr>`;
         return;
     }
 
-    tbody.innerHTML = _facturas.map((f, i) => `
+    tbody.innerHTML = lista.map((f, i) => `
         <tr>
-            <td class="col-num">${i + 1}</td>
+            <td class="col-num">${offset + i + 1}</td>
             <td>${esc(f.establecimiento)}-${esc(f.punto_emision)}-${esc(f.secuencial)}</td>
             <td>${formatFecha(f.fecha_emision)}</td>
             <td>${esc(f.razon_social_comprador)}<br><span class="text-muted">${esc(f.identificacion_comprador)}</span></td>
@@ -183,7 +189,6 @@ function renderizarTablaFacturas() {
             </td>
         </tr>
     `).join('');
-    renumerarFilas(tbody);
 }
 
 function _descargarArchivo(blob, nombre) {

@@ -42,7 +42,7 @@ function obtenerRegistroFrames(): array
             ['accion' => 'editar', 'nombre' => 'Cambiar contraseña'],
         ]],
         // Historial de solo lectura: el acceso se controla con 'leer'
-        ['modulo' => 'frame1', 'nombre' => 'Registrar movimientos', 'acciones' => []],
+        ['modulo' => 'frame1', 'nombre' => 'Movimientos', 'acciones' => []],
         ['modulo' => 'frame2', 'nombre' => 'Facturación Electrónica', 'acciones' => [
             ['accion' => 'crear',  'nombre' => 'Generar factura'],
             ['accion' => 'editar', 'nombre' => 'Editar datos del emisor'],

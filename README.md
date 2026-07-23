@@ -48,6 +48,7 @@ Cada usuario, además, organiza libremente su propio menú de navegación (agrup
 3. Configurar las credenciales de conexión en `servidor/config.php` (host, puerto, nombre de base de datos, usuario y contraseña).
 4. Si el servidor Apache no usa el puerto 8080, ajustar `baseUrl` y `api` en `scripts/config.js`.
 5. Acceder a la aplicación desde el navegador en la ruta correspondiente al proyecto e iniciar sesión con el usuario Administrador incluido en el script (el sistema no ofrece registro público de cuentas; para producción, cambiar su contraseña por defecto en el primer acceso).
+6. (Opcional, solo para desarrollo/demostración) Poblar la base con datos realistas ejecutando `php database/seed_demo.php`. El script es idempotente y genera clientes, catálogo de productos (inventario), roles con permisos de mínimo privilegio, un usuario por rol y facturas de ejemplo con XML válido; no altera la estructura ni el usuario Administrador. No ejecutar en producción.
 
 ## Estructura general del proyecto
 
