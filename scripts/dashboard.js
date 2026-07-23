@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     mostrarBienvenida();
     cargarAccesosRapidos();
     mostrarFrase();
+    cargarEstadisticasFacturacion();
 
     /* Estadísticas e información administrativa: solo Administrador */
     if (Sesion.usuario()?.id_rol === 1) {
@@ -142,4 +143,31 @@ async function cargarEstadisticas() {
 function _ponerConteo(id, valor) {
     const el = document.getElementById(id);
     if (el && valor !== undefined && valor !== null) el.textContent = valor;
+}
+
+/* ── Estadísticas del Módulo de Facturación (todos los roles) ──
+   Solo consulta; se obtiene fresca en cada carga del Dashboard,
+   por lo que refleja el estado actual sin necesidad de caché. */
+async function cargarEstadisticasFacturacion() {
+    try {
+        const r = await postJSON(API.dashboard.estadisticasFacturacion, { token: Sesion.token() });
+        if (!r.ok) return;
+        const d = r.data;
+        _ponerConteo('statFacturas',        d.facturas_total);
+        _ponerConteo('statFacturasHoy',     d.facturas_hoy);
+        _ponerConteo('statFacturasMes',     d.facturas_mes);
+        _ponerConteo('statClientes',        d.clientes);
+        _ponerConteo('statProductos',       d.productos);
+        _ponerConteo('statMovimientos',     d.movimientos);
+        _ponerConteo('statStockBajo',       d.stock_bajo);
+        _ponerConteo('statValorInventario', _money(d.valor_inventario));
+
+        const lbl = document.getElementById('statStockBajoLabel');
+        if (lbl && d.umbral_stock_bajo != null) lbl.textContent = `Productos con stock bajo (≤ ${d.umbral_stock_bajo})`;
+    } catch { /* si falla, se mantienen los guiones */ }
+}
+
+/* Formato monetario USD, consistente con las tablas del sistema */
+function _money(valor) {
+    return '$' + Number(valor || 0).toLocaleString('es-EC', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }

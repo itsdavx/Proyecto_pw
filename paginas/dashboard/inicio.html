@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard — Sistema Genérico</title>
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/main.css?v=26">
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/dashboard.css?v=26">
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=26">
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/main.css?v=28">
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/dashboard.css?v=28">
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=28">
 </head>
 <body class="pag-contenido">
 
@@ -41,6 +41,67 @@
             <footer class="text-muted text-right" id="fraseAutor"></footer>
         </blockquote>
 
+        <!-- Estadísticas del Módulo de Facturación (visibles para todos los roles) -->
+        <h2 class="seccion-titulo">Estadísticas del Módulo de Facturación</h2>
+        <div class="stats-grid" id="statsFacturacion">
+            <div class="stat-card">
+                <div class="stat-icono" aria-hidden="true">📄︎</div>
+                <div>
+                    <div class="stat-info-num" id="statFacturas">—</div>
+                    <div class="stat-info-label">Facturas emitidas</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icono" aria-hidden="true">📅︎</div>
+                <div>
+                    <div class="stat-info-num" id="statFacturasHoy">—</div>
+                    <div class="stat-info-label">Facturas hoy</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icono" aria-hidden="true">🗓︎</div>
+                <div>
+                    <div class="stat-info-num" id="statFacturasMes">—</div>
+                    <div class="stat-info-label">Facturas este mes</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icono" aria-hidden="true">📇︎</div>
+                <div>
+                    <div class="stat-info-num" id="statClientes">—</div>
+                    <div class="stat-info-label">Clientes registrados</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icono" aria-hidden="true">📦︎</div>
+                <div>
+                    <div class="stat-info-num" id="statProductos">—</div>
+                    <div class="stat-info-label">Productos registrados</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icono" aria-hidden="true">📋︎</div>
+                <div>
+                    <div class="stat-info-num" id="statMovimientos">—</div>
+                    <div class="stat-info-label">Movimientos registrados</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icono" aria-hidden="true">⚠︎</div>
+                <div>
+                    <div class="stat-info-num" id="statStockBajo">—</div>
+                    <div class="stat-info-label" id="statStockBajoLabel">Productos con stock bajo</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icono" aria-hidden="true">💰︎</div>
+                <div>
+                    <div class="stat-info-num" id="statValorInventario">—</div>
+                    <div class="stat-info-label">Valor del inventario</div>
+                </div>
+            </div>
+        </div>
+
         <div class="stats-grid" id="seccionStats">
             <div class="stat-card">
                 <div class="stat-icono">◈</div>
@@ -68,10 +129,10 @@
 
     <div id="alerta-global"></div>
 
-    <script src="/NRC30713/Proyecto_pw/scripts/config.js?v=26"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/utils.js?v=26"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/session.js?v=26"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/router.js?v=26"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/dashboard.js?v=26"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/config.js?v=28"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/utils.js?v=28"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/session.js?v=28"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/router.js?v=28"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/dashboard.js?v=28"></script>
 </body>
 </html>

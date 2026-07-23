@@ -43,10 +43,11 @@ const RUTAS = {
 // Endpoints PHP (solo operaciones de BD)
 const API = {
     dashboard: {
-        estadisticas:   APP.api + 'dashboard/estadisticas.php',
-        accesos:        APP.api + 'dashboard/accesos.php',
-        accesosGuardar: APP.api + 'dashboard/accesos_guardar.php',
-        frase:          APP.api + 'dashboard/frase.php',
+        estadisticas:            APP.api + 'dashboard/estadisticas.php',
+        estadisticasFacturacion: APP.api + 'dashboard/estadisticas_facturacion.php',
+        accesos:                 APP.api + 'dashboard/accesos.php',
+        accesosGuardar:          APP.api + 'dashboard/accesos_guardar.php',
+        frase:                   APP.api + 'dashboard/frase.php',
     },
     auth: {
         login:           APP.api + 'auth/login.php',
