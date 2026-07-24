@@ -22,6 +22,8 @@ async function iniciarFrame1() {
     _pagComprobantes = crearPaginador({ clave: 'mov-comprobantes', tbodyId: 'tbodyComprobantes', etiqueta: 'comprobantes', pintar: _pintarComprobantes });
     _pagInventario   = crearPaginador({ clave: 'mov-inventario',   tbodyId: 'tbodyInventario',   etiqueta: 'movimientos', pintar: _pintarInventario });
 
+    document.getElementById('txtBuscarMovimientoProducto')?.addEventListener('input', () => renderizarTablaInventario(true));
+
     await cargarMovimientos();
 }
 
@@ -110,8 +112,18 @@ function _pintarInventario(lista, offset) {
             <td>${esc(m.descripcion)}</td>
             <td><span class="badge ${badge}">${esc(m.tipo_movimiento)}</span></td>
             <td>${esIngreso ? '+' : '−'}${Number(m.cantidad).toFixed(2)} ${esc(m.unidad || '')}</td>
+            <td>${Number(m.stock_actual).toFixed(2)}</td>
             <td>${esc(m.proveedor || '—')}</td>
             <td>${esc(m.documento)}</td>
         </tr>`;
     }).join('');
+}
+
+function renderizarTablaInventario(reiniciar = false) {
+    const busqueda = (document.getElementById('txtBuscarMovimientoProducto')?.value || '').toLowerCase().trim();
+    const lista = busqueda
+        ? _movInventario.filter(m =>
+            `${m.codigo_principal} ${m.descripcion || ''}`.toLowerCase().includes(busqueda))
+        : _movInventario;
+    _pagInventario.render(lista, { reiniciar });
 }
