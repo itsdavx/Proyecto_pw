@@ -686,6 +686,52 @@ CREATE TABLE `tareas` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `inventario_movimientos`
+--
+
+CREATE TABLE `inventario_movimientos` (
+  `id_movimiento` int(11) NOT NULL AUTO_INCREMENT,
+  `id_producto` int(11) DEFAULT NULL,
+  `codigo_principal` varchar(25) NOT NULL COMMENT 'instantánea: sobrevive al borrado del producto',
+  `descripcion` varchar(300) NOT NULL COMMENT 'instantánea',
+  `unidad` varchar(20) DEFAULT NULL COMMENT 'instantánea',
+  `tipo` varchar(30) NOT NULL COMMENT 'INGRESO POR COMPRA | AJUSTE DE INVENTARIO',
+  `cantidad` decimal(12,6) NOT NULL COMMENT 'magnitud del cambio (siempre positiva)',
+  `stock_anterior` decimal(12,6) NOT NULL,
+  `stock_nuevo` decimal(12,6) NOT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_movimiento`),
+  KEY `fk_invmov_producto` (`id_producto`),
+  KEY `fk_invmov_user` (`created_by`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `inventario_movimientos`
+--
+
+INSERT INTO `inventario_movimientos` (`id_movimiento`, `id_producto`, `codigo_principal`, `descripcion`, `unidad`, `tipo`, `cantidad`, `stock_anterior`, `stock_nuevo`, `created_by`, `created_at`) VALUES
+(1, 6, 'LIMP-001', 'Desinfectante Multiusos Lavanda 1 L', 'L', 'INGRESO POR COMPRA', '140.000000', '0.000000', '140.000000', 1, '2026-06-24 10:55:00'),
+(2, 7, 'LIMP-002', 'Detergente en Polvo Multiusos 5 Kg', 'Kg', 'INGRESO POR COMPRA', '80.000000', '0.000000', '80.000000', 1, '2026-07-23 17:48:40'),
+(3, 8, 'LIMP-003', 'Jabón Líquido Antibacterial 500 mL', 'mL', 'INGRESO POR COMPRA', '210.000000', '0.000000', '210.000000', 1, '2026-07-23 17:48:40'),
+(4, 9, 'BEB-001', 'Agua Mineral sin Gas 500 mL', 'Bot', 'INGRESO POR COMPRA', '480.000000', '0.000000', '480.000000', 1, '2026-07-14 10:48:00'),
+(5, 10, 'BEB-002', 'Gaseosa Cola 1.5 L', 'Bot', 'INGRESO POR COMPRA', '300.000000', '0.000000', '300.000000', 1, '2026-06-24 10:55:00'),
+(6, 11, 'BEB-003', 'Café Molido Tostado 500 g', 'Paq', 'INGRESO POR COMPRA', '95.000000', '0.000000', '95.000000', 1, '2026-07-23 17:48:40'),
+(7, 12, 'ALI-001', 'Arroz Flor Grano Largo 2 Kg', 'Kg', 'INGRESO POR COMPRA', '160.000000', '0.000000', '160.000000', 1, '2026-06-24 10:55:00'),
+(8, 13, 'ALI-002', 'Aceite Vegetal de Girasol 1 L', 'L', 'INGRESO POR COMPRA', '120.000000', '0.000000', '120.000000', 1, '2026-07-14 10:48:00'),
+(9, 14, 'ALI-003', 'Atún Lomo en Aceite 170 g', 'Und', 'INGRESO POR COMPRA', '260.000000', '0.000000', '260.000000', 1, '2026-07-14 10:48:00'),
+(10, 15, 'TEC-001', 'Mouse Óptico Inalámbrico USB', 'Und', 'INGRESO POR COMPRA', '55.000000', '0.000000', '55.000000', 1, '2026-06-11 10:30:00'),
+(11, 16, 'TEC-002', 'Teclado Multimedia USB Español', 'Und', 'INGRESO POR COMPRA', '38.000000', '0.000000', '38.000000', 1, '2026-07-20 10:35:00'),
+(12, 17, 'TEC-003', 'Memoria Flash USB 32 GB', 'Und', 'INGRESO POR COMPRA', '90.000000', '0.000000', '90.000000', 1, '2026-06-11 10:30:00'),
+(13, 18, 'PAP-001', 'Resma Papel Bond A4 75 g (500 hojas)', 'Paq', 'INGRESO POR COMPRA', '220.000000', '0.000000', '220.000000', 1, '2026-07-02 10:26:00'),
+(14, 19, 'PAP-002', 'Esferográfico Punta Fina Azul (caja x12)', 'Caja', 'INGRESO POR COMPRA', '70.000000', '0.000000', '70.000000', 1, '2026-07-02 10:26:00'),
+(15, 20, 'PAP-003', 'Cuaderno Universitario 100 Hojas', 'Und', 'INGRESO POR COMPRA', '150.000000', '0.000000', '150.000000', 1, '2026-07-23 17:48:40'),
+(16, 21, 'HOG-001', 'Foco LED 9W Luz Blanca E27', 'Und', 'INGRESO POR COMPRA', '200.000000', '0.000000', '200.000000', 1, '2026-07-02 10:26:00');
+
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `unidades_medida`
 --
 
@@ -996,6 +1042,13 @@ ALTER TABLE `menu_super_usuario`
 --
 ALTER TABLE `permisos_rol`
   ADD CONSTRAINT `fk_pr_rol` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id_rol`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `inventario_movimientos`
+--
+ALTER TABLE `inventario_movimientos`
+  ADD CONSTRAINT `fk_invmov_producto` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_invmov_user` FOREIGN KEY (`created_by`) REFERENCES `pw_user` (`id_user`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `productos`

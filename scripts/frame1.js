@@ -99,15 +99,18 @@ function _pintarInventario(lista, offset) {
         return;
     }
 
-    tbody.innerHTML = lista.map((m, i) => `
+    tbody.innerHTML = lista.map((m, i) => {
+        const esIngreso = m.tipo_movimiento === 'INGRESO POR COMPRA';
+        const badge     = esIngreso ? 'badge-activo' : (m.tipo_movimiento === 'SALIDA POR VENTA' ? 'badge-warning' : 'badge-primary');
+        return `
         <tr>
             <td class="col-num">${offset + i + 1}</td>
             <td>${formatFecha(m.fecha_emision)}</td>
             <td>${esc(m.codigo_principal)}</td>
             <td>${esc(m.descripcion)}</td>
-            <td><span class="badge badge-warning">${esc(m.tipo_movimiento)}</span></td>
-            <td>${Number(m.cantidad).toFixed(2)} ${esc(m.unidad || '')}</td>
+            <td><span class="badge ${badge}">${esc(m.tipo_movimiento)}</span></td>
+            <td>${esIngreso ? '+' : '−'}${Number(m.cantidad).toFixed(2)} ${esc(m.unidad || '')}</td>
             <td>${esc(m.documento)}</td>
-        </tr>
-    `).join('');
+        </tr>`;
+    }).join('');
 }

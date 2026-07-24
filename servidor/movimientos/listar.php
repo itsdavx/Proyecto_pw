@@ -40,24 +40,42 @@ foreach ($comprobantes as &$c) {
 unset($c);
 
 // ------------------------------------------------------------
-// Movimientos de inventario: el sistema registra salidas de
-// productos a través del detalle de las facturas emitidas
-// (no maneja aún ingresos ni ajustes de stock).
+// Movimientos de inventario. Se combinan dos orígenes:
+//   * Salidas por venta, derivadas del detalle de las facturas
+//     (no se duplican en una tabla propia).
+//   * Ingresos y ajustes registrados al crear o editar un
+//     producto, almacenados en inventario_movimientos.
 // ------------------------------------------------------------
 $inventario = $db->query("
-    SELECT d.codigo_principal,
-           d.descripcion,
-           d.cantidad,
-           d.unidad,
-           'SALIDA POR VENTA' AS tipo_movimiento,
-           CONCAT(f.establecimiento, '-', f.punto_emision, '-', f.secuencial) AS documento,
-           f.fecha_emision,
-           f.created_at,
-           u.nombre AS registrado_por
-    FROM   factura_detalle d
-    INNER  JOIN facturas f ON f.id_factura = d.id_factura
-    LEFT   JOIN pw_user u ON u.id_user = f.created_by
-    ORDER  BY f.created_at DESC, d.id_detalle DESC
+    SELECT * FROM (
+        SELECT d.codigo_principal,
+               d.descripcion,
+               d.cantidad,
+               d.unidad,
+               'SALIDA POR VENTA' AS tipo_movimiento,
+               CONCAT(f.establecimiento, '-', f.punto_emision, '-', f.secuencial) AS documento,
+               f.fecha_emision,
+               f.created_at,
+               u.nombre AS registrado_por
+        FROM   factura_detalle d
+        INNER  JOIN facturas f ON f.id_factura = d.id_factura
+        LEFT   JOIN pw_user u ON u.id_user = f.created_by
+
+        UNION ALL
+
+        SELECT m.codigo_principal,
+               m.descripcion,
+               m.cantidad,
+               m.unidad,
+               m.tipo AS tipo_movimiento,
+               '—' AS documento,
+               DATE(m.created_at) AS fecha_emision,
+               m.created_at,
+               u.nombre AS registrado_por
+        FROM   inventario_movimientos m
+        LEFT   JOIN pw_user u ON u.id_user = m.created_by
+    ) AS movimientos
+    ORDER BY created_at DESC, codigo_principal ASC
 ")->fetchAll();
 
 responder(true, 'OK', [

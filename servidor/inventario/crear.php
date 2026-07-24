@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__DIR__) . '/config.php';
 require_once dirname(__DIR__) . '/facturacion/lib/Catalogos.php';
+require_once __DIR__ . '/lib/MovimientoInventario.php';
 
 $input  = getInput();
 $token  = $input['token'] ?? '';
@@ -23,6 +24,7 @@ if (!$idUnidad)          responder(false, 'La unidad de medida es obligatoria.')
 if ($stock < 0)          responder(false, 'El stock no puede ser negativo.');
 
 $db = getDB();
+$db->beginTransaction();
 try {
     $db->prepare("
         INSERT INTO productos (codigo_principal, descripcion, precio_unitario, codigo_porcentaje_iva,
@@ -32,7 +34,19 @@ try {
         $codigo, $descripcion, $precio, $codigoIva,
         $idCategoria ?: null, $idUnidad, $stock, $sesion['id_user'],
     ]);
+    $idProducto = (int)$db->lastInsertId();
+
+    // La existencia inicial queda registrada como ingreso de inventario
+    MovimientoInventario::registrar($db, [
+        'id_producto'      => $idProducto,
+        'codigo_principal' => $codigo,
+        'descripcion'      => $descripcion,
+        'unidad'           => MovimientoInventario::unidadDe($db, $idUnidad),
+    ], 0, $stock, $sesion['id_user']);
+
+    $db->commit();
 } catch (PDOException $e) {
+    $db->rollBack();
     if ($e->getCode() === '23000') responder(false, 'Ya existe un producto con ese código, o la categoría/unidad no es válida.');
     throw $e;
 }

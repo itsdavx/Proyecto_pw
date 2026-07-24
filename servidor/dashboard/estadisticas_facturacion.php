@@ -39,8 +39,10 @@ $p = $db->query("
 $clientes = (int)$db->query("SELECT COUNT(*) FROM clientes")->fetchColumn();
 
 // Movimientos = comprobantes emitidos (facturas) + salidas de inventario
-// (líneas de detalle), tal como los presenta el módulo Movimientos.
-$detalle = (int)$db->query("SELECT COUNT(*) FROM factura_detalle")->fetchColumn();
+// (líneas de detalle) + ingresos y ajustes de inventario, tal como los
+// presenta el módulo Movimientos.
+$detalle  = (int)$db->query("SELECT COUNT(*) FROM factura_detalle")->fetchColumn();
+$ingresos = (int)$db->query("SELECT COUNT(*) FROM inventario_movimientos")->fetchColumn();
 
 responder(true, 'OK', [
     'facturas_total'    => (int)$f['total'],
@@ -49,7 +51,7 @@ responder(true, 'OK', [
     'monto_facturado'   => round((float)$f['monto_total'], 2),
     'clientes'          => $clientes,
     'productos'         => (int)$p['total'],
-    'movimientos'       => (int)$f['total'] + $detalle,
+    'movimientos'       => (int)$f['total'] + $detalle + $ingresos,
     'stock_bajo'        => (int)$p['stock_bajo'],
     'valor_inventario'  => round((float)$p['valor_inventario'], 2),
     'umbral_stock_bajo' => UMBRAL_STOCK_BAJO,

@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__DIR__) . '/config.php';
 require_once dirname(__DIR__) . '/facturacion/lib/Catalogos.php';
+require_once __DIR__ . '/lib/MovimientoInventario.php';
 
 $input  = getInput();
 $token  = $input['token'] ?? '';
@@ -25,6 +26,14 @@ if (!$idUnidad)           responder(false, 'La unidad de medida es obligatoria.'
 if ($stock < 0)           responder(false, 'El stock no puede ser negativo.');
 
 $db = getDB();
+
+// Existencia previa: la variación se registra como movimiento de inventario
+$anterior = $db->prepare("SELECT stock FROM productos WHERE id_producto = ?");
+$anterior->execute([$idProducto]);
+$stockAnterior = $anterior->fetchColumn();
+if ($stockAnterior === false) responder(false, 'Producto no encontrado.');
+
+$db->beginTransaction();
 try {
     $db->prepare("
         UPDATE productos
@@ -35,7 +44,17 @@ try {
         $codigo, $descripcion, $precio, $codigoIva,
         $idCategoria ?: null, $idUnidad, $stock, $idProducto,
     ]);
+
+    MovimientoInventario::registrar($db, [
+        'id_producto'      => $idProducto,
+        'codigo_principal' => $codigo,
+        'descripcion'      => $descripcion,
+        'unidad'           => MovimientoInventario::unidadDe($db, $idUnidad),
+    ], (float)$stockAnterior, $stock, $sesion['id_user']);
+
+    $db->commit();
 } catch (PDOException $e) {
+    $db->rollBack();
     if ($e->getCode() === '23000') responder(false, 'Ya existe otro producto con ese código, o la categoría/unidad no es válida.');
     throw $e;
 }
