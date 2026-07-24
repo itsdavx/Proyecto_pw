@@ -20,25 +20,30 @@ class MovimientoInventario
     /**
      * Registra la variación de existencia de un producto. Si el stock no
      * cambió no registra nada. Un aumento se registra como ingreso por
-     * compra; una disminución manual, como ajuste de inventario.
+     * compra (con su proveedor, si se indicó); una disminución manual,
+     * como ajuste de inventario (el proveedor no aplica y se descarta).
      *
-     * @param array $producto Fila con id_producto, codigo_principal, descripcion y unidad (abreviatura).
+     * @param array   $producto  Fila con id_producto, codigo_principal, descripcion y unidad (abreviatura).
+     * @param ?string $proveedor Nombre libre del proveedor; solo se guarda cuando el movimiento es un ingreso.
      */
-    public static function registrar(PDO $db, array $producto, float $stockAnterior, float $stockNuevo, ?int $idUser): void
+    public static function registrar(PDO $db, array $producto, float $stockAnterior, float $stockNuevo, ?int $idUser, ?string $proveedor = null): void
     {
         $delta = round($stockNuevo - $stockAnterior, 6);
         if ($delta == 0.0) { return; }
 
+        $esIngreso = $delta > 0;
+
         $db->prepare("
             INSERT INTO inventario_movimientos
-                (id_producto, codigo_principal, descripcion, unidad, tipo, cantidad, stock_anterior, stock_nuevo, created_by)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (id_producto, codigo_principal, descripcion, unidad, proveedor, tipo, cantidad, stock_anterior, stock_nuevo, created_by)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ")->execute([
             $producto['id_producto'],
             $producto['codigo_principal'],
             $producto['descripcion'],
             $producto['unidad'] ?? null,
-            $delta > 0 ? self::INGRESO : self::AJUSTE,
+            $esIngreso ? ($proveedor ?: null) : null,
+            $esIngreso ? self::INGRESO : self::AJUSTE,
             abs($delta),
             $stockAnterior,
             $stockNuevo,

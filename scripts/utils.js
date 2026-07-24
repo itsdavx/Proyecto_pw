@@ -43,6 +43,15 @@ const CATALOGO_IVA = {
     '7': { nombre: 'Exento de IVA',          tarifa: 0.00 },
 };
 
+/* ── Catálogo de impuestos especiales (Tabla 16 SRI) ─────────────
+   Clasificación informativa del producto, además del IVA. La clave
+   vacía representa "No posee" (se guarda como NULL en el producto). */
+const CATALOGO_IMPUESTO_ESPECIAL = {
+    '':  { nombre: 'No posee' },
+    '3': { nombre: 'ICE — Impuesto a los Consumos Especiales' },
+    '5': { nombre: 'IRBPNR — Impuesto a las Botellas Plásticas No Retornables' },
+};
+
 /* ── Petición POST a los endpoints PHP ───────────────────────── */
 async function postJSON(url, datos) {
     const resp = await fetch(url, {

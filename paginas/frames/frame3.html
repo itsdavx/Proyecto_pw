@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventario — Sistema Genérico</title>
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/main.css?v=29">
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/dashboard.css?v=29">
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=29">
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/main.css?v=30">
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/dashboard.css?v=30">
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=30">
 </head>
 <body class="pag-contenido">
 
@@ -47,6 +47,10 @@
                             <select class="form-control" id="selIvaProducto"></select>
                         </div>
                         <div class="form-grupo">
+                            <label class="form-label" for="selImpuestoEspecial">Impuesto especial</label>
+                            <select class="form-control" id="selImpuestoEspecial"></select>
+                        </div>
+                        <div class="form-grupo">
                             <label class="form-label" for="selCategoriaProducto">Categoría</label>
                             <select class="form-control" id="selCategoriaProducto"></select>
                         </div>
@@ -57,6 +61,10 @@
                         <div class="form-grupo">
                             <label class="form-label" for="txtStockProducto">Stock disponible</label>
                             <input class="form-control" type="number" id="txtStockProducto" min="0" step="0.01" value="0">
+                        </div>
+                        <div class="form-grupo">
+                            <label class="form-label" for="txtProveedor">Nombre del proveedor (opcional)</label>
+                            <input class="form-control" type="text" id="txtProveedor" placeholder="Ej. Distribuidora XYZ">
                         </div>
                     </div>
                     <div class="form-acciones">
@@ -87,12 +95,13 @@
                             <th>Stock disponible</th>
                             <th>Precio</th>
                             <th>IVA</th>
+                            <th>Impuesto especial</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="tbodyInventario">
-                        <tr><td colspan="10" class="tabla-vacia">Cargando...</td></tr>
+                        <tr><td colspan="11" class="tabla-vacia">Cargando...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -101,14 +110,14 @@
 
     <div id="alerta-global"></div>
 
-    <script src="/NRC30713/Proyecto_pw/scripts/config.js?v=29"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/utils.js?v=29"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/session.js?v=29"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/validaciones.js?v=29"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/router.js?v=29"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/confirmacion.js?v=29"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/paginacion.js?v=29"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/frame3.js?v=29"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/config.js?v=30"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/utils.js?v=30"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/session.js?v=30"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/validaciones.js?v=30"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/router.js?v=30"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/confirmacion.js?v=30"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/paginacion.js?v=30"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/frame3.js?v=30"></script>
     <script>document.addEventListener('DOMContentLoaded', iniciarFrame3);</script>
 </body>
 </html>

@@ -34,6 +34,16 @@ class Catalogos
         '7' => ['nombre' => 'Exento de IVA',           'tarifa' => 0.00],
     ];
 
+    // Tabla 16 — Impuestos especiales aplicables a un producto, además
+    // del IVA (código 2, no listado aquí por no ser "especial"). NULL /
+    // vacío en el producto equivale a "no posee". Es una clasificación
+    // informativa del catálogo: no se aplica aún al cálculo de la
+    // factura ni al XML, que solo declaran IVA.
+    public const IMPUESTO_ESPECIAL = [
+        '3' => 'ICE — Impuesto a los Consumos Especiales',
+        '5' => 'IRBPNR — Impuesto Redimible a las Botellas Plásticas No Retornables',
+    ];
+
     // Tabla 6 — Formas de pago
     public const FORMA_PAGO = [
         '01' => 'Sin utilización del sistema financiero',

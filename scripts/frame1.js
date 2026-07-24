@@ -95,7 +95,7 @@ function _pintarInventario(lista, offset) {
     if (!tbody) return;
 
     if (lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="tabla-vacia">No hay movimientos de inventario registrados.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="tabla-vacia">No hay movimientos de inventario registrados.</td></tr>`;
         return;
     }
 
@@ -110,6 +110,7 @@ function _pintarInventario(lista, offset) {
             <td>${esc(m.descripcion)}</td>
             <td><span class="badge ${badge}">${esc(m.tipo_movimiento)}</span></td>
             <td>${esIngreso ? '+' : '−'}${Number(m.cantidad).toFixed(2)} ${esc(m.unidad || '')}</td>
+            <td>${esc(m.proveedor || '—')}</td>
             <td>${esc(m.documento)}</td>
         </tr>`;
     }).join('');

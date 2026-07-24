@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 24-07-2026 a las 15:47:16
+-- Tiempo de generación: 24-07-2026 a las 17:24:49
 -- Versión del servidor: 8.0.17
 -- Versión de PHP: 7.3.10
 
@@ -153,7 +153,9 @@ INSERT INTO `facturas` (`id_factura`, `ambiente`, `tipo_emision`, `establecimien
 (5, '1', '1', '001', '001', '000000002', '01843553', '2506202601179174582300110010010000000020184355312', '2026-06-25', 8, '05', '1710345678', 'María Fernanda Cevallos Torres', 'Calle Los Ríos N24-12 y Foch, Quito', '19', '21.65', '0.00', '2.54', '0.00', '24.19', 'DOLAR', 'GENERADA', '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<factura id=\"comprobante\" version=\"1.1.0\">\n  <infoTributaria>\n    <ambiente>1</ambiente>\n    <tipoEmision>1</tipoEmision>\n    <razonSocial>DISTRIBUIDORA COMERCIAL NEXUS S.A.</razonSocial>\n    <nombreComercial>NEXUS Distribuciones</nombreComercial>\n    <ruc>1791745823001</ruc>\n    <claveAcceso>2506202601179174582300110010010000000020184355312</claveAcceso>\n    <codDoc>01</codDoc>\n    <estab>001</estab>\n    <ptoEmi>001</ptoEmi>\n    <secuencial>000000002</secuencial>\n    <dirMatriz>Av. República del Salvador N36-84 y Naciones Unidas, Quito</dirMatriz>\n  </infoTributaria>\n  <infoFactura>\n    <fechaEmision>25/06/2026</fechaEmision>\n    <obligadoContabilidad>SI</obligadoContabilidad>\n    <tipoIdentificacionComprador>05</tipoIdentificacionComprador>\n    <razonSocialComprador>María Fernanda Cevallos Torres</razonSocialComprador>\n    <identificacionComprador>1710345678</identificacionComprador>\n    <direccionComprador>Calle Los Ríos N24-12 y Foch, Quito</direccionComprador>\n    <totalSinImpuestos>21.65</totalSinImpuestos>\n    <totalDescuento>0.00</totalDescuento>\n    <totalConImpuestos>\n      <totalImpuesto>\n        <codigo>2</codigo>\n        <codigoPorcentaje>4</codigoPorcentaje>\n        <baseImponible>16.95</baseImponible>\n        <valor>2.54</valor>\n      </totalImpuesto>\n      <totalImpuesto>\n        <codigo>2</codigo>\n        <codigoPorcentaje>0</codigoPorcentaje>\n        <baseImponible>4.70</baseImponible>\n        <valor>0.00</valor>\n      </totalImpuesto>\n    </totalConImpuestos>\n    <propina>0.00</propina>\n    <importeTotal>24.19</importeTotal>\n    <moneda>DOLAR</moneda>\n    <pagos>\n      <pago>\n        <formaPago>19</formaPago>\n        <total>24.19</total>\n      </pago>\n    </pagos>\n  </infoFactura>\n  <detalles>\n    <detalle>\n      <codigoPrincipal>LIMP-001</codigoPrincipal>\n      <descripcion>Desinfectante Multiusos Lavanda 1 L</descripcion>\n      <cantidad>3.000000</cantidad>\n      <precioUnitario>2.850000</precioUnitario>\n      <descuento>0.00</descuento>\n      <precioTotalSinImpuesto>8.55</precioTotalSinImpuesto>\n      <impuestos>\n        <impuesto>\n          <codigo>2</codigo>\n          <codigoPorcentaje>4</codigoPorcentaje>\n          <tarifa>15.00</tarifa>\n          <baseImponible>8.55</baseImponible>\n          <valor>1.28</valor>\n        </impuesto>\n      </impuestos>\n    </detalle>\n    <detalle>\n      <codigoPrincipal>BEB-002</codigoPrincipal>\n      <descripcion>Gaseosa Cola 1.5 L</descripcion>\n      <cantidad>6.000000</cantidad>\n      <precioUnitario>1.400000</precioUnitario>\n      <descuento>0.00</descuento>\n      <precioTotalSinImpuesto>8.40</precioTotalSinImpuesto>\n      <impuestos>\n        <impuesto>\n          <codigo>2</codigo>\n          <codigoPorcentaje>4</codigoPorcentaje>\n          <tarifa>15.00</tarifa>\n          <baseImponible>8.40</baseImponible>\n          <valor>1.26</valor>\n        </impuesto>\n      </impuestos>\n    </detalle>\n    <detalle>\n      <codigoPrincipal>ALI-001</codigoPrincipal>\n      <descripcion>Arroz Flor Grano Largo 2 Kg</descripcion>\n      <cantidad>2.000000</cantidad>\n      <precioUnitario>2.350000</precioUnitario>\n      <descuento>0.00</descuento>\n      <precioTotalSinImpuesto>4.70</precioTotalSinImpuesto>\n      <impuestos>\n        <impuesto>\n          <codigo>2</codigo>\n          <codigoPorcentaje>0</codigoPorcentaje>\n          <tarifa>0.00</tarifa>\n          <baseImponible>4.70</baseImponible>\n          <valor>0.00</valor>\n        </impuesto>\n      </impuestos>\n    </detalle>\n  </detalles>\n</factura>\n', 4, '2026-06-25 10:55:00'),
 (6, '1', '1', '001', '001', '000000003', '04819156', '0307202601179174582300110010010000000030481915616', '2026-07-03', 5, '04', '1791234560001', 'FERRETERÍA Y ACABADOS EL CONSTRUCTOR CÍA. LTDA.', 'Av. Maldonado S12-345 y Alonso de Angulo, Quito', '01', '90.50', '3.50', '13.58', '0.00', '104.08', 'DOLAR', 'GENERADA', '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<factura id=\"comprobante\" version=\"1.1.0\">\n  <infoTributaria>\n    <ambiente>1</ambiente>\n    <tipoEmision>1</tipoEmision>\n    <razonSocial>DISTRIBUIDORA COMERCIAL NEXUS S.A.</razonSocial>\n    <nombreComercial>NEXUS Distribuciones</nombreComercial>\n    <ruc>1791745823001</ruc>\n    <claveAcceso>0307202601179174582300110010010000000030481915616</claveAcceso>\n    <codDoc>01</codDoc>\n    <estab>001</estab>\n    <ptoEmi>001</ptoEmi>\n    <secuencial>000000003</secuencial>\n    <dirMatriz>Av. República del Salvador N36-84 y Naciones Unidas, Quito</dirMatriz>\n  </infoTributaria>\n  <infoFactura>\n    <fechaEmision>03/07/2026</fechaEmision>\n    <obligadoContabilidad>SI</obligadoContabilidad>\n    <tipoIdentificacionComprador>04</tipoIdentificacionComprador>\n    <razonSocialComprador>FERRETERÍA Y ACABADOS EL CONSTRUCTOR CÍA. LTDA.</razonSocialComprador>\n    <identificacionComprador>1791234560001</identificacionComprador>\n    <direccionComprador>Av. Maldonado S12-345 y Alonso de Angulo, Quito</direccionComprador>\n    <totalSinImpuestos>90.50</totalSinImpuestos>\n    <totalDescuento>3.50</totalDescuento>\n    <totalConImpuestos>\n      <totalImpuesto>\n        <codigo>2</codigo>\n        <codigoPorcentaje>4</codigoPorcentaje>\n        <baseImponible>90.50</baseImponible>\n        <valor>13.58</valor>\n      </totalImpuesto>\n    </totalConImpuestos>\n    <propina>0.00</propina>\n    <importeTotal>104.08</importeTotal>\n    <moneda>DOLAR</moneda>\n    <pagos>\n      <pago>\n        <formaPago>01</formaPago>\n        <total>104.08</total>\n      </pago>\n    </pagos>\n  </infoFactura>\n  <detalles>\n    <detalle>\n      <codigoPrincipal>PAP-001</codigoPrincipal>\n      <descripcion>Resma Papel Bond A4 75 g (500 hojas)</descripcion>\n      <cantidad>10.000000</cantidad>\n      <precioUnitario>3.800000</precioUnitario>\n      <descuento>0.00</descuento>\n      <precioTotalSinImpuesto>38.00</precioTotalSinImpuesto>\n      <impuestos>\n        <impuesto>\n          <codigo>2</codigo>\n          <codigoPorcentaje>4</codigoPorcentaje>\n          <tarifa>15.00</tarifa>\n          <baseImponible>38.00</baseImponible>\n          <valor>5.70</valor>\n        </impuesto>\n      </impuestos>\n    </detalle>\n    <detalle>\n      <codigoPrincipal>PAP-002</codigoPrincipal>\n      <descripcion>Esferográfico Punta Fina Azul (caja x12)</descripcion>\n      <cantidad>5.000000</cantidad>\n      <precioUnitario>4.200000</precioUnitario>\n      <descuento>0.00</descuento>\n      <precioTotalSinImpuesto>21.00</precioTotalSinImpuesto>\n      <impuestos>\n        <impuesto>\n          <codigo>2</codigo>\n          <codigoPorcentaje>4</codigoPorcentaje>\n          <tarifa>15.00</tarifa>\n          <baseImponible>21.00</baseImponible>\n          <valor>3.15</valor>\n        </impuesto>\n      </impuestos>\n    </detalle>\n    <detalle>\n      <codigoPrincipal>HOG-001</codigoPrincipal>\n      <descripcion>Foco LED 9W Luz Blanca E27</descripcion>\n      <cantidad>20.000000</cantidad>\n      <precioUnitario>1.750000</precioUnitario>\n      <descuento>3.50</descuento>\n      <precioTotalSinImpuesto>31.50</precioTotalSinImpuesto>\n      <impuestos>\n        <impuesto>\n          <codigo>2</codigo>\n          <codigoPorcentaje>4</codigoPorcentaje>\n          <tarifa>15.00</tarifa>\n          <baseImponible>31.50</baseImponible>\n          <valor>4.73</valor>\n        </impuesto>\n      </impuestos>\n    </detalle>\n  </detalles>\n</factura>\n', 3, '2026-07-03 10:26:00'),
 (7, '1', '1', '001', '001', '000000004', '68749000', '1507202601179174582300110010010000000046874900013', '2026-07-15', 9, '05', '0918273645', 'Juan Carlos Paredes Molina', 'Cdla. Kennedy Norte, Calle San Roque 210, Guayaquil', '16', '45.80', '0.00', '0.00', '0.00', '45.80', 'DOLAR', 'GENERADA', '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<factura id=\"comprobante\" version=\"1.1.0\">\n  <infoTributaria>\n    <ambiente>1</ambiente>\n    <tipoEmision>1</tipoEmision>\n    <razonSocial>DISTRIBUIDORA COMERCIAL NEXUS S.A.</razonSocial>\n    <nombreComercial>NEXUS Distribuciones</nombreComercial>\n    <ruc>1791745823001</ruc>\n    <claveAcceso>1507202601179174582300110010010000000046874900013</claveAcceso>\n    <codDoc>01</codDoc>\n    <estab>001</estab>\n    <ptoEmi>001</ptoEmi>\n    <secuencial>000000004</secuencial>\n    <dirMatriz>Av. República del Salvador N36-84 y Naciones Unidas, Quito</dirMatriz>\n  </infoTributaria>\n  <infoFactura>\n    <fechaEmision>15/07/2026</fechaEmision>\n    <obligadoContabilidad>SI</obligadoContabilidad>\n    <tipoIdentificacionComprador>05</tipoIdentificacionComprador>\n    <razonSocialComprador>Juan Carlos Paredes Molina</razonSocialComprador>\n    <identificacionComprador>0918273645</identificacionComprador>\n    <direccionComprador>Cdla. Kennedy Norte, Calle San Roque 210, Guayaquil</direccionComprador>\n    <totalSinImpuestos>45.80</totalSinImpuestos>\n    <totalDescuento>0.00</totalDescuento>\n    <totalConImpuestos>\n      <totalImpuesto>\n        <codigo>2</codigo>\n        <codigoPorcentaje>0</codigoPorcentaje>\n        <baseImponible>45.80</baseImponible>\n        <valor>0.00</valor>\n      </totalImpuesto>\n    </totalConImpuestos>\n    <propina>0.00</propina>\n    <importeTotal>45.80</importeTotal>\n    <moneda>DOLAR</moneda>\n    <pagos>\n      <pago>\n        <formaPago>16</formaPago>\n        <total>45.80</total>\n      </pago>\n    </pagos>\n  </infoFactura>\n  <detalles>\n    <detalle>\n      <codigoPrincipal>BEB-001</codigoPrincipal>\n      <descripcion>Agua Mineral sin Gas 500 mL</descripcion>\n      <cantidad>24.000000</cantidad>\n      <precioUnitario>0.650000</precioUnitario>\n      <descuento>0.00</descuento>\n      <precioTotalSinImpuesto>15.60</precioTotalSinImpuesto>\n      <impuestos>\n        <impuesto>\n          <codigo>2</codigo>\n          <codigoPorcentaje>0</codigoPorcentaje>\n          <tarifa>0.00</tarifa>\n          <baseImponible>15.60</baseImponible>\n          <valor>0.00</valor>\n        </impuesto>\n      </impuestos>\n    </detalle>\n    <detalle>\n      <codigoPrincipal>ALI-003</codigoPrincipal>\n      <descripcion>Atún Lomo en Aceite 170 g</descripcion>\n      <cantidad>12.000000</cantidad>\n      <precioUnitario>1.550000</precioUnitario>\n      <descuento>0.00</descuento>\n      <precioTotalSinImpuesto>18.60</precioTotalSinImpuesto>\n      <impuestos>\n        <impuesto>\n          <codigo>2</codigo>\n          <codigoPorcentaje>0</codigoPorcentaje>\n          <tarifa>0.00</tarifa>\n          <baseImponible>18.60</baseImponible>\n          <valor>0.00</valor>\n        </impuesto>\n      </impuestos>\n    </detalle>\n    <detalle>\n      <codigoPrincipal>ALI-002</codigoPrincipal>\n      <descripcion>Aceite Vegetal de Girasol 1 L</descripcion>\n      <cantidad>4.000000</cantidad>\n      <precioUnitario>2.900000</precioUnitario>\n      <descuento>0.00</descuento>\n      <precioTotalSinImpuesto>11.60</precioTotalSinImpuesto>\n      <impuestos>\n        <impuesto>\n          <codigo>2</codigo>\n          <codigoPorcentaje>0</codigoPorcentaje>\n          <tarifa>0.00</tarifa>\n          <baseImponible>11.60</baseImponible>\n          <valor>0.00</valor>\n        </impuesto>\n      </impuestos>\n    </detalle>\n  </detalles>\n</factura>\n', 4, '2026-07-15 10:48:00'),
-(8, '1', '1', '001', '001', '000000005', '94298626', '2107202601179174582300110010010000000059429862616', '2026-07-21', 6, '04', '1890345671001', 'TECNOSOLUCIONES DEL AUSTRO S.A.', 'Av. Remigio Crespo 4-56 y Guayas, Cuenca', '20', '151.65', '2.55', '22.75', '0.00', '174.40', 'DOLAR', 'GENERADA', '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<factura id=\"comprobante\" version=\"1.1.0\">\n  <infoTributaria>\n    <ambiente>1</ambiente>\n    <tipoEmision>1</tipoEmision>\n    <razonSocial>DISTRIBUIDORA COMERCIAL NEXUS S.A.</razonSocial>\n    <nombreComercial>NEXUS Distribuciones</nombreComercial>\n    <ruc>1791745823001</ruc>\n    <claveAcceso>2107202601179174582300110010010000000059429862616</claveAcceso>\n    <codDoc>01</codDoc>\n    <estab>001</estab>\n    <ptoEmi>001</ptoEmi>\n    <secuencial>000000005</secuencial>\n    <dirMatriz>Av. República del Salvador N36-84 y Naciones Unidas, Quito</dirMatriz>\n  </infoTributaria>\n  <infoFactura>\n    <fechaEmision>21/07/2026</fechaEmision>\n    <obligadoContabilidad>SI</obligadoContabilidad>\n    <tipoIdentificacionComprador>04</tipoIdentificacionComprador>\n    <razonSocialComprador>TECNOSOLUCIONES DEL AUSTRO S.A.</razonSocialComprador>\n    <identificacionComprador>1890345671001</identificacionComprador>\n    <direccionComprador>Av. Remigio Crespo 4-56 y Guayas, Cuenca</direccionComprador>\n    <totalSinImpuestos>151.65</totalSinImpuestos>\n    <totalDescuento>2.55</totalDescuento>\n    <totalConImpuestos>\n      <totalImpuesto>\n        <codigo>2</codigo>\n        <codigoPorcentaje>4</codigoPorcentaje>\n        <baseImponible>151.65</baseImponible>\n        <valor>22.75</valor>\n      </totalImpuesto>\n    </totalConImpuestos>\n    <propina>0.00</propina>\n    <importeTotal>174.40</importeTotal>\n    <moneda>DOLAR</moneda>\n    <pagos>\n      <pago>\n        <formaPago>20</formaPago>\n        <total>174.40</total>\n      </pago>\n    </pagos>\n  </infoFactura>\n  <detalles>\n    <detalle>\n      <codigoPrincipal>TEC-002</codigoPrincipal>\n      <descripcion>Teclado Multimedia USB Español</descripcion>\n      <cantidad>8.000000</cantidad>\n      <precioUnitario>12.900000</precioUnitario>\n      <descuento>0.00</descuento>\n      <precioTotalSinImpuesto>103.20</precioTotalSinImpuesto>\n      <impuestos>\n        <impuesto>\n          <codigo>2</codigo>\n          <codigoPorcentaje>4</codigoPorcentaje>\n          <tarifa>15.00</tarifa>\n          <baseImponible>103.20</baseImponible>\n          <valor>15.48</valor>\n        </impuesto>\n      </impuestos>\n    </detalle>\n    <detalle>\n      <codigoPrincipal>TEC-001</codigoPrincipal>\n      <descripcion>Mouse Óptico Inalámbrico USB</descripcion>\n      <cantidad>6.000000</cantidad>\n      <precioUnitario>8.500000</precioUnitario>\n      <descuento>2.55</descuento>\n      <precioTotalSinImpuesto>48.45</precioTotalSinImpuesto>\n      <impuestos>\n        <impuesto>\n          <codigo>2</codigo>\n          <codigoPorcentaje>4</codigoPorcentaje>\n          <tarifa>15.00</tarifa>\n          <baseImponible>48.45</baseImponible>\n          <valor>7.27</valor>\n        </impuesto>\n      </impuestos>\n    </detalle>\n  </detalles>\n</factura>\n', 3, '2026-07-21 10:35:00');
+(8, '1', '1', '001', '001', '000000005', '94298626', '2107202601179174582300110010010000000059429862616', '2026-07-21', 6, '04', '1890345671001', 'TECNOSOLUCIONES DEL AUSTRO S.A.', 'Av. Remigio Crespo 4-56 y Guayas, Cuenca', '20', '151.65', '2.55', '22.75', '0.00', '174.40', 'DOLAR', 'GENERADA', '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<factura id=\"comprobante\" version=\"1.1.0\">\n  <infoTributaria>\n    <ambiente>1</ambiente>\n    <tipoEmision>1</tipoEmision>\n    <razonSocial>DISTRIBUIDORA COMERCIAL NEXUS S.A.</razonSocial>\n    <nombreComercial>NEXUS Distribuciones</nombreComercial>\n    <ruc>1791745823001</ruc>\n    <claveAcceso>2107202601179174582300110010010000000059429862616</claveAcceso>\n    <codDoc>01</codDoc>\n    <estab>001</estab>\n    <ptoEmi>001</ptoEmi>\n    <secuencial>000000005</secuencial>\n    <dirMatriz>Av. República del Salvador N36-84 y Naciones Unidas, Quito</dirMatriz>\n  </infoTributaria>\n  <infoFactura>\n    <fechaEmision>21/07/2026</fechaEmision>\n    <obligadoContabilidad>SI</obligadoContabilidad>\n    <tipoIdentificacionComprador>04</tipoIdentificacionComprador>\n    <razonSocialComprador>TECNOSOLUCIONES DEL AUSTRO S.A.</razonSocialComprador>\n    <identificacionComprador>1890345671001</identificacionComprador>\n    <direccionComprador>Av. Remigio Crespo 4-56 y Guayas, Cuenca</direccionComprador>\n    <totalSinImpuestos>151.65</totalSinImpuestos>\n    <totalDescuento>2.55</totalDescuento>\n    <totalConImpuestos>\n      <totalImpuesto>\n        <codigo>2</codigo>\n        <codigoPorcentaje>4</codigoPorcentaje>\n        <baseImponible>151.65</baseImponible>\n        <valor>22.75</valor>\n      </totalImpuesto>\n    </totalConImpuestos>\n    <propina>0.00</propina>\n    <importeTotal>174.40</importeTotal>\n    <moneda>DOLAR</moneda>\n    <pagos>\n      <pago>\n        <formaPago>20</formaPago>\n        <total>174.40</total>\n      </pago>\n    </pagos>\n  </infoFactura>\n  <detalles>\n    <detalle>\n      <codigoPrincipal>TEC-002</codigoPrincipal>\n      <descripcion>Teclado Multimedia USB Español</descripcion>\n      <cantidad>8.000000</cantidad>\n      <precioUnitario>12.900000</precioUnitario>\n      <descuento>0.00</descuento>\n      <precioTotalSinImpuesto>103.20</precioTotalSinImpuesto>\n      <impuestos>\n        <impuesto>\n          <codigo>2</codigo>\n          <codigoPorcentaje>4</codigoPorcentaje>\n          <tarifa>15.00</tarifa>\n          <baseImponible>103.20</baseImponible>\n          <valor>15.48</valor>\n        </impuesto>\n      </impuestos>\n    </detalle>\n    <detalle>\n      <codigoPrincipal>TEC-001</codigoPrincipal>\n      <descripcion>Mouse Óptico Inalámbrico USB</descripcion>\n      <cantidad>6.000000</cantidad>\n      <precioUnitario>8.500000</precioUnitario>\n      <descuento>2.55</descuento>\n      <precioTotalSinImpuesto>48.45</precioTotalSinImpuesto>\n      <impuestos>\n        <impuesto>\n          <codigo>2</codigo>\n          <codigoPorcentaje>4</codigoPorcentaje>\n          <tarifa>15.00</tarifa>\n          <baseImponible>48.45</baseImponible>\n          <valor>7.27</valor>\n        </impuesto>\n      </impuestos>\n    </detalle>\n  </detalles>\n</factura>\n', 3, '2026-07-21 10:35:00'),
+(9, '1', '1', '001', '001', '000000006', '66159624', '2407202601179174582300110010010000000066615962418', '2026-07-24', 11, '05', '1312045678', 'Diego Armando Suárez Herrera', 'Av. 4 de Noviembre y Malecón, Manta', '16', '100.00', '0.00', '15.00', '0.00', '115.00', 'DOLAR', 'GENERADA', '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<factura id=\"comprobante\" version=\"1.1.0\">\n  <infoTributaria>\n    <ambiente>1</ambiente>\n    <tipoEmision>1</tipoEmision>\n    <razonSocial>DISTRIBUIDORA COMERCIAL NEXUS S.A.</razonSocial>\n    <nombreComercial>NEXUS Distribuciones</nombreComercial>\n    <ruc>1791745823001</ruc>\n    <claveAcceso>2407202601179174582300110010010000000066615962418</claveAcceso>\n    <codDoc>01</codDoc>\n    <estab>001</estab>\n    <ptoEmi>001</ptoEmi>\n    <secuencial>000000006</secuencial>\n    <dirMatriz>Av. República del Salvador N36-84 y Naciones Unidas, Quito</dirMatriz>\n  </infoTributaria>\n  <infoFactura>\n    <fechaEmision>24/07/2026</fechaEmision>\n    <obligadoContabilidad>SI</obligadoContabilidad>\n    <tipoIdentificacionComprador>05</tipoIdentificacionComprador>\n    <razonSocialComprador>Diego Armando Suárez Herrera</razonSocialComprador>\n    <identificacionComprador>1312045678</identificacionComprador>\n    <direccionComprador>Av. 4 de Noviembre y Malecón, Manta</direccionComprador>\n    <totalSinImpuestos>100.00</totalSinImpuestos>\n    <totalDescuento>0.00</totalDescuento>\n    <totalConImpuestos>\n      <totalImpuesto>\n        <codigo>2</codigo>\n        <codigoPorcentaje>4</codigoPorcentaje>\n        <baseImponible>100.00</baseImponible>\n        <valor>15.00</valor>\n      </totalImpuesto>\n    </totalConImpuestos>\n    <propina>0.00</propina>\n    <importeTotal>115.00</importeTotal>\n    <moneda>DOLAR</moneda>\n    <pagos>\n      <pago>\n        <formaPago>16</formaPago>\n        <total>115.00</total>\n      </pago>\n    </pagos>\n  </infoFactura>\n  <detalles>\n    <detalle>\n      <codigoPrincipal>LIMP-004</codigoPrincipal>\n      <descripcion>Jabón en Polvo 1Kg</descripcion>\n      <cantidad>10.000000</cantidad>\n      <precioUnitario>10.000000</precioUnitario>\n      <descuento>0.00</descuento>\n      <precioTotalSinImpuesto>100.00</precioTotalSinImpuesto>\n      <impuestos>\n        <impuesto>\n          <codigo>2</codigo>\n          <codigoPorcentaje>4</codigoPorcentaje>\n          <tarifa>15.00</tarifa>\n          <baseImponible>100.00</baseImponible>\n          <valor>15.00</valor>\n        </impuesto>\n      </impuestos>\n    </detalle>\n  </detalles>\n</factura>\n', 7, '2026-07-24 11:50:22'),
+(10, '1', '1', '001', '001', '000000007', '72915922', '2407202601179174582300110010010000000077291592215', '2026-07-24', 9, '05', '0918273645', 'Juan Carlos Paredes Molina', 'Cdla. Kennedy Norte, Calle San Roque 210, Guayaquil', '17', '150.00', '0.00', '22.50', '0.00', '172.50', 'DOLAR', 'GENERADA', '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<factura id=\"comprobante\" version=\"1.1.0\">\n  <infoTributaria>\n    <ambiente>1</ambiente>\n    <tipoEmision>1</tipoEmision>\n    <razonSocial>DISTRIBUIDORA COMERCIAL NEXUS S.A.</razonSocial>\n    <nombreComercial>NEXUS Distribuciones</nombreComercial>\n    <ruc>1791745823001</ruc>\n    <claveAcceso>2407202601179174582300110010010000000077291592215</claveAcceso>\n    <codDoc>01</codDoc>\n    <estab>001</estab>\n    <ptoEmi>001</ptoEmi>\n    <secuencial>000000007</secuencial>\n    <dirMatriz>Av. República del Salvador N36-84 y Naciones Unidas, Quito</dirMatriz>\n  </infoTributaria>\n  <infoFactura>\n    <fechaEmision>24/07/2026</fechaEmision>\n    <obligadoContabilidad>SI</obligadoContabilidad>\n    <tipoIdentificacionComprador>05</tipoIdentificacionComprador>\n    <razonSocialComprador>Juan Carlos Paredes Molina</razonSocialComprador>\n    <identificacionComprador>0918273645</identificacionComprador>\n    <direccionComprador>Cdla. Kennedy Norte, Calle San Roque 210, Guayaquil</direccionComprador>\n    <totalSinImpuestos>150.00</totalSinImpuestos>\n    <totalDescuento>0.00</totalDescuento>\n    <totalConImpuestos>\n      <totalImpuesto>\n        <codigo>2</codigo>\n        <codigoPorcentaje>4</codigoPorcentaje>\n        <baseImponible>150.00</baseImponible>\n        <valor>22.50</valor>\n      </totalImpuesto>\n    </totalConImpuestos>\n    <propina>0.00</propina>\n    <importeTotal>172.50</importeTotal>\n    <moneda>DOLAR</moneda>\n    <pagos>\n      <pago>\n        <formaPago>17</formaPago>\n        <total>172.50</total>\n      </pago>\n    </pagos>\n  </infoFactura>\n  <detalles>\n    <detalle>\n      <codigoPrincipal>LIMP-004</codigoPrincipal>\n      <descripcion>Jabón en Polvo 1Kg</descripcion>\n      <cantidad>15.000000</cantidad>\n      <precioUnitario>10.000000</precioUnitario>\n      <descuento>0.00</descuento>\n      <precioTotalSinImpuesto>150.00</precioTotalSinImpuesto>\n      <impuestos>\n        <impuesto>\n          <codigo>2</codigo>\n          <codigoPorcentaje>4</codigoPorcentaje>\n          <tarifa>15.00</tarifa>\n          <baseImponible>150.00</baseImponible>\n          <valor>22.50</valor>\n        </impuesto>\n      </impuestos>\n    </detalle>\n  </detalles>\n</factura>\n', 7, '2026-07-24 11:50:42');
 
 -- --------------------------------------------------------
 
@@ -195,7 +197,9 @@ INSERT INTO `factura_detalle` (`id_detalle`, `id_factura`, `id_producto`, `codig
 (14, 7, 14, 'ALI-003', 'Atún Lomo en Aceite 170 g', '12.000000', 'Und', '1.550000', '0.00', '18.60', '0', '0.00', '18.60', '0.00'),
 (15, 7, 13, 'ALI-002', 'Aceite Vegetal de Girasol 1 L', '4.000000', 'L', '2.900000', '0.00', '11.60', '0', '0.00', '11.60', '0.00'),
 (16, 8, 16, 'TEC-002', 'Teclado Multimedia USB Español', '8.000000', 'Und', '12.900000', '0.00', '103.20', '4', '15.00', '103.20', '15.48'),
-(17, 8, 15, 'TEC-001', 'Mouse Óptico Inalámbrico USB', '6.000000', 'Und', '8.500000', '2.55', '48.45', '4', '15.00', '48.45', '7.27');
+(17, 8, 15, 'TEC-001', 'Mouse Óptico Inalámbrico USB', '6.000000', 'Und', '8.500000', '2.55', '48.45', '4', '15.00', '48.45', '7.27'),
+(18, 9, 22, 'LIMP-004', 'Jabón en Polvo 1Kg', '10.000000', 'Kg', '10.000000', '0.00', '100.00', '4', '15.00', '100.00', '15.00'),
+(19, 10, 22, 'LIMP-004', 'Jabón en Polvo 1Kg', '15.000000', 'Kg', '10.000000', '0.00', '150.00', '4', '15.00', '150.00', '22.50');
 
 -- --------------------------------------------------------
 
@@ -263,6 +267,50 @@ INSERT INTO `frases` (`id`, `frase`, `autor`, `estado`) VALUES
 (18, 'Liderar es servir con el ejemplo, no con la autoridad.', 'Anónimo', 1),
 (19, 'Cada línea de código es una oportunidad de mejorar.', 'Anónimo', 1),
 (20, 'El desarrollo personal comienza donde termina la zona de confort.', 'Anónimo', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `inventario_movimientos`
+--
+
+CREATE TABLE `inventario_movimientos` (
+  `id_movimiento` int(11) NOT NULL,
+  `id_producto` int(11) DEFAULT NULL,
+  `codigo_principal` varchar(25) NOT NULL COMMENT 'instantánea: sobrevive al borrado del producto',
+  `descripcion` varchar(300) NOT NULL COMMENT 'instantánea',
+  `unidad` varchar(20) DEFAULT NULL COMMENT 'instantánea',
+  `proveedor` varchar(150) DEFAULT NULL COMMENT 'nombre libre; solo aplica a INGRESO POR COMPRA',
+  `tipo` varchar(30) NOT NULL COMMENT 'INGRESO POR COMPRA | AJUSTE DE INVENTARIO',
+  `cantidad` decimal(12,6) NOT NULL COMMENT 'magnitud del cambio (siempre positiva)',
+  `stock_anterior` decimal(12,6) NOT NULL,
+  `stock_nuevo` decimal(12,6) NOT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `inventario_movimientos`
+--
+
+INSERT INTO `inventario_movimientos` (`id_movimiento`, `id_producto`, `codigo_principal`, `descripcion`, `unidad`, `proveedor`, `tipo`, `cantidad`, `stock_anterior`, `stock_nuevo`, `created_by`, `created_at`) VALUES
+(32, 6, 'LIMP-001', 'Desinfectante Multiusos Lavanda 1 L', 'L', NULL, 'INGRESO POR COMPRA', '153.000000', '0.000000', '153.000000', 1, '2026-06-24 10:55:00'),
+(33, 7, 'LIMP-002', 'Detergente en Polvo Multiusos 5 Kg', 'Kg', NULL, 'INGRESO POR COMPRA', '80.000000', '0.000000', '80.000000', 1, '2026-07-23 17:48:40'),
+(34, 8, 'LIMP-003', 'Jabón Líquido Antibacterial 500 mL', 'mL', NULL, 'INGRESO POR COMPRA', '210.000000', '0.000000', '210.000000', 1, '2026-07-23 17:48:40'),
+(35, 9, 'BEB-001', 'Agua Mineral sin Gas 500 mL', 'Bot', NULL, 'INGRESO POR COMPRA', '480.000000', '0.000000', '480.000000', 1, '2026-07-14 10:48:00'),
+(36, 10, 'BEB-002', 'Gaseosa Cola 1.5 L', 'Bot', NULL, 'INGRESO POR COMPRA', '300.000000', '0.000000', '300.000000', 1, '2026-06-24 10:55:00'),
+(37, 11, 'BEB-003', 'Café Molido Tostado 500 g', 'Paq', NULL, 'INGRESO POR COMPRA', '95.000000', '0.000000', '95.000000', 1, '2026-07-23 17:48:40'),
+(38, 12, 'ALI-001', 'Arroz Flor Grano Largo 2 Kg', 'Kg', NULL, 'INGRESO POR COMPRA', '160.000000', '0.000000', '160.000000', 1, '2026-06-24 10:55:00'),
+(39, 13, 'ALI-002', 'Aceite Vegetal de Girasol 1 L', 'L', NULL, 'INGRESO POR COMPRA', '120.000000', '0.000000', '120.000000', 1, '2026-07-14 10:48:00'),
+(40, 14, 'ALI-003', 'Atún Lomo en Aceite 170 g', 'Und', NULL, 'INGRESO POR COMPRA', '260.000000', '0.000000', '260.000000', 1, '2026-07-14 10:48:00'),
+(41, 15, 'TEC-001', 'Mouse Óptico Inalámbrico USB', 'Und', NULL, 'INGRESO POR COMPRA', '55.000000', '0.000000', '55.000000', 1, '2026-06-11 10:30:00'),
+(42, 16, 'TEC-002', 'Teclado Multimedia USB Español', 'Und', NULL, 'INGRESO POR COMPRA', '38.000000', '0.000000', '38.000000', 1, '2026-07-20 10:35:00'),
+(43, 17, 'TEC-003', 'Memoria Flash USB 32 GB', 'Und', NULL, 'INGRESO POR COMPRA', '90.000000', '0.000000', '90.000000', 1, '2026-06-11 10:30:00'),
+(44, 18, 'PAP-001', 'Resma Papel Bond A4 75 g (500 hojas)', 'Paq', NULL, 'INGRESO POR COMPRA', '220.000000', '0.000000', '220.000000', 1, '2026-07-02 10:26:00'),
+(45, 19, 'PAP-002', 'Esferográfico Punta Fina Azul (caja x12)', 'Caja', NULL, 'INGRESO POR COMPRA', '70.000000', '0.000000', '70.000000', 1, '2026-07-02 10:26:00'),
+(46, 20, 'PAP-003', 'Cuaderno Universitario 100 Hojas', 'Und', NULL, 'INGRESO POR COMPRA', '150.000000', '0.000000', '150.000000', 1, '2026-07-23 17:48:40'),
+(47, 21, 'HOG-001', 'Foco LED 9W Luz Blanca E27', 'Und', NULL, 'INGRESO POR COMPRA', '200.000000', '0.000000', '200.000000', 1, '2026-07-02 10:26:00'),
+(48, 22, 'LIMP-004', 'Jabón en Polvo 1Kg', 'Kg', NULL, 'INGRESO POR COMPRA', '150.000000', '0.000000', '150.000000', 7, '2026-07-23 11:50:22');
 
 -- --------------------------------------------------------
 
@@ -377,7 +425,15 @@ INSERT INTO `menu_orden_usuario` (`id_user`, `id_menu`, `orden`, `id_super`) VAL
 (6, 8, 3, NULL),
 (6, 9, 4, NULL),
 (6, 10, 5, NULL),
-(6, 11, 6, NULL);
+(6, 11, 6, NULL),
+(7, 1, 1, NULL),
+(7, 5, 3, 9),
+(7, 6, 2, 9),
+(7, 7, 1, 9),
+(7, 8, 3, NULL),
+(7, 9, 4, NULL),
+(7, 10, 5, NULL),
+(7, 11, 6, NULL);
 
 -- --------------------------------------------------------
 
@@ -404,7 +460,8 @@ INSERT INTO `menu_super_usuario` (`id_super`, `id_user`, `nombre`, `orden`, `pro
 (5, 3, 'Mi Perfil', 2, 1),
 (6, 4, 'Mi Perfil', 2, 1),
 (7, 5, 'Mi Perfil', 2, 1),
-(8, 6, 'Mi Perfil', 2, 1);
+(8, 6, 'Mi Perfil', 2, 1),
+(9, 7, 'Mi Perfil', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -548,7 +605,24 @@ INSERT INTO `permisos_rol` (`id`, `id_rol`, `modulo`, `accion`) VALUES
 (243, 6, 'menu', 'renombrar'),
 (245, 6, 'menu', 'reordenar'),
 (240, 6, 'perfil', 'editar'),
-(239, 6, 'perfil', 'leer');
+(239, 6, 'perfil', 'leer'),
+(268, 7, 'dashboard', 'leer'),
+(276, 7, 'frame1', 'leer'),
+(278, 7, 'frame2', 'crear'),
+(279, 7, 'frame2', 'editar'),
+(277, 7, 'frame2', 'leer'),
+(281, 7, 'frame3', 'crear'),
+(282, 7, 'frame3', 'editar'),
+(284, 7, 'frame3', 'eliminar'),
+(283, 7, 'frame3', 'estado'),
+(280, 7, 'frame3', 'leer'),
+(270, 7, 'menu', 'crear'),
+(272, 7, 'menu', 'eliminar'),
+(269, 7, 'menu', 'leer'),
+(271, 7, 'menu', 'renombrar'),
+(273, 7, 'menu', 'reordenar'),
+(275, 7, 'perfil', 'editar'),
+(274, 7, 'perfil', 'leer');
 
 -- --------------------------------------------------------
 
@@ -562,6 +636,7 @@ CREATE TABLE `productos` (
   `descripcion` varchar(300) NOT NULL,
   `precio_unitario` decimal(12,6) NOT NULL,
   `codigo_porcentaje_iva` char(2) NOT NULL DEFAULT '4' COMMENT 'catalogo IVA vigente: 0=0% 4=15% 6=No objeto 7=Exento',
+  `codigo_impuesto_especial` char(2) DEFAULT NULL COMMENT 'Tabla 16 SRI: 3=ICE 5=IRBPNR; NULL=no posee',
   `id_categoria` int(11) DEFAULT NULL,
   `id_unidad` int(11) NOT NULL DEFAULT '7',
   `stock` decimal(12,6) NOT NULL DEFAULT '0.000000',
@@ -574,23 +649,24 @@ CREATE TABLE `productos` (
 -- Volcado de datos para la tabla `productos`
 --
 
-INSERT INTO `productos` (`id_producto`, `codigo_principal`, `descripcion`, `precio_unitario`, `codigo_porcentaje_iva`, `id_categoria`, `id_unidad`, `stock`, `estado`, `created_by`, `created_at`) VALUES
-(6, 'LIMP-001', 'Desinfectante Multiusos Lavanda 1 L', '2.850000', '4', 1, 5, '137.000000', 1, 1, '2026-07-23 17:48:40'),
-(7, 'LIMP-002', 'Detergente en Polvo Multiusos 5 Kg', '8.900000', '4', 1, 1, '80.000000', 1, 1, '2026-07-23 17:48:40'),
-(8, 'LIMP-003', 'Jabón Líquido Antibacterial 500 mL', '1.950000', '4', 1, 6, '210.000000', 1, 1, '2026-07-23 17:48:40'),
-(9, 'BEB-001', 'Agua Mineral sin Gas 500 mL', '0.650000', '0', 3, 10, '456.000000', 1, 1, '2026-07-23 17:48:40'),
-(10, 'BEB-002', 'Gaseosa Cola 1.5 L', '1.400000', '4', 3, 10, '294.000000', 1, 1, '2026-07-23 17:48:40'),
-(11, 'BEB-003', 'Café Molido Tostado 500 g', '4.750000', '4', 3, 8, '95.000000', 1, 1, '2026-07-23 17:48:40'),
-(12, 'ALI-001', 'Arroz Flor Grano Largo 2 Kg', '2.350000', '0', 2, 1, '158.000000', 1, 1, '2026-07-23 17:48:40'),
-(13, 'ALI-002', 'Aceite Vegetal de Girasol 1 L', '2.900000', '0', 2, 5, '116.000000', 1, 1, '2026-07-23 17:48:40'),
-(14, 'ALI-003', 'Atún Lomo en Aceite 170 g', '1.550000', '0', 2, 7, '248.000000', 1, 1, '2026-07-23 17:48:40'),
-(15, 'TEC-001', 'Mouse Óptico Inalámbrico USB', '8.500000', '4', 4, 7, '44.000000', 1, 1, '2026-07-23 17:48:40'),
-(16, 'TEC-002', 'Teclado Multimedia USB Español', '12.900000', '4', 4, 7, '30.000000', 1, 1, '2026-07-23 17:48:40'),
-(17, 'TEC-003', 'Memoria Flash USB 32 GB', '6.750000', '4', 4, 7, '80.000000', 1, 1, '2026-07-23 17:48:40'),
-(18, 'PAP-001', 'Resma Papel Bond A4 75 g (500 hojas)', '3.800000', '4', 5, 8, '210.000000', 1, 1, '2026-07-23 17:48:40'),
-(19, 'PAP-002', 'Esferográfico Punta Fina Azul (caja x12)', '4.200000', '4', 5, 9, '65.000000', 1, 1, '2026-07-23 17:48:40'),
-(20, 'PAP-003', 'Cuaderno Universitario 100 Hojas', '1.850000', '4', 5, 7, '150.000000', 1, 1, '2026-07-23 17:48:40'),
-(21, 'HOG-001', 'Foco LED 9W Luz Blanca E27', '1.750000', '4', 6, 7, '180.000000', 1, 1, '2026-07-23 17:48:40');
+INSERT INTO `productos` (`id_producto`, `codigo_principal`, `descripcion`, `precio_unitario`, `codigo_porcentaje_iva`, `codigo_impuesto_especial`, `id_categoria`, `id_unidad`, `stock`, `estado`, `created_by`, `created_at`) VALUES
+(6, 'LIMP-001', 'Desinfectante Multiusos Lavanda 1 L', '2.000000', '4', NULL, 1, 5, '150.000000', 1, 1, '2026-07-23 17:48:40'),
+(7, 'LIMP-002', 'Detergente en Polvo Multiusos 5 Kg', '8.900000', '4', NULL, 1, 1, '80.000000', 1, 1, '2026-07-23 17:48:40'),
+(8, 'LIMP-003', 'Jabón Líquido Antibacterial 500 mL', '1.950000', '4', NULL, 1, 6, '210.000000', 1, 1, '2026-07-23 17:48:40'),
+(9, 'BEB-001', 'Agua Mineral sin Gas 500 mL', '0.650000', '0', NULL, 3, 10, '456.000000', 1, 1, '2026-07-23 17:48:40'),
+(10, 'BEB-002', 'Gaseosa Cola 1.5 L', '1.400000', '4', NULL, 3, 10, '294.000000', 1, 1, '2026-07-23 17:48:40'),
+(11, 'BEB-003', 'Café Molido Tostado 500 g', '4.750000', '4', NULL, 3, 8, '95.000000', 1, 1, '2026-07-23 17:48:40'),
+(12, 'ALI-001', 'Arroz Flor Grano Largo 2 Kg', '2.350000', '0', NULL, 2, 1, '158.000000', 1, 1, '2026-07-23 17:48:40'),
+(13, 'ALI-002', 'Aceite Vegetal de Girasol 1 L', '2.900000', '0', NULL, 2, 5, '116.000000', 1, 1, '2026-07-23 17:48:40'),
+(14, 'ALI-003', 'Atún Lomo en Aceite 170 g', '1.550000', '0', NULL, 2, 7, '248.000000', 1, 1, '2026-07-23 17:48:40'),
+(15, 'TEC-001', 'Mouse Óptico Inalámbrico USB', '8.500000', '4', NULL, 4, 7, '44.000000', 1, 1, '2026-07-23 17:48:40'),
+(16, 'TEC-002', 'Teclado Multimedia USB Español', '12.900000', '4', NULL, 4, 7, '30.000000', 1, 1, '2026-07-23 17:48:40'),
+(17, 'TEC-003', 'Memoria Flash USB 32 GB', '6.750000', '4', NULL, 4, 7, '80.000000', 1, 1, '2026-07-23 17:48:40'),
+(18, 'PAP-001', 'Resma Papel Bond A4 75 g (500 hojas)', '3.800000', '4', NULL, 5, 8, '210.000000', 1, 1, '2026-07-23 17:48:40'),
+(19, 'PAP-002', 'Esferográfico Punta Fina Azul (caja x12)', '4.200000', '4', NULL, 5, 9, '65.000000', 1, 1, '2026-07-23 17:48:40'),
+(20, 'PAP-003', 'Cuaderno Universitario 100 Hojas', '1.850000', '4', NULL, 5, 7, '150.000000', 1, 1, '2026-07-23 17:48:40'),
+(21, 'HOG-001', 'Foco LED 9W Luz Blanca E27', '1.750000', '4', NULL, 6, 7, '180.000000', 1, 1, '2026-07-23 17:48:40'),
+(22, 'LIMP-004', 'Jabón en Polvo 1Kg', '10.000000', '4', NULL, 1, 1, '125.000000', 1, 7, '2026-07-24 11:49:15');
 
 -- --------------------------------------------------------
 
@@ -621,7 +697,8 @@ INSERT INTO `pw_user` (`id_user`, `username`, `password`, `nombre`, `email`, `id
 (3, 'rmora', '$2y$12$4l3twfqNEPuhJrwSfNnZneyV7aMnSKTrnHM8j2IbgjWXHEnmdwGh.', 'Ricardo Andrés Mora Villavicencio', 'ricardo.mora@nexusdist.ec', 3, 1, 0, 1, '2026-07-23 17:48:40'),
 (4, 'gsalazar', '$2y$12$4l3twfqNEPuhJrwSfNnZneyV7aMnSKTrnHM8j2IbgjWXHEnmdwGh.', 'Gabriela Estefanía Salazar Ponce', 'gabriela.salazar@nexusdist.ec', 4, 1, 0, 1, '2026-07-23 17:48:40'),
 (5, 'lnaranjo', '$2y$12$4l3twfqNEPuhJrwSfNnZneyV7aMnSKTrnHM8j2IbgjWXHEnmdwGh.', 'Luis Fernando Naranjo Espín', 'luis.naranjo@nexusdist.ec', 5, 1, 0, 1, '2026-07-23 17:48:40'),
-(6, 'pjimenez', '$2y$12$4l3twfqNEPuhJrwSfNnZneyV7aMnSKTrnHM8j2IbgjWXHEnmdwGh.', 'Paola Cristina Jiménez Andrade', 'paola.jimenez@nexusdist.ec', 6, 1, 0, 1, '2026-07-23 17:48:40');
+(6, 'pjimenez', '$2y$12$4l3twfqNEPuhJrwSfNnZneyV7aMnSKTrnHM8j2IbgjWXHEnmdwGh.', 'Paola Cristina Jiménez Andrade', 'paola.jimenez@nexusdist.ec', 6, 1, 0, 1, '2026-07-23 17:48:40'),
+(7, 'asistente123', '$2y$12$XFythb0/7cyHKX7DK7dIyOuJA8EHATcsukHQLGSBYPk7OTFV0V/fe', 'Asistente de Bodega', 'asistente123@empresa.com', 7, 1, 0, 1, '2026-07-24 11:36:34');
 
 -- --------------------------------------------------------
 
@@ -646,7 +723,8 @@ INSERT INTO `roles` (`id_rol`, `nombre_rol`, `descripcion`, `estado`) VALUES
 (3, 'Supervisor', 'Supervisión general: facturación, inventario, clientes y administración de usuarios y roles.', 1),
 (4, 'Facturador', 'Emisión y consulta de facturas; consulta de clientes e inventario. Sin permisos administrativos.', 1),
 (5, 'Auxiliar de Cobranza', 'Consulta de facturas, clientes y estados de pago para la gestión de cobranza. Sin acceso a inventario ni configuración.', 1),
-(6, 'Analista de Facturación', 'Consulta de facturas, movimientos e inventario para análisis y reportes. Solo lectura, sin modificaciones administrativas.', 1);
+(6, 'Analista de Facturación', 'Consulta de facturas, movimientos e inventario para análisis y reportes. Solo lectura, sin modificaciones administrativas.', 1),
+(7, 'Asistente de Bodega', 'Asiste en el manejo de inventario,  compra y venta de productos.', 1);
 
 -- --------------------------------------------------------
 
@@ -667,7 +745,7 @@ CREATE TABLE `sesiones` (
 --
 
 INSERT INTO `sesiones` (`token`, `id_user`, `ip`, `expires_at`, `created_at`) VALUES
-('e21f5f12c3d0cc9daeb05f5a6f167cacb2f84ccbb36f862cf5242590edf5f766', 1, '::1', '2026-07-24 16:46:56', '2026-07-24 10:46:56');
+('aa73862ea9ca71e980915b918944fee849fb8cdc4abaec82a725c3b993c5a92a', 7, '::1', '2026-07-24 18:09:04', '2026-07-24 12:09:04');
 
 -- --------------------------------------------------------
 
@@ -682,52 +760,6 @@ CREATE TABLE `tareas` (
   `created_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `inventario_movimientos`
---
-
-CREATE TABLE `inventario_movimientos` (
-  `id_movimiento` int(11) NOT NULL AUTO_INCREMENT,
-  `id_producto` int(11) DEFAULT NULL,
-  `codigo_principal` varchar(25) NOT NULL COMMENT 'instantánea: sobrevive al borrado del producto',
-  `descripcion` varchar(300) NOT NULL COMMENT 'instantánea',
-  `unidad` varchar(20) DEFAULT NULL COMMENT 'instantánea',
-  `tipo` varchar(30) NOT NULL COMMENT 'INGRESO POR COMPRA | AJUSTE DE INVENTARIO',
-  `cantidad` decimal(12,6) NOT NULL COMMENT 'magnitud del cambio (siempre positiva)',
-  `stock_anterior` decimal(12,6) NOT NULL,
-  `stock_nuevo` decimal(12,6) NOT NULL,
-  `created_by` int(11) DEFAULT NULL,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_movimiento`),
-  KEY `fk_invmov_producto` (`id_producto`),
-  KEY `fk_invmov_user` (`created_by`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Volcado de datos para la tabla `inventario_movimientos`
---
-
-INSERT INTO `inventario_movimientos` (`id_movimiento`, `id_producto`, `codigo_principal`, `descripcion`, `unidad`, `tipo`, `cantidad`, `stock_anterior`, `stock_nuevo`, `created_by`, `created_at`) VALUES
-(1, 6, 'LIMP-001', 'Desinfectante Multiusos Lavanda 1 L', 'L', 'INGRESO POR COMPRA', '140.000000', '0.000000', '140.000000', 1, '2026-06-24 10:55:00'),
-(2, 7, 'LIMP-002', 'Detergente en Polvo Multiusos 5 Kg', 'Kg', 'INGRESO POR COMPRA', '80.000000', '0.000000', '80.000000', 1, '2026-07-23 17:48:40'),
-(3, 8, 'LIMP-003', 'Jabón Líquido Antibacterial 500 mL', 'mL', 'INGRESO POR COMPRA', '210.000000', '0.000000', '210.000000', 1, '2026-07-23 17:48:40'),
-(4, 9, 'BEB-001', 'Agua Mineral sin Gas 500 mL', 'Bot', 'INGRESO POR COMPRA', '480.000000', '0.000000', '480.000000', 1, '2026-07-14 10:48:00'),
-(5, 10, 'BEB-002', 'Gaseosa Cola 1.5 L', 'Bot', 'INGRESO POR COMPRA', '300.000000', '0.000000', '300.000000', 1, '2026-06-24 10:55:00'),
-(6, 11, 'BEB-003', 'Café Molido Tostado 500 g', 'Paq', 'INGRESO POR COMPRA', '95.000000', '0.000000', '95.000000', 1, '2026-07-23 17:48:40'),
-(7, 12, 'ALI-001', 'Arroz Flor Grano Largo 2 Kg', 'Kg', 'INGRESO POR COMPRA', '160.000000', '0.000000', '160.000000', 1, '2026-06-24 10:55:00'),
-(8, 13, 'ALI-002', 'Aceite Vegetal de Girasol 1 L', 'L', 'INGRESO POR COMPRA', '120.000000', '0.000000', '120.000000', 1, '2026-07-14 10:48:00'),
-(9, 14, 'ALI-003', 'Atún Lomo en Aceite 170 g', 'Und', 'INGRESO POR COMPRA', '260.000000', '0.000000', '260.000000', 1, '2026-07-14 10:48:00'),
-(10, 15, 'TEC-001', 'Mouse Óptico Inalámbrico USB', 'Und', 'INGRESO POR COMPRA', '55.000000', '0.000000', '55.000000', 1, '2026-06-11 10:30:00'),
-(11, 16, 'TEC-002', 'Teclado Multimedia USB Español', 'Und', 'INGRESO POR COMPRA', '38.000000', '0.000000', '38.000000', 1, '2026-07-20 10:35:00'),
-(12, 17, 'TEC-003', 'Memoria Flash USB 32 GB', 'Und', 'INGRESO POR COMPRA', '90.000000', '0.000000', '90.000000', 1, '2026-06-11 10:30:00'),
-(13, 18, 'PAP-001', 'Resma Papel Bond A4 75 g (500 hojas)', 'Paq', 'INGRESO POR COMPRA', '220.000000', '0.000000', '220.000000', 1, '2026-07-02 10:26:00'),
-(14, 19, 'PAP-002', 'Esferográfico Punta Fina Azul (caja x12)', 'Caja', 'INGRESO POR COMPRA', '70.000000', '0.000000', '70.000000', 1, '2026-07-02 10:26:00'),
-(15, 20, 'PAP-003', 'Cuaderno Universitario 100 Hojas', 'Und', 'INGRESO POR COMPRA', '150.000000', '0.000000', '150.000000', 1, '2026-07-23 17:48:40'),
-(16, 21, 'HOG-001', 'Foco LED 9W Luz Blanca E27', 'Und', 'INGRESO POR COMPRA', '200.000000', '0.000000', '200.000000', 1, '2026-07-02 10:26:00');
-
 
 -- --------------------------------------------------------
 
@@ -813,6 +845,14 @@ ALTER TABLE `factura_emisor`
 --
 ALTER TABLE `frases`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `inventario_movimientos`
+--
+ALTER TABLE `inventario_movimientos`
+  ADD PRIMARY KEY (`id_movimiento`),
+  ADD KEY `fk_invmov_producto` (`id_producto`),
+  ADD KEY `fk_invmov_user` (`created_by`);
 
 --
 -- Indices de la tabla `login_intentos`
@@ -918,13 +958,13 @@ ALTER TABLE `clientes`
 -- AUTO_INCREMENT de la tabla `facturas`
 --
 ALTER TABLE `facturas`
-  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `factura_detalle`
 --
 ALTER TABLE `factura_detalle`
-  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `factura_emisor`
@@ -937,6 +977,12 @@ ALTER TABLE `factura_emisor`
 --
 ALTER TABLE `frases`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT de la tabla `inventario_movimientos`
+--
+ALTER TABLE `inventario_movimientos`
+  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT de la tabla `login_intentos`
@@ -954,31 +1000,31 @@ ALTER TABLE `menu`
 -- AUTO_INCREMENT de la tabla `menu_super_usuario`
 --
 ALTER TABLE `menu_super_usuario`
-  MODIFY `id_super` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_super` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `permisos_rol`
 --
 ALTER TABLE `permisos_rol`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=250;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=285;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de la tabla `pw_user`
 --
 ALTER TABLE `pw_user`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `tareas`
@@ -1024,6 +1070,13 @@ ALTER TABLE `factura_detalle`
   ADD CONSTRAINT `fk_detalle_producto` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
+-- Filtros para la tabla `inventario_movimientos`
+--
+ALTER TABLE `inventario_movimientos`
+  ADD CONSTRAINT `fk_invmov_producto` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_invmov_user` FOREIGN KEY (`created_by`) REFERENCES `pw_user` (`id_user`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
 -- Filtros para la tabla `menu_orden_usuario`
 --
 ALTER TABLE `menu_orden_usuario`
@@ -1042,13 +1095,6 @@ ALTER TABLE `menu_super_usuario`
 --
 ALTER TABLE `permisos_rol`
   ADD CONSTRAINT `fk_pr_rol` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id_rol`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `inventario_movimientos`
---
-ALTER TABLE `inventario_movimientos`
-  ADD CONSTRAINT `fk_invmov_producto` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_invmov_user` FOREIGN KEY (`created_by`) REFERENCES `pw_user` (`id_user`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `productos`

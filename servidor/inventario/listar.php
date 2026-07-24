@@ -22,7 +22,7 @@ $db = getDB();
 
 $productos = $db->query("
     SELECT p.id_producto, p.codigo_principal, p.descripcion, p.precio_unitario,
-           p.codigo_porcentaje_iva, p.stock, p.estado,
+           p.codigo_porcentaje_iva, p.codigo_impuesto_especial, p.stock, p.estado,
            p.id_categoria, c.nombre AS categoria,
            p.id_unidad, u.nombre AS unidad, u.abreviatura AS unidad_abrev
     FROM   productos p

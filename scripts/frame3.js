@@ -31,6 +31,7 @@ async function iniciarFrame3() {
 
     _pagInventario = crearPaginador({ clave: 'inventario', tbodyId: 'tbodyInventario', etiqueta: 'productos', pintar: _pintarInventarioFrame3 });
     llenarSelect('selIvaProducto', CATALOGO_IVA, (cod, o) => `${cod} — ${o.nombre}`);
+    llenarSelectImpuestoEspecial();
 
     await cargarInventario();
 }
@@ -41,6 +42,20 @@ function llenarSelect(id, opciones, formato) {
     sel.innerHTML = Object.entries(opciones)
         .map(([cod, val]) => `<option value="${cod}">${esc(formato ? formato(cod, val) : val)}</option>`)
         .join('');
+}
+
+/* "No posee" (valor "") se fuerza como primera opción y con `selected`
+   explícito: las claves numéricas del catálogo ('3', '5') se reordenan
+   antes que '' al recorrer el objeto con Object.entries, por lo que no
+   basta con declararla primero en CATALOGO_IMPUESTO_ESPECIAL — sin este
+   forzado, el formulario quedaría por defecto en un impuesto especial
+   en lugar de "No posee" al reiniciarse. */
+function llenarSelectImpuestoEspecial() {
+    const sel = document.getElementById('selImpuestoEspecial');
+    if (!sel) return;
+    const codigos = Object.keys(CATALOGO_IMPUESTO_ESPECIAL).filter(cod => cod !== '');
+    sel.innerHTML = '<option value="" selected>No posee</option>' +
+        codigos.map(cod => `<option value="${cod}">${esc(cod)} — ${esc(CATALOGO_IMPUESTO_ESPECIAL[cod].nombre)}</option>`).join('');
 }
 
 async function cargarInventario() {
@@ -104,7 +119,7 @@ function _pintarInventarioFrame3(lista, offset) {
     if (!tbody) return;
 
     if (lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" class="tabla-vacia">No hay productos que coincidan con el filtro.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="11" class="tabla-vacia">No hay productos que coincidan con el filtro.</td></tr>`;
         return;
     }
 
@@ -122,6 +137,7 @@ function _pintarInventarioFrame3(lista, offset) {
             <td class="${Number(p.stock) <= 0 ? 'text-danger' : ''}"><strong>${Number(p.stock).toFixed(2)}</strong> ${esc(p.unidad_abrev)}</td>
             <td>$${Number(p.precio_unitario).toFixed(2)}</td>
             <td>${esc(p.codigo_porcentaje_iva)} — ${esc((CATALOGO_IVA[p.codigo_porcentaje_iva] || {}).nombre || '')}</td>
+            <td>${p.codigo_impuesto_especial ? esc(`${p.codigo_impuesto_especial} — ${(CATALOGO_IMPUESTO_ESPECIAL[p.codigo_impuesto_especial] || {}).nombre || ''}`) : '<span class="text-muted">No posee</span>'}</td>
             <td><span class="badge ${p.estado == 1 ? 'badge-activo' : 'badge-inactivo'}">${p.estado == 1 ? 'Activo' : 'Inactivo'}</span></td>
             <td>
                 <div class="btn-group">
@@ -143,9 +159,14 @@ function editarProducto(id) {
     document.getElementById('txtDescripcionProducto').value = p.descripcion;
     document.getElementById('txtPrecioProducto').value = p.precio_unitario;
     document.getElementById('selIvaProducto').value = p.codigo_porcentaje_iva;
+    document.getElementById('selImpuestoEspecial').value = p.codigo_impuesto_especial || '';
     document.getElementById('selCategoriaProducto').value = p.id_categoria || '';
     document.getElementById('selUnidadProducto').value = p.id_unidad;
     document.getElementById('txtStockProducto').value = Number(p.stock);
+    // El proveedor es propio de cada compra, no un atributo permanente
+    // del producto: se deja en blanco para que el usuario lo indique
+    // solo si esta edición corresponde a un nuevo ingreso de stock.
+    document.getElementById('txtProveedor').value = '';
     document.getElementById('btnGuardarProducto').textContent = 'Actualizar Producto';
     document.getElementById('btnCancelarProducto')?.classList.remove('d-none');
 }
@@ -178,14 +199,16 @@ async function submitProducto(e) {
     }
 
     const datos = {
-        token:                  Sesion.token(),
-        codigo_principal:       codigo.value.trim(),
-        descripcion:            descripcion.value.trim(),
-        precio_unitario:        parseFloat(precio.value),
-        codigo_porcentaje_iva:  document.getElementById('selIvaProducto').value,
-        id_categoria:           document.getElementById('selCategoriaProducto').value || null,
-        id_unidad:              document.getElementById('selUnidadProducto').value,
-        stock:                  parseFloat(document.getElementById('txtStockProducto').value) || 0,
+        token:                     Sesion.token(),
+        codigo_principal:          codigo.value.trim(),
+        descripcion:               descripcion.value.trim(),
+        precio_unitario:           parseFloat(precio.value),
+        codigo_porcentaje_iva:     document.getElementById('selIvaProducto').value,
+        codigo_impuesto_especial:  document.getElementById('selImpuestoEspecial').value || null,
+        id_categoria:              document.getElementById('selCategoriaProducto').value || null,
+        id_unidad:                 document.getElementById('selUnidadProducto').value,
+        stock:                     parseFloat(document.getElementById('txtStockProducto').value) || 0,
+        proveedor:                 document.getElementById('txtProveedor').value.trim() || null,
     };
     if (_invEditando) datos.id_producto = _invEditando;
 
