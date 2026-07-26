@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 26-07-2026 a las 22:05:41
+-- Tiempo de generación: 26-07-2026 a las 22:09:32
 -- Versión del servidor: 8.0.17
 -- Versión de PHP: 7.3.10
 
@@ -773,7 +773,7 @@ CREATE TABLE `sesiones` (
 --
 
 INSERT INTO `sesiones` (`token`, `id_user`, `ip`, `expires_at`, `created_at`) VALUES
-('a88ad7fbf3ee19c0330490507167052f2cab00fb41735dfa24f80544d80e9009', 1, '::1', '2026-07-26 22:56:28', '2026-07-26 16:56:28');
+('2496193985722aebb274adf58169bf96b57de270005a082914a7ae3ad5d281ba', 1, '::1', '2026-07-26 23:08:49', '2026-07-26 17:08:49');
 
 -- --------------------------------------------------------
 
