@@ -35,7 +35,17 @@ async function iniciarFrame4() {
             .join('');
     }
 
+    const selFiltro = document.getElementById('selFiltroTipoIdCliente');
+    if (selFiltro) {
+        selFiltro.innerHTML = '<option value="">Todos los tipos</option>' +
+            Object.entries(TIPO_ID_CLIENTE)
+                .map(([cod, nombre]) => `<option value="${cod}">${cod} — ${esc(nombre)}</option>`)
+                .join('');
+    }
+
     document.getElementById('txtBuscarCliente')?.addEventListener('input', () => renderizarTablaClientes(true));
+    document.getElementById('selFiltroTipoIdCliente')?.addEventListener('change', () => renderizarTablaClientes(true));
+    document.getElementById('selFiltroEstadoCliente')?.addEventListener('change', () => renderizarTablaClientes(true));
     document.getElementById('formCliente')?.addEventListener('submit', submitCliente);
     document.getElementById('btnCancelarCliente')?.addEventListener('click', cancelarEdicionCliente);
 
@@ -52,11 +62,16 @@ async function cargarClientesFrame4() {
 }
 
 function renderizarTablaClientes(reiniciar = false) {
-    const busqueda = (document.getElementById('txtBuscarCliente')?.value || '').toLowerCase().trim();
-    const lista = busqueda
-        ? _cliProductosLista.filter(c =>
-            `${c.identificacion} ${c.razon_social} ${c.email || ''} ${c.telefono || ''}`.toLowerCase().includes(busqueda))
-        : _cliProductosLista;
+    const busqueda     = (document.getElementById('txtBuscarCliente')?.value || '').toLowerCase().trim();
+    const filtroTipo   = document.getElementById('selFiltroTipoIdCliente')?.value || '';
+    const filtroEstado = document.getElementById('selFiltroEstadoCliente')?.value ?? '';
+
+    const lista = _cliProductosLista.filter(c => {
+        if (filtroTipo && c.tipo_identificacion !== filtroTipo) return false;
+        if (filtroEstado !== '' && c.estado != filtroEstado) return false;
+        if (busqueda && !(`${c.identificacion} ${c.razon_social} ${c.email || ''} ${c.telefono || ''}`.toLowerCase().includes(busqueda))) return false;
+        return true;
+    });
     _pagClientes.render(lista, { reiniciar });
 }
 

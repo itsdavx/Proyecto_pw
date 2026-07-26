@@ -6,7 +6,7 @@
     <title>Movimientos — Sistema Genérico</title>
     <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/main.css?v=30">
     <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/dashboard.css?v=30">
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=30">
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=31">
 </head>
 <body class="pag-contenido">
 
@@ -32,9 +32,12 @@
             <div class="card">
                 <div class="card-header">
                     <span class="card-titulo">Comprobantes electrónicos emitidos</span>
-                    <div class="toolbar">
-                        <label class="form-label" for="selFiltroTipo">Tipo de comprobante</label>
-                        <select class="form-control" id="selFiltroTipo" style="max-width:340px"></select>
+                    <div class="toolbar-izq">
+                        <div class="busqueda-wrap">
+                            <span class="busqueda-icono">⊙</span>
+                            <input type="text" id="txtBuscarComprobante" placeholder="Buscar por receptor, identificación o documento...">
+                        </div>
+                        <select class="form-control" id="selFiltroTipo" style="width:auto"></select>
                     </div>
                 </div>
                 <div class="tabla-wrap">
@@ -61,11 +64,17 @@
 
         <!-- ============ INVENTARIO ============ -->
         <section class="tab-panel d-none" id="tabInventario">
-            <div class="toolbar">
-                    <input class="form-control" type="text" id="txtBuscarMovimientoProducto" placeholder="Buscar por producto" style="max-width:300px">
-                </div>
             <div class="card">
-                <div class="card-header"><span class="card-titulo">Movimientos de inventario</span></div>
+                <div class="card-header">
+                    <span class="card-titulo">Movimientos de inventario</span>
+                    <div class="toolbar-izq">
+                        <div class="busqueda-wrap">
+                            <span class="busqueda-icono">⊙</span>
+                            <input type="text" id="txtBuscarMovimientoProducto" placeholder="Buscar por código o producto...">
+                        </div>
+                        <select class="form-control" id="selFiltroMovimiento" style="width:auto"></select>
+                    </div>
+                </div>
                 <div class="tabla-wrap">
                     <table class="tabla">
                         <thead>

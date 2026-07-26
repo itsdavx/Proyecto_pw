@@ -5,6 +5,12 @@
    Vista de solo lectura; el acceso se controla con frame1/leer.
    ============================================================ */
 
+const MOV_TIPO_MOVIMIENTO = {
+    'INGRESO POR COMPRA':   'Ingreso por compra',
+    'SALIDA POR VENTA':     'Salida por venta',
+    'AJUSTE DE INVENTARIO': 'Ajuste de inventario',
+};
+
 let _movTipos        = {};
 let _movComprobantes = [];
 let _movInventario   = [];
@@ -18,10 +24,19 @@ async function iniciarFrame1() {
 
     inicializarTabs();
     document.getElementById('selFiltroTipo')?.addEventListener('change', () => renderizarComprobantes(true));
+    document.getElementById('txtBuscarComprobante')?.addEventListener('input', () => renderizarComprobantes(true));
 
     _pagComprobantes = crearPaginador({ clave: 'mov-comprobantes', tbodyId: 'tbodyComprobantes', etiqueta: 'comprobantes', pintar: _pintarComprobantes });
     _pagInventario   = crearPaginador({ clave: 'mov-inventario',   tbodyId: 'tbodyInventario',   etiqueta: 'movimientos', pintar: _pintarInventario });
 
+    const selMov = document.getElementById('selFiltroMovimiento');
+    if (selMov) {
+        selMov.innerHTML = '<option value="">Todos los movimientos</option>' +
+            Object.entries(MOV_TIPO_MOVIMIENTO)
+                .map(([tipo, nombre]) => `<option value="${tipo}">${esc(nombre)}</option>`)
+                .join('');
+    }
+    document.getElementById('selFiltroMovimiento')?.addEventListener('change', () => renderizarTablaInventario(true));
     document.getElementById('txtBuscarMovimientoProducto')?.addEventListener('input', () => renderizarTablaInventario(true));
 
     await cargarMovimientos();
@@ -36,7 +51,7 @@ async function cargarMovimientos() {
         _movInventario   = r.data.inventario   || [];
         llenarFiltroTipos();
         renderizarComprobantes();
-        renderizarInventario();
+        renderizarTablaInventario();
     } catch { mostrarAlerta('Error al cargar los movimientos.', 'error'); }
 }
 
@@ -56,8 +71,14 @@ function llenarFiltroTipos() {
 
 /* ── Comprobantes electrónicos ───────────────────────────────── */
 function renderizarComprobantes(reiniciar = false) {
-    const filtro = document.getElementById('selFiltroTipo')?.value || '';
-    const lista  = filtro ? _movComprobantes.filter(c => c.cod_doc === filtro) : _movComprobantes;
+    const filtro   = document.getElementById('selFiltroTipo')?.value || '';
+    const busqueda = (document.getElementById('txtBuscarComprobante')?.value || '').toLowerCase().trim();
+
+    const lista = _movComprobantes.filter(c => {
+        if (filtro && c.cod_doc !== filtro) return false;
+        if (busqueda && !(`${c.receptor} ${c.identificacion_receptor} ${c.documento}`.toLowerCase().includes(busqueda))) return false;
+        return true;
+    });
     _pagComprobantes.render(lista, { reiniciar });
 }
 
@@ -66,10 +87,7 @@ function _pintarComprobantes(lista, offset) {
     if (!tbody) return;
 
     if (lista.length === 0) {
-        const filtro = document.getElementById('selFiltroTipo')?.value || '';
-        tbody.innerHTML = `<tr><td colspan="8" class="tabla-vacia">${
-            filtro ? 'No hay comprobantes registrados de este tipo.' : 'No hay comprobantes registrados.'
-        }</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="tabla-vacia">No hay comprobantes que coincidan con el filtro.</td></tr>`;
         return;
     }
 
@@ -88,10 +106,6 @@ function _pintarComprobantes(lista, offset) {
 }
 
 /* ── Movimientos de inventario ───────────────────────────────── */
-function renderizarInventario() {
-    _pagInventario.render(_movInventario);
-}
-
 function _pintarInventario(lista, offset) {
     const tbody = document.getElementById('tbodyInventario');
     if (!tbody) return;
@@ -121,9 +135,12 @@ function _pintarInventario(lista, offset) {
 
 function renderizarTablaInventario(reiniciar = false) {
     const busqueda = (document.getElementById('txtBuscarMovimientoProducto')?.value || '').toLowerCase().trim();
-    const lista = busqueda
-        ? _movInventario.filter(m =>
-            `${m.codigo_principal} ${m.descripcion || ''}`.toLowerCase().includes(busqueda))
-        : _movInventario;
+    const filtroTipo = document.getElementById('selFiltroMovimiento')?.value || '';
+
+    const lista = _movInventario.filter(m => {
+        if (filtroTipo && m.tipo_movimiento !== filtroTipo) return false;
+        if (busqueda && !(`${m.codigo_principal} ${m.descripcion || ''}`.toLowerCase().includes(busqueda))) return false;
+        return true;
+    });
     _pagInventario.render(lista, { reiniciar });
 }

@@ -6,7 +6,7 @@
     <title>Facturación Electrónica — Sistema Genérico</title>
     <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/main.css?v=30">
     <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/dashboard.css?v=30">
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=30">
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=31">
 </head>
 <body class="pag-contenido">
 
@@ -31,7 +31,29 @@
         <!-- ============ FACTURAS ============ -->
         <section class="tab-panel" id="tabFacturas">
             <div class="card">
-                <div class="card-header"><span class="card-titulo">Facturas emitidas</span></div>
+                <div class="card-header">
+                    <span class="card-titulo">Facturas emitidas</span>
+                    <div class="toolbar-izq">
+                        <div class="busqueda-wrap">
+                            <span class="busqueda-icono">⊙</span>
+                            <input type="text" id="txtBuscarFactura" placeholder="Buscar por comprador, identificación o documento...">
+                        </div>
+                        <select class="form-control" id="selFiltroAmbienteFactura" style="width:auto">
+                            <option value="">Todos los ambientes</option>
+                            <option value="1">Pruebas</option>
+                            <option value="2">Producción</option>
+                        </select>
+                        <select class="form-control" id="selFiltroEstadoFactura" style="width:auto"></select>
+                        <div class="filtro-grupo">
+                            <label class="form-label" for="txtFechaDesdeFactura">Desde</label>
+                            <input class="form-control" type="date" id="txtFechaDesdeFactura">
+                        </div>
+                        <div class="filtro-grupo">
+                            <label class="form-label" for="txtFechaHastaFactura">Hasta</label>
+                            <input class="form-control" type="date" id="txtFechaHastaFactura">
+                        </div>
+                    </div>
+                </div>
                 <div class="tabla-wrap">
                     <table class="tabla">
                         <thead>

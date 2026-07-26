@@ -27,6 +27,9 @@ const Shell = {
             e.preventDefault();
             this.cargar(url);
             this._cerrarSidebarMovil();
+            /* Los ítems del Módulo Facturación (frame1..frame5) contraen
+               el panel automáticamente para ganar espacio de trabajo. */
+            if (/^frame[1-5]$/.test(enlace.dataset.modulo || '')) colapsarSidebar();
         });
 
         this.frame.addEventListener('load', () => this._alCargarFrame());

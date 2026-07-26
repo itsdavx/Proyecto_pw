@@ -10,7 +10,7 @@ $db   = getDB();
 $stmt = $db->prepare("
     SELECT id_factura, establecimiento, punto_emision, secuencial, clave_acceso, fecha_emision,
            razon_social_comprador, identificacion_comprador,
-           total_sin_impuestos, total_iva, importe_total, estado
+           total_sin_impuestos, total_iva, importe_total, estado, ambiente
     FROM   facturas
     ORDER  BY id_factura DESC
 ");

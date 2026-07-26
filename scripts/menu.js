@@ -49,7 +49,7 @@ function _construirNav(nav, items) {
         if (hijosDePadre.length === 0) {
             // Elemento sin hijos → enlace directo
             nav.insertAdjacentHTML('beforeend', `
-                <a class="nav-item ${activo}" href="${esc(padre.url || '#')}" aria-label="${esc(padre.nombre)}">
+                <a class="nav-item ${activo}" href="${esc(padre.url || '#')}" aria-label="${esc(padre.nombre)}" data-modulo="${esc(padre.modulo || '')}">
                     <span class="nav-icono" aria-hidden="true">${icono}</span>
                     <span>${esc(padre.nombre)}</span>
                 </a>
@@ -70,7 +70,7 @@ function _construirNav(nav, items) {
                     ${hijosDePadre.map(h => {
                         const act = _estaActivo(h.url) ? 'activo' : '';
                         const ico = resolverIcono(h.icono) || '▸';
-                        return `<a class="nav-item nav-item-hijo ${act}" href="${esc(h.url || '#')}" aria-label="${esc(h.nombre)}">
+                        return `<a class="nav-item nav-item-hijo ${act}" href="${esc(h.url || '#')}" aria-label="${esc(h.nombre)}" data-modulo="${esc(h.modulo || '')}">
                             <span class="nav-icono" aria-hidden="true">${ico}</span>
                             <span>${esc(h.nombre)}</span>
                         </a>`;
@@ -145,6 +145,18 @@ function _toggleSidebar() {
 
     const colapsado = sidebar.classList.toggle('colapsado');
     sessionStorage.setItem(CLAVE_SIDEBAR_COLAPSADO, colapsado ? '1' : '0');
+}
+
+/* Colapso forzado (no alterna) al navegar a un ítem del Módulo
+   Facturación (ver shell.js): en escritorio contrae el panel a solo
+   iconos; en móvil no aplica, ya que ahí la navegación cierra el
+   overlay por completo (_cerrarSidebarMovil). */
+function colapsarSidebar() {
+    if (_esPantallaMovil()) return;
+    const sidebar = document.querySelector('.sidebar');
+    if (!sidebar || sidebar.classList.contains('colapsado')) return;
+    sidebar.classList.add('colapsado');
+    sessionStorage.setItem(CLAVE_SIDEBAR_COLAPSADO, '1');
 }
 
 /* Restaurar el estado guardado (el shell se carga una sola vez;

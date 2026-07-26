@@ -80,6 +80,32 @@ $inventario = $db->query("
     ORDER BY created_at DESC, codigo_principal ASC
 ")->fetchAll();
 
+// ------------------------------------------------------------
+// Stock Actual por movimiento. Ninguna de las dos fuentes trae el
+// stock resultante junto a la venta (factura_detalle no lo guarda,
+// para no duplicar ese dato), así que se reconstruye en cronología:
+// agrupando por producto y recorriendo sus movimientos del más
+// antiguo al más reciente, partiendo de 0, cada ingreso suma su
+// cantidad y cada salida o ajuste la resta. Esto reproduce
+// exactamente el stock_nuevo ya guardado en inventario_movimientos
+// y calcula el equivalente real para las salidas por venta.
+// ------------------------------------------------------------
+$indicesPorProducto = [];
+foreach ($inventario as $i => $fila) {
+    $indicesPorProducto[$fila['codigo_principal']][] = $i;
+}
+foreach ($indicesPorProducto as $indices) {
+    usort($indices, function ($a, $b) use ($inventario) {
+        return [$inventario[$a]['created_at'], $a] <=> [$inventario[$b]['created_at'], $b];
+    });
+    $stock = 0.0;
+    foreach ($indices as $i) {
+        $cantidad = (float)$inventario[$i]['cantidad'];
+        $stock   += $inventario[$i]['tipo_movimiento'] === 'INGRESO POR COMPRA' ? $cantidad : -$cantidad;
+        $inventario[$i]['stock_actual'] = round($stock, 6);
+    }
+}
+
 responder(true, 'OK', [
     'tipos'        => Catalogos::TIPO_COMPROBANTE,
     'comprobantes' => $comprobantes,

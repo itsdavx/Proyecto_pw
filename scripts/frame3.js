@@ -25,6 +25,7 @@ async function iniciarFrame3() {
     }
 
     document.getElementById('selFiltroCategoria')?.addEventListener('change', () => renderizarInventarioFrame3(true));
+    document.getElementById('selFiltroEstadoInventario')?.addEventListener('change', () => renderizarInventarioFrame3(true));
     document.getElementById('txtBuscarInventario')?.addEventListener('input', () => renderizarInventarioFrame3(true));
     document.getElementById('formProducto')?.addEventListener('submit', submitProducto);
     document.getElementById('btnCancelarProducto')?.addEventListener('click', cancelarEdicionProducto);
@@ -102,12 +103,14 @@ function llenarSelectsProducto() {
 
 /* ── Tabla del inventario ────────────────────────────────────── */
 function renderizarInventarioFrame3(reiniciar = false) {
-    const filtroCat = document.getElementById('selFiltroCategoria')?.value ?? '';
-    const busqueda  = (document.getElementById('txtBuscarInventario')?.value || '').toLowerCase().trim();
+    const filtroCat    = document.getElementById('selFiltroCategoria')?.value ?? '';
+    const filtroEstado = document.getElementById('selFiltroEstadoInventario')?.value ?? '';
+    const busqueda     = (document.getElementById('txtBuscarInventario')?.value || '').toLowerCase().trim();
 
     const lista = _invProductos.filter(p => {
         if (filtroCat === '0' && p.id_categoria) return false;
         if (filtroCat !== '' && filtroCat !== '0' && p.id_categoria != filtroCat) return false;
+        if (filtroEstado !== '' && p.estado != filtroEstado) return false;
         if (busqueda && !(`${p.codigo_principal} ${p.descripcion} ${p.categoria || ''}`.toLowerCase().includes(busqueda))) return false;
         return true;
     });

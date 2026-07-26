@@ -233,6 +233,16 @@
     flex-wrap:   wrap;
 }
 
+/* Agrupa una etiqueta con su campo (p. ej. "Desde" + fecha) para que
+   viajen juntos como una sola unidad al envolver en .toolbar-izq. */
+.filtro-grupo {
+    display:     inline-flex;
+    align-items: center;
+    gap:         .4rem;
+}
+.filtro-grupo .form-label { margin: 0; white-space: nowrap; }
+.filtro-grupo .form-control { width: 150px; }
+
 /* ── Búsqueda ────────────────────────────────────────────── */
 .busqueda-wrap {
     position:    relative;

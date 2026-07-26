@@ -52,6 +52,11 @@ async function iniciarFrame2() {
     document.getElementById('formFactura')?.addEventListener('submit', submitFactura);
     document.getElementById('btnAgregarItem')?.addEventListener('click', agregarFilaItem);
     document.getElementById('txtPropina')?.addEventListener('input', recalcularTotalesFactura);
+
+    ['txtBuscarFactura', 'txtFechaDesdeFactura', 'txtFechaHastaFactura']
+        .forEach(id => document.getElementById(id)?.addEventListener('input', () => renderizarTablaFacturas(true)));
+    ['selFiltroAmbienteFactura', 'selFiltroEstadoFactura']
+        .forEach(id => document.getElementById(id)?.addEventListener('change', () => renderizarTablaFacturas(true)));
 }
 
 function llenarSelect(id, opciones, formato) {
@@ -153,13 +158,44 @@ async function submitEmisor(e) {
 async function cargarFacturas() {
     try {
         const r = await postJSON(API.frame2.facturasListar, { token: Sesion.token() });
-        if (r.ok) { _facturas = r.data; renderizarTablaFacturas(); }
+        if (r.ok) { _facturas = r.data; llenarFiltroEstadoFactura(); renderizarTablaFacturas(); }
         else mostrarAlerta(r.msg, 'error');
     } catch { mostrarAlerta('Error al cargar facturas.', 'error'); }
 }
 
-function renderizarTablaFacturas() {
-    _pagFacturas.render(_facturas);
+/* El estado hoy solo trae "GENERADA", pero el campo está pensado para
+   evolucionar (FIRMADA, ENVIADA, AUTORIZADA, RECHAZADA...), así que el
+   filtro se arma con los valores que existan realmente en los datos. */
+function llenarFiltroEstadoFactura() {
+    const sel = document.getElementById('selFiltroEstadoFactura');
+    if (!sel) return;
+    const previo = sel.value;
+    const estados = [...new Set(_facturas.map(f => f.estado))].sort();
+    sel.innerHTML = '<option value="">Todos los estados</option>' +
+        estados.map(e => `<option value="${esc(e)}">${esc(e)}</option>`).join('');
+    if (previo && [...sel.options].some(o => o.value === previo)) sel.value = previo;
+}
+
+function renderizarTablaFacturas(reiniciar = false) {
+    const busqueda      = (document.getElementById('txtBuscarFactura')?.value || '').toLowerCase().trim();
+    const filtroAmbiente = document.getElementById('selFiltroAmbienteFactura')?.value || '';
+    const filtroEstado   = document.getElementById('selFiltroEstadoFactura')?.value || '';
+    const fechaDesde     = document.getElementById('txtFechaDesdeFactura')?.value || '';
+    const fechaHasta     = document.getElementById('txtFechaHastaFactura')?.value || '';
+
+    const lista = _facturas.filter(f => {
+        if (filtroAmbiente && String(f.ambiente) !== filtroAmbiente) return false;
+        if (filtroEstado && f.estado !== filtroEstado) return false;
+        if (fechaDesde && f.fecha_emision < fechaDesde) return false;
+        if (fechaHasta && f.fecha_emision > fechaHasta) return false;
+        if (busqueda) {
+            const documento = `${f.establecimiento}-${f.punto_emision}-${f.secuencial}`;
+            const texto = `${documento} ${f.razon_social_comprador} ${f.identificacion_comprador} ${f.clave_acceso}`.toLowerCase();
+            if (!texto.includes(busqueda)) return false;
+        }
+        return true;
+    });
+    _pagFacturas.render(lista, { reiniciar });
 }
 
 function _pintarFacturas(lista, offset) {
@@ -167,7 +203,7 @@ function _pintarFacturas(lista, offset) {
     if (!tbody) return;
 
     if (lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" class="tabla-vacia">No hay facturas generadas.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="tabla-vacia">No hay facturas que coincidan con el filtro.</td></tr>`;
         return;
     }
 
@@ -180,7 +216,7 @@ function _pintarFacturas(lista, offset) {
             <td>$${Number(f.total_sin_impuestos).toFixed(2)}</td>
             <td>$${Number(f.total_iva).toFixed(2)}</td>
             <td><strong>$${Number(f.importe_total).toFixed(2)}</strong></td>
-            <td><span class="badge badge-primary">${esc(f.estado)}</span></td>
+            <td><span class="badge ${f.ambiente == 2 ? 'badge-activo' : 'badge-warning'}">${f.ambiente == 2 ? 'Producción' : 'Pruebas'}</span> <span class="badge badge-primary">${esc(f.estado)}</span></td>
             <td>
                 <div class="btn-group">
                     <button class="btn btn-sm btn-outline" onclick="descargarXmlFactura(${f.id_factura})" aria-label="Descargar XML de la factura">XML</button>
