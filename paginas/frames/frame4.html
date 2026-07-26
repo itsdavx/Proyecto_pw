@@ -22,82 +22,93 @@
             </div>
         </div>
 
-        <div class="card mb-2" id="cardFormCliente">
-            <div class="card-header"><span class="card-titulo">Nuevo / Editar cliente</span></div>
-            <div class="card-body">
-                <form id="formCliente" novalidate>
-                    <div class="form-grid">
-                        <div class="form-grupo">
-                            <label class="form-label" for="selTipoIdCliente">Tipo de identificación</label>
-                            <select class="form-control" id="selTipoIdCliente"></select>
-                        </div>
-                        <div class="form-grupo">
-                            <label class="form-label" for="txtIdentificacionCliente">Identificación</label>
-                            <input class="form-control" type="text" id="txtIdentificacionCliente">
-                            <span class="form-error"></span>
-                        </div>
-                        <div class="form-grupo">
-                            <label class="form-label" for="txtRazonSocialCliente">Razón social / Nombre</label>
-                            <input class="form-control" type="text" id="txtRazonSocialCliente">
-                            <span class="form-error"></span>
-                        </div>
-                        <div class="form-grupo">
-                            <label class="form-label" for="txtDireccionCliente">Dirección</label>
-                            <input class="form-control" type="text" id="txtDireccionCliente">
-                        </div>
-                        <div class="form-grupo">
-                            <label class="form-label" for="txtEmailCliente">Email</label>
-                            <input class="form-control" type="email" id="txtEmailCliente">
-                        </div>
-                        <div class="form-grupo">
-                            <label class="form-label" for="txtTelefonoCliente">Teléfono</label>
-                            <input class="form-control" type="text" id="txtTelefonoCliente">
-                        </div>
-                    </div>
-                    <div class="form-acciones">
-                        <button type="submit" class="btn btn-primary" id="btnGuardarCliente">Guardar Cliente</button>
-                        <button type="button" class="btn btn-secondary d-none" id="btnCancelarCliente">Cancelar edición</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <nav class="tabs-nav">
+            <button type="button" class="tab-btn activo" data-tab="tabClientes">Clientes</button>
+            <button type="button" class="tab-btn" data-tab="tabNuevoCliente">Nuevo Cliente</button>
+        </nav>
 
-        <div class="card">
-            <div class="card-header">
-                <span class="card-titulo">Listado de Clientes</span>
-                <div class="toolbar-izq">
-                    <div class="busqueda-wrap">
-                        <span class="busqueda-icono">⊙</span>
-                        <input type="text" id="txtBuscarCliente" placeholder="Buscar por identificación, nombre, email...">
+        <!-- ============ CLIENTES ============ -->
+        <section class="tab-panel" id="tabClientes">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-titulo">Listado de Clientes</span>
+                    <div class="toolbar-izq">
+                        <div class="busqueda-wrap">
+                            <span class="busqueda-icono">⊙</span>
+                            <input type="text" id="txtBuscarCliente" placeholder="Buscar por identificación, nombre, email...">
+                        </div>
+                        <select class="form-control" id="selFiltroTipoIdCliente" style="width:auto"></select>
+                        <select class="form-control" id="selFiltroEstadoCliente" style="width:auto">
+                            <option value="">Todos los estados</option>
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
                     </div>
-                    <select class="form-control" id="selFiltroTipoIdCliente" style="width:auto"></select>
-                    <select class="form-control" id="selFiltroEstadoCliente" style="width:auto">
-                        <option value="">Todos los estados</option>
-                        <option value="1">Activo</option>
-                        <option value="0">Inactivo</option>
-                    </select>
+                </div>
+                <div class="tabla-wrap">
+                    <table class="tabla">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Tipo Id.</th>
+                                <th>Identificación</th>
+                                <th>Razón social</th>
+                                <th>Dirección</th>
+                                <th>Contacto</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyClientes">
+                            <tr><td colspan="8" class="tabla-vacia">Cargando...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="tabla-wrap">
-                <table class="tabla">
-                    <thead>
-                        <tr>
-                            <th>N°</th>
-                            <th>Tipo Id.</th>
-                            <th>Identificación</th>
-                            <th>Razón social</th>
-                            <th>Dirección</th>
-                            <th>Contacto</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbodyClientes">
-                        <tr><td colspan="8" class="tabla-vacia">Cargando...</td></tr>
-                    </tbody>
-                </table>
+        </section>
+
+        <!-- ============ NUEVO CLIENTE ============ -->
+        <section class="tab-panel d-none" id="tabNuevoCliente">
+            <div class="card" id="cardFormCliente">
+                <div class="card-header"><span class="card-titulo">Nuevo / Editar cliente</span></div>
+                <div class="card-body">
+                    <form id="formCliente" novalidate>
+                        <div class="form-grid">
+                            <div class="form-grupo">
+                                <label class="form-label" for="selTipoIdCliente">Tipo de identificación</label>
+                                <select class="form-control" id="selTipoIdCliente"></select>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtIdentificacionCliente">Identificación</label>
+                                <input class="form-control" type="text" id="txtIdentificacionCliente">
+                                <span class="form-error"></span>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtRazonSocialCliente">Razón social / Nombre</label>
+                                <input class="form-control" type="text" id="txtRazonSocialCliente">
+                                <span class="form-error"></span>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtDireccionCliente">Dirección</label>
+                                <input class="form-control" type="text" id="txtDireccionCliente">
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtEmailCliente">Email</label>
+                                <input class="form-control" type="email" id="txtEmailCliente">
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtTelefonoCliente">Teléfono</label>
+                                <input class="form-control" type="text" id="txtTelefonoCliente">
+                            </div>
+                        </div>
+                        <div class="form-acciones">
+                            <button type="submit" class="btn btn-primary" id="btnGuardarCliente">Guardar Cliente</button>
+                            <button type="button" class="btn btn-secondary d-none" id="btnCancelarCliente">Cancelar edición</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+        </section>
     </main>
 
     <div id="alerta-global"></div>
@@ -109,7 +120,7 @@
     <script src="/NRC30713/Proyecto_pw/scripts/router.js?v=30"></script>
     <script src="/NRC30713/Proyecto_pw/scripts/confirmacion.js?v=30"></script>
     <script src="/NRC30713/Proyecto_pw/scripts/paginacion.js?v=30"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/frame4.js?v=30"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/frame4.js?v=31"></script>
     <script>document.addEventListener('DOMContentLoaded', iniciarFrame4);</script>
 </body>
 </html>

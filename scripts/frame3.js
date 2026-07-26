@@ -24,6 +24,7 @@ async function iniciarFrame3() {
         document.getElementById('cardFormProducto')?.classList.add('d-none');
     }
 
+    inicializarTabs();
     document.getElementById('selFiltroCategoria')?.addEventListener('change', () => renderizarInventarioFrame3(true));
     document.getElementById('selFiltroEstadoInventario')?.addEventListener('change', () => renderizarInventarioFrame3(true));
     document.getElementById('txtBuscarInventario')?.addEventListener('input', () => renderizarInventarioFrame3(true));
@@ -172,6 +173,7 @@ function editarProducto(id) {
     document.getElementById('txtProveedor').value = '';
     document.getElementById('btnGuardarProducto').textContent = 'Actualizar Producto';
     document.getElementById('btnCancelarProducto')?.classList.remove('d-none');
+    cambiarTab('tabRegistrarCompra');
 }
 
 function cancelarEdicionProducto() {
@@ -181,6 +183,7 @@ function cancelarEdicionProducto() {
     if (selUni) selUni.value = UNIDAD_POR_DEFECTO;
     document.getElementById('btnGuardarProducto').textContent = 'Guardar Producto';
     document.getElementById('btnCancelarProducto')?.classList.add('d-none');
+    cambiarTab('tabProductos');
 }
 
 async function submitProducto(e) {

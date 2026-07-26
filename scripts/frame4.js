@@ -28,6 +28,8 @@ async function iniciarFrame4() {
         document.getElementById('cardFormCliente')?.classList.add('d-none');
     }
 
+    inicializarTabs();
+
     const sel = document.getElementById('selTipoIdCliente');
     if (sel) {
         sel.innerHTML = Object.entries(TIPO_ID_CLIENTE)
@@ -121,6 +123,7 @@ function editarCliente(id) {
     document.getElementById('txtTelefonoCliente').value = c.telefono || '';
     document.getElementById('btnGuardarCliente').textContent = 'Actualizar Cliente';
     document.getElementById('btnCancelarCliente')?.classList.remove('d-none');
+    cambiarTab('tabNuevoCliente');
 }
 
 function cancelarEdicionCliente() {
@@ -128,6 +131,7 @@ function cancelarEdicionCliente() {
     document.getElementById('formCliente')?.reset();
     document.getElementById('btnGuardarCliente').textContent = 'Guardar Cliente';
     document.getElementById('btnCancelarCliente')?.classList.add('d-none');
+    cambiarTab('tabClientes');
 }
 
 async function submitCliente(e) {

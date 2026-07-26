@@ -22,98 +22,109 @@
             </div>
         </div>
 
-        <div class="card mb-2" id="cardFormProducto">
-            <div class="card-header"><span class="card-titulo">Registrar Compra</span></div>
-            <div class="card-body">
-                <form id="formProducto" novalidate>
-                    <div class="form-grid">
-                        <div class="form-grupo">
-                            <label class="form-label" for="txtCodigoProducto">Código principal</label>
-                            <input class="form-control" type="text" id="txtCodigoProducto">
-                            <span class="form-error"></span>
-                        </div>
-                        <div class="form-grupo">
-                            <label class="form-label" for="txtDescripcionProducto">Descripción</label>
-                            <input class="form-control" type="text" id="txtDescripcionProducto">
-                            <span class="form-error"></span>
-                        </div>
-                        <div class="form-grupo">
-                            <label class="form-label" for="txtPrecioProducto">Precio unitario (USD)</label>
-                            <input class="form-control" type="number" id="txtPrecioProducto" min="0" step="0.000001">
-                            <span class="form-error"></span>
-                        </div>
-                        <div class="form-grupo">
-                            <label class="form-label" for="selIvaProducto">IVA</label>
-                            <select class="form-control" id="selIvaProducto"></select>
-                        </div>
-                        <div class="form-grupo">
-                            <label class="form-label" for="selImpuestoEspecial">Impuesto especial</label>
-                            <select class="form-control" id="selImpuestoEspecial"></select>
-                        </div>
-                        <div class="form-grupo">
-                            <label class="form-label" for="selCategoriaProducto">Categoría</label>
-                            <select class="form-control" id="selCategoriaProducto"></select>
-                        </div>
-                        <div class="form-grupo">
-                            <label class="form-label" for="selUnidadProducto">Unidad de medida</label>
-                            <select class="form-control" id="selUnidadProducto"></select>
-                        </div>
-                        <div class="form-grupo">
-                            <label class="form-label" for="txtStockProducto">Stock disponible</label>
-                            <input class="form-control" type="number" id="txtStockProducto" min="0" step="0.01" value="0">
-                        </div>
-                        <div class="form-grupo">
-                            <label class="form-label" for="txtProveedor">Nombre del proveedor (opcional)</label>
-                            <input class="form-control" type="text" id="txtProveedor" placeholder="Ej. Distribuidora XYZ">
-                        </div>
-                    </div>
-                    <div class="form-acciones">
-                        <button type="submit" class="btn btn-primary" id="btnGuardarProducto">Guardar Producto</button>
-                        <button type="button" class="btn btn-secondary d-none" id="btnCancelarProducto">Cancelar edición</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <nav class="tabs-nav">
+            <button type="button" class="tab-btn activo" data-tab="tabProductos">Productos</button>
+            <button type="button" class="tab-btn" data-tab="tabRegistrarCompra">Registrar Compra</button>
+        </nav>
 
-        <div class="card">
-            <div class="card-header">
-                <span class="card-titulo">Productos en inventario</span>
-                <div class="toolbar-izq">
-                    <div class="busqueda-wrap">
-                        <span class="busqueda-icono">⊙</span>
-                        <input type="text" id="txtBuscarInventario" placeholder="Buscar por código, producto o categoría...">
+        <!-- ============ PRODUCTOS ============ -->
+        <section class="tab-panel" id="tabProductos">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-titulo">Productos en inventario</span>
+                    <div class="toolbar-izq">
+                        <div class="busqueda-wrap">
+                            <span class="busqueda-icono">⊙</span>
+                            <input type="text" id="txtBuscarInventario" placeholder="Buscar por código, producto o categoría...">
+                        </div>
+                        <select class="form-control" id="selFiltroCategoria" style="width:auto"></select>
+                        <select class="form-control" id="selFiltroEstadoInventario" style="width:auto">
+                            <option value="">Todos los estados</option>
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
                     </div>
-                    <select class="form-control" id="selFiltroCategoria" style="width:auto"></select>
-                    <select class="form-control" id="selFiltroEstadoInventario" style="width:auto">
-                        <option value="">Todos los estados</option>
-                        <option value="1">Activo</option>
-                        <option value="0">Inactivo</option>
-                    </select>
+                </div>
+                <div class="tabla-wrap">
+                    <table class="tabla">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Código</th>
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th>Unidad de medida</th>
+                                <th>Stock disponible</th>
+                                <th>Precio</th>
+                                <th>IVA</th>
+                                <th>Impuesto especial</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyInventario">
+                            <tr><td colspan="11" class="tabla-vacia">Cargando...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="tabla-wrap">
-                <table class="tabla">
-                    <thead>
-                        <tr>
-                            <th>N°</th>
-                            <th>Código</th>
-                            <th>Producto</th>
-                            <th>Categoría</th>
-                            <th>Unidad de medida</th>
-                            <th>Stock disponible</th>
-                            <th>Precio</th>
-                            <th>IVA</th>
-                            <th>Impuesto especial</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbodyInventario">
-                        <tr><td colspan="11" class="tabla-vacia">Cargando...</td></tr>
-                    </tbody>
-                </table>
+        </section>
+
+        <!-- ============ REGISTRAR COMPRA ============ -->
+        <section class="tab-panel d-none" id="tabRegistrarCompra">
+            <div class="card" id="cardFormProducto">
+                <div class="card-header"><span class="card-titulo">Registrar Compra</span></div>
+                <div class="card-body">
+                    <form id="formProducto" novalidate>
+                        <div class="form-grid">
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtCodigoProducto">Código principal</label>
+                                <input class="form-control" type="text" id="txtCodigoProducto">
+                                <span class="form-error"></span>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtDescripcionProducto">Descripción</label>
+                                <input class="form-control" type="text" id="txtDescripcionProducto">
+                                <span class="form-error"></span>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtPrecioProducto">Precio unitario (USD)</label>
+                                <input class="form-control" type="number" id="txtPrecioProducto" min="0" step="0.000001">
+                                <span class="form-error"></span>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="selIvaProducto">IVA</label>
+                                <select class="form-control" id="selIvaProducto"></select>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="selImpuestoEspecial">Impuesto especial</label>
+                                <select class="form-control" id="selImpuestoEspecial"></select>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="selCategoriaProducto">Categoría</label>
+                                <select class="form-control" id="selCategoriaProducto"></select>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="selUnidadProducto">Unidad de medida</label>
+                                <select class="form-control" id="selUnidadProducto"></select>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtStockProducto">Stock disponible</label>
+                                <input class="form-control" type="number" id="txtStockProducto" min="0" step="0.01" value="0">
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="txtProveedor">Nombre del proveedor (opcional)</label>
+                                <input class="form-control" type="text" id="txtProveedor" placeholder="Ej. Distribuidora XYZ">
+                            </div>
+                        </div>
+                        <div class="form-acciones">
+                            <button type="submit" class="btn btn-primary" id="btnGuardarProducto">Guardar Producto</button>
+                            <button type="button" class="btn btn-secondary d-none" id="btnCancelarProducto">Cancelar edición</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+        </section>
     </main>
 
     <div id="alerta-global"></div>
@@ -125,7 +136,7 @@
     <script src="/NRC30713/Proyecto_pw/scripts/router.js?v=30"></script>
     <script src="/NRC30713/Proyecto_pw/scripts/confirmacion.js?v=30"></script>
     <script src="/NRC30713/Proyecto_pw/scripts/paginacion.js?v=30"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/frame3.js?v=30"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/frame3.js?v=31"></script>
     <script>document.addEventListener('DOMContentLoaded', iniciarFrame3);</script>
 </body>
 </html>
