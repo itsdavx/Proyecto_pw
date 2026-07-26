@@ -40,7 +40,7 @@ try {
     ]);
     $idProducto = (int)$db->lastInsertId();
 
-    // La existencia inicial queda registrada como ingreso de inventario
+    // Existencia inicial como ingreso
     MovimientoInventario::registrar($db, [
         'id_producto'      => $idProducto,
         'codigo_principal' => $codigo,

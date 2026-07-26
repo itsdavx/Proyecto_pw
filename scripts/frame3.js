@@ -1,11 +1,4 @@
-/* ============================================================
-   FRAME3.JS — Inventario: módulo único responsable de los
-   productos del sistema — creación, edición, activación,
-   eliminación, stock, categorías y unidades de medida — con
-   filtro por categoría y búsqueda. Facturación consume esta
-   misma fuente de datos (servidor/inventario/listar.php).
-   Permisos: frame3 leer / crear / editar / estado / eliminar.
-   ============================================================ */
+// Inventario: productos y stock
 
 let _invProductos  = [];
 let _invCategorias = [];
@@ -46,12 +39,7 @@ function llenarSelect(id, opciones, formato) {
         .join('');
 }
 
-/* "No posee" (valor "") se fuerza como primera opción y con `selected`
-   explícito: las claves numéricas del catálogo ('3', '5') se reordenan
-   antes que '' al recorrer el objeto con Object.entries, por lo que no
-   basta con declararla primero en CATALOGO_IMPUESTO_ESPECIAL — sin este
-   forzado, el formulario quedaría por defecto en un impuesto especial
-   en lugar de "No posee" al reiniciarse. */
+// Fuerza "No posee" como primera opción
 function llenarSelectImpuestoEspecial() {
     const sel = document.getElementById('selImpuestoEspecial');
     if (!sel) return;
@@ -73,7 +61,7 @@ async function cargarInventario() {
     } catch { mostrarAlerta('Error al cargar el inventario.', 'error'); }
 }
 
-/* ── Selects: filtro y formulario ────────────────────────────── */
+// Selects: filtro y formulario
 function llenarFiltroCategorias() {
     const sel = document.getElementById('selFiltroCategoria');
     if (!sel) return;
@@ -102,7 +90,7 @@ function llenarSelectsProducto() {
     }
 }
 
-/* ── Tabla del inventario ────────────────────────────────────── */
+// Tabla del inventario
 function renderizarInventarioFrame3(reiniciar = false) {
     const filtroCat    = document.getElementById('selFiltroCategoria')?.value ?? '';
     const filtroEstado = document.getElementById('selFiltroEstadoInventario')?.value ?? '';
@@ -153,7 +141,7 @@ function _pintarInventarioFrame3(lista) {
     `).join('');
 }
 
-/* ── Crear / editar producto ─────────────────────────────────── */
+// Crear / editar producto
 function editarProducto(id) {
     const p = _invProductos.find(x => x.id_producto == id);
     if (!p) return;
@@ -166,9 +154,7 @@ function editarProducto(id) {
     document.getElementById('selCategoriaProducto').value = p.id_categoria || '';
     document.getElementById('selUnidadProducto').value = p.id_unidad;
     document.getElementById('txtStockProducto').value = Number(p.stock);
-    // El proveedor es propio de cada compra, no un atributo permanente
-    // del producto: se deja en blanco para que el usuario lo indique
-    // solo si esta edición corresponde a un nuevo ingreso de stock.
+    // proveedor es por compra, no fijo
     document.getElementById('txtProveedor').value = '';
     document.getElementById('btnGuardarProducto').textContent = 'Actualizar Producto';
     document.getElementById('btnCancelarProducto')?.classList.remove('d-none');
@@ -227,7 +213,7 @@ async function submitProducto(e) {
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
 }
 
-/* ── Estado y eliminación ────────────────────────────────────── */
+// Estado y eliminación
 async function toggleEstadoProducto(id) {
     try {
         const r = await postJSON(API.inventario.estado, { token: Sesion.token(), id_producto: id });

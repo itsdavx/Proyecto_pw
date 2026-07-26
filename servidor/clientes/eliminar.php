@@ -17,13 +17,12 @@ $cliente->execute([$idCliente]);
 $cliente = $cliente->fetch();
 if (!$cliente) responder(false, 'Cliente no encontrado.');
 
-// Consumidor Final es obligatorio para el módulo y no puede eliminarse
+// Consumidor Final no se elimina
 if ($cliente['tipo_identificacion'] === '07' && $cliente['identificacion'] === Catalogos::CONSUMIDOR_FINAL_ID) {
     responder(false, 'El cliente Consumidor Final es obligatorio y no puede eliminarse.');
 }
 
-// Un cliente con facturas emitidas no se elimina: las facturas son
-// historial contable inmutable y lo referencian (FK RESTRICT).
+// No eliminar si tiene facturas
 $stmt = $db->prepare("SELECT COUNT(*) AS total FROM facturas WHERE id_cliente = ?");
 $stmt->execute([$idCliente]);
 $facturas = (int)$stmt->fetch()['total'];

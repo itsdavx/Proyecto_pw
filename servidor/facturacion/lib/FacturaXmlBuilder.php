@@ -1,14 +1,5 @@
 <?php
-/**
- * Construye el XML de la Factura Electrónica (codDoc 01) conforme al
- * esquema del SRI (factura v1.1.0): respeta nombres, jerarquía y orden
- * de etiquetas. No agrega campos fuera del esquema ni firma el
- * documento (ver pendientes en README del módulo).
- *
- * @param array $emisor   fila de `factura_emisor`
- * @param array $factura  cabecera calculada (ver facturas_crear.php)
- * @param array $detalles líneas ya calculadas por CalculadoraFactura
- */
+// Construye el XML de la factura
 class FacturaXmlBuilder
 {
     public static function construir(array $emisor, array $factura, array $detalles): DOMDocument
@@ -21,7 +12,7 @@ class FacturaXmlBuilder
         $raiz->setAttribute('version', '1.1.0');
         $doc->appendChild($raiz);
 
-        // ---- infoTributaria ----
+        // infoTributaria
         $infoTrib = $doc->createElement('infoTributaria');
         $raiz->appendChild($infoTrib);
         self::agregar($doc, $infoTrib, 'ambiente', $factura['ambiente']);
@@ -38,7 +29,7 @@ class FacturaXmlBuilder
         self::agregar($doc, $infoTrib, 'secuencial', $factura['secuencial']);
         self::agregar($doc, $infoTrib, 'dirMatriz', $emisor['dir_matriz']);
 
-        // ---- infoFactura ----
+        // infoFactura
         $infoFac = $doc->createElement('infoFactura');
         $raiz->appendChild($infoFac);
         self::agregar($doc, $infoFac, 'fechaEmision', date('d/m/Y', strtotime($factura['fecha_emision'])));
@@ -77,7 +68,7 @@ class FacturaXmlBuilder
         self::agregar($doc, $pago, 'formaPago', $factura['forma_pago']);
         self::agregar($doc, $pago, 'total', self::money($factura['importe_total']));
 
-        // ---- detalles ----
+        // detalles
         $detallesEl = $doc->createElement('detalles');
         $raiz->appendChild($detallesEl);
         foreach ($detalles as $d) {

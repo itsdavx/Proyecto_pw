@@ -5,10 +5,7 @@ $input  = getInput();
 $token  = $input['token'] ?? '';
 $sesion = verificarSesion($token);
 
-// El inventario es la fuente única de productos: alimenta tanto al
-// módulo Inventario (frame3) como a Facturación (frame2, pestaña de
-// productos y selector del detalle). Basta con poder leer uno de los
-// dos módulos.
+// Basta permiso en uno de los módulos
 $puede = false;
 foreach (['frame3', 'frame2'] as $mod) {
     if (moduloActivo($mod) && rolTienePermiso($sesion['id_rol'], $mod, 'leer')) {
@@ -20,11 +17,7 @@ if (!$puede) responder(false, 'Sin permiso para esta accion.');
 
 $db = getDB();
 
-// El módulo Inventario (frame3) pide el listado completo para su
-// propia paginación en el cliente. El buscador de producto en cada
-// línea de Nueva Factura (frame2), en cambio, busca por texto y
-// limita el resultado, para que ese selector escale sin importar
-// cuántos productos existan.
+// Búsqueda y límite opcionales
 $busqueda = trim((string)($input['busqueda'] ?? ''));
 $limite   = isset($input['limite']) ? max(1, min(50, (int)$input['limite'])) : null;
 
@@ -53,9 +46,7 @@ $stmt = $db->prepare($sql);
 $stmt->execute($params);
 $productos = $stmt->fetchAll();
 
-// Las categorías y unidades solo las necesita el módulo Inventario
-// (filtro y formulario); se omiten en la búsqueda acotada de Nueva
-// Factura para no pagar ese costo en cada tecleo.
+// Omitidas en búsqueda acotada
 $categorias = [];
 $unidades   = [];
 if ($busqueda === '' && $limite === null) {

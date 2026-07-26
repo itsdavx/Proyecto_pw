@@ -9,13 +9,7 @@ verificarPermiso($sesion['id_rol'], 'frame1', 'leer');
 
 $db = getDB();
 
-// ------------------------------------------------------------
-// Comprobantes electrónicos emitidos (Tabla 3 de la Ficha
-// Técnica SRI v2.32). Cada tipo que el sistema emita se agrega
-// a esta consulta con su codDoc; los tipos aún no implementados
-// (03, 04, 05, 06, 07) se incorporarán aquí cuando exista su
-// módulo, sin cambios en el cliente.
-// ------------------------------------------------------------
+// Comprobantes electrónicos (Tabla 3 SRI)
 $comprobantes = $db->query("
     SELECT '01' AS cod_doc,
            f.id_factura AS id_origen,
@@ -39,13 +33,7 @@ foreach ($comprobantes as &$c) {
 }
 unset($c);
 
-// ------------------------------------------------------------
-// Movimientos de inventario. Se combinan dos orígenes:
-//   * Salidas por venta, derivadas del detalle de las facturas
-//     (no se duplican en una tabla propia).
-//   * Ingresos y ajustes registrados al crear o editar un
-//     producto, almacenados en inventario_movimientos.
-// ------------------------------------------------------------
+// Movimientos de inventario: ventas + ingresos
 $inventario = $db->query("
     SELECT * FROM (
         SELECT d.codigo_principal,
@@ -80,16 +68,7 @@ $inventario = $db->query("
     ORDER BY created_at DESC, codigo_principal ASC
 ")->fetchAll();
 
-// ------------------------------------------------------------
-// Stock Actual por movimiento. Ninguna de las dos fuentes trae el
-// stock resultante junto a la venta (factura_detalle no lo guarda,
-// para no duplicar ese dato), así que se reconstruye en cronología:
-// agrupando por producto y recorriendo sus movimientos del más
-// antiguo al más reciente, partiendo de 0, cada ingreso suma su
-// cantidad y cada salida o ajuste la resta. Esto reproduce
-// exactamente el stock_nuevo ya guardado en inventario_movimientos
-// y calcula el equivalente real para las salidas por venta.
-// ------------------------------------------------------------
+// Reconstruye stock actual por movimiento
 $indicesPorProducto = [];
 foreach ($inventario as $i => $fila) {
     $indicesPorProducto[$fila['codigo_principal']][] = $i;

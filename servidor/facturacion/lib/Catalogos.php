@@ -1,13 +1,8 @@
 <?php
-/**
- * Catálogos oficiales del SRI utilizados por el módulo de Facturación
- * Electrónica (Ficha Técnica de Comprobantes Electrónicos v2.32),
- * acotados a los códigos vigentes necesarios para FACTURAS (codDoc 01).
- * No se listan códigos históricos fuera de uso.
- */
+// Catálogos oficiales del SRI
 class Catalogos
 {
-    // Tabla 3 — Tipos de comprobantes electrónicos (codDoc)
+    // Tipos de comprobante (codDoc)
     public const TIPO_COMPROBANTE = [
         '01' => 'FACTURA',
         '03' => 'LIQUIDACIÓN DE COMPRA DE BIENES Y PRESTACIÓN DE SERVICIOS',
@@ -17,7 +12,7 @@ class Catalogos
         '07' => 'COMPROBANTE DE RETENCIÓN',
     ];
 
-    // Tabla 5 — Tipo de identificación del comprador
+    // Tipo de identificación
     public const TIPO_IDENTIFICACION = [
         '04' => 'RUC',
         '05' => 'CÉDULA',
@@ -26,7 +21,7 @@ class Catalogos
         '08' => 'IDENTIFICACIÓN DEL EXTERIOR',
     ];
 
-    // Códigos de IVA vigentes (codigoPorcentaje) — tarifa en %
+    // Códigos de IVA vigentes
     public const IVA = [
         '0' => ['nombre' => '0%',                    'tarifa' => 0.00],
         '4' => ['nombre' => '15%',                    'tarifa' => 15.00],
@@ -34,17 +29,13 @@ class Catalogos
         '7' => ['nombre' => 'Exento de IVA',           'tarifa' => 0.00],
     ];
 
-    // Tabla 16 — Impuestos especiales aplicables a un producto, además
-    // del IVA (código 2, no listado aquí por no ser "especial"). NULL /
-    // vacío en el producto equivale a "no posee". Es una clasificación
-    // informativa del catálogo: no se aplica aún al cálculo de la
-    // factura ni al XML, que solo declaran IVA.
+    // Impuestos especiales (informativo)
     public const IMPUESTO_ESPECIAL = [
         '3' => 'ICE — Impuesto a los Consumos Especiales',
         '5' => 'IRBPNR — Impuesto Redimible a las Botellas Plásticas No Retornables',
     ];
 
-    // Tabla 6 — Formas de pago
+    // Formas de pago
     public const FORMA_PAGO = [
         '01' => 'Sin utilización del sistema financiero',
         '15' => 'Compensación de deudas',
@@ -58,8 +49,7 @@ class Catalogos
 
     public const CONSUMIDOR_FINAL_ID = '9999999999999';
 
-    // Longitud exacta esperada de la identificación según su tipo
-    // (Pasaporte e Identificación del Exterior no tienen longitud fija).
+    // Longitud según tipo de ID
     public const LONGITUD_IDENTIFICACION = [
         '04' => 13,
         '05' => 10,

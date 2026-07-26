@@ -5,9 +5,7 @@ $input  = getInput();
 $token  = $input['token'] ?? '';
 $sesion = verificarSesion($token);
 
-// El listado de clientes alimenta tanto al módulo Clientes (frame4)
-// como a Facturación (frame2, selector de Nueva Factura). Basta con
-// poder leer uno de los dos módulos.
+// Basta permiso en uno de los módulos
 $puede = false;
 foreach (['frame4', 'frame2'] as $mod) {
     if (moduloActivo($mod) && rolTienePermiso($sesion['id_rol'], $mod, 'leer')) {
@@ -17,10 +15,7 @@ foreach (['frame4', 'frame2'] as $mod) {
 }
 if (!$puede) responder(false, 'Sin permiso para esta accion.');
 
-// El módulo Clientes (frame4) pide el listado completo para su propia
-// paginación en el cliente. El selector de Cliente en Nueva Factura
-// (frame2), en cambio, busca por texto y limita el resultado, para
-// que ese selector escale sin importar cuántos clientes existan.
+// Búsqueda y límite opcionales
 $busqueda = trim((string)($input['busqueda'] ?? ''));
 $limite   = isset($input['limite']) ? max(1, min(50, (int)$input['limite'])) : null;
 

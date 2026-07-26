@@ -1,6 +1,4 @@
-/* ============================================================
-   COMPONENTS.CSS — Tablas, formularios, botones, modales
-   ============================================================ */
+/*COMPONENTS.CSS — Tablas, formularios, botones, modales*/
 
 /* ── Tarjeta ─────────────────────────────────────────────── */
 .card {
@@ -240,8 +238,7 @@
     flex-wrap:   wrap;
 }
 
-/* Agrupa una etiqueta con su campo (p. ej. "Desde" + fecha) para que
-   viajen juntos como una sola unidad al envolver en .toolbar-izq. */
+/* Agrupa etiqueta y campo juntos */
 .filtro-grupo {
     display:     inline-flex;
     align-items: center;
@@ -250,18 +247,11 @@
 .filtro-grupo .form-label { margin: 0; white-space: nowrap; }
 .filtro-grupo .form-control { width: 150px; }
 
-/* ── Autocompletado (buscador que consulta al servidor en vez de
-   cargar todas las opciones; ver selectores de Cliente y Producto en
-   Nueva Factura, pensados para escalar sin importar cuántos
-   registros existan). Un único popup compartido (#autocompleteOverlay,
-   ver frame2.js) se ancla a <body> con "position: fixed" y JS calcula
-   su posición junto al campo activo: así escapa el recorte de
-   cualquier contenedor con scroll (p. ej. .tabla-wrap del detalle),
-   en vez de quedar atrapado dentro con "position: absolute". ────── */
+/* Popup de autocompletado */
 .autocomplete-wrap { position: relative; }
 
 .autocomplete-lista {
-    position:      fixed; /* la posición real (top/left/width) la fija JS */
+    position:      fixed; /* posición fijada por JS */
     max-height:    260px;
     overflow-y:    auto;
     background:    var(--bg-card);

@@ -1,17 +1,10 @@
 <?php
 require_once __DIR__ . '/Catalogos.php';
 
-/**
- * Cálculos monetarios de la factura: por línea de detalle y totales
- * agregados. Sin dependencias de HTTP/BD.
- */
+// Cálculos monetarios de factura
 class CalculadoraFactura
 {
-    /**
-     * Calcula una línea de detalle a partir de cantidad, precio e IVA.
-     * precioTotalSinImpuesto ya excluye el descuento, tal como exige el
-     * esquema del SRI (precioTotalSinImpuesto = cantidad×precio − descuento).
-     */
+    // Calcula una línea de detalle
     public static function calcularLinea(float $cantidad, float $precioUnitario, float $descuento, string $codigoIva): array
     {
         $subtotal = round(($cantidad * $precioUnitario) - $descuento, 2);
@@ -27,12 +20,7 @@ class CalculadoraFactura
         ];
     }
 
-    /**
-     * Agrega los totales de la factura a partir de las líneas ya
-     * calculadas (cada una con las claves de calcularLinea() más
-     * 'descuento'). Agrupa la base imponible y el valor de IVA por
-     * código de porcentaje, tal como exige <totalConImpuestos>.
-     */
+    // Agrega totales por código de IVA
     public static function calcularTotales(array $lineas): array
     {
         $totalSinImpuestos = 0.00;

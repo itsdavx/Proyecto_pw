@@ -1,9 +1,4 @@
-/* ============================================================
-   FRAME1.JS — Movimientos: historial de comprobantes
-   electrónicos (Tabla 3 de la Ficha Técnica SRI v2.32) y de
-   movimientos de inventario registrados en el sistema.
-   Vista de solo lectura; el acceso se controla con frame1/leer.
-   ============================================================ */
+// Movimientos: comprobantes e inventario
 
 const MOV_TIPO_MOVIMIENTO = {
     'INGRESO POR COMPRA':   'Ingreso por compra',
@@ -59,7 +54,7 @@ async function cargarMovimientos() {
     } catch { mostrarAlerta('Error al cargar los movimientos.', 'error'); }
 }
 
-/* ── Filtro por tipo de comprobante (Tabla 3 SRI) ────────────── */
+// Filtro por tipo de comprobante
 function llenarFiltroTipos() {
     const sel = document.getElementById('selFiltroTipo');
     if (!sel) return;
@@ -73,7 +68,7 @@ function llenarFiltroTipos() {
     }
 }
 
-/* ── Comprobantes electrónicos ───────────────────────────────── */
+// Comprobantes electrónicos
 function renderizarComprobantes(reiniciar = false) {
     const filtro     = document.getElementById('selFiltroTipo')?.value || '';
     const busqueda   = (document.getElementById('txtBuscarComprobante')?.value || '').toLowerCase().trim();
@@ -112,7 +107,7 @@ function _pintarComprobantes(lista) {
     `).join('');
 }
 
-/* ── Movimientos de inventario ───────────────────────────────── */
+// Movimientos de inventario
 function _pintarInventario(lista) {
     const tbody = document.getElementById('tbodyInventario');
     if (!tbody) return;

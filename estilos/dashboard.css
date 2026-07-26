@@ -1,8 +1,4 @@
-/* ============================================================
-   DASHBOARD.CSS — Shell (sidebar + topbar + frame) y contenido
-   Estilo base heredado del login: fondo con imagen + overlay
-   oscuro y paneles flotantes con glassmorphism.
-   ============================================================ */
+/* DASHBOARD.CSS */
 
 /* ── Shell: fondo tipo login ─────────────────────────────── */
 body.pag-dashboard {

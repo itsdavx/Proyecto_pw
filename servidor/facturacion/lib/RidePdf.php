@@ -1,29 +1,18 @@
 <?php
 require_once __DIR__ . '/Catalogos.php';
 
-/**
- * Generador del RIDE (Representación Impresa del Documento Electrónico)
- * de la factura, en versión simplificada del formato del Anexo 2 de la
- * Ficha Técnica de Comprobantes Electrónicos del SRI (v2.32): bloque del
- * emisor, bloque del documento con clave de acceso, datos del comprador,
- * detalle y totales desglosados por tarifa de IVA.
- *
- * El PDF (1.4) se construye sin dependencias externas, en línea con la
- * filosofía "sin frameworks" del proyecto: fuentes base Type1
- * (Helvetica para etiquetas, Courier para valores alineados, cuyo ancho
- * fijo garantiza la alineación) con codificación WinAnsi.
- */
+// Genera el RIDE en PDF
 class RidePdf
 {
-    const W      = 595.28;   // A4 vertical, en puntos
+    const W      = 595.28;   // A4 vertical
     const H      = 841.89;
     const MARGEN = 38;
-    const LIMITE = 790;      // y máximo utilizable (medido desde arriba)
+    const LIMITE = 790;      // y máximo utilizable
 
-    private $paginas = [];   // streams de contenido ya cerrados
-    private $pag     = '';   // stream de la página en curso
+    private $paginas = [];   // páginas ya cerradas
+    private $pag     = '';   // página en curso
 
-    /* ── API pública ─────────────────────────────────────────── */
+    // API pública
     public static function factura(array $emisor, array $factura, array $detalles): string
     {
         $r = new self();
@@ -40,7 +29,7 @@ class RidePdf
         return $this->ensamblar();
     }
 
-    /* ── Secciones del RIDE ──────────────────────────────────── */
+    // Secciones del RIDE
     private function cabecera(array $emisor, array $factura): void
     {
         $m = self::MARGEN;
@@ -61,8 +50,7 @@ class RidePdf
             $this->tx($x, $yy, 'Contribuyente Especial Nro: ' . $emisor['contribuyente_especial'], 'F1', 7);
         }
 
-        // Caja del documento (derecha). En el esquema offline el número
-        // de autorización es la propia clave de acceso.
+        // Caja del documento
         $xd = 302;
         $this->rect($xd, 40, self::W - $m - $xd, 135);
         $x = $xd + 8; $yy = 56;
@@ -144,7 +132,7 @@ class RidePdf
 
     private function totales(array $factura, array $detalles, float $y): void
     {
-        // Bases imponibles agrupadas por código de tarifa (Tabla 17 SRI)
+        // Bases por tarifa de IVA
         $bases = ['0' => 0.0, '4' => 0.0, '6' => 0.0, '7' => 0.0];
         foreach ($detalles as $d) {
             $cod = $d['codigo_porcentaje_iva'];
@@ -182,14 +170,14 @@ class RidePdf
             $yy += $alto;
         }
 
-        // Forma de pago y moneda (izquierda)
+        // Forma de pago
         $fp = Catalogos::FORMA_PAGO[$factura['forma_pago']] ?? $factura['forma_pago'];
         $this->rect(self::MARGEN, $y, 292, 28);
         $this->tx(self::MARGEN + 6, $y + 11, 'Forma de pago: ' . $fp, 'F1', 8);
         $this->tx(self::MARGEN + 6, $y + 22, 'Moneda: DÓLAR', 'F1', 8);
     }
 
-    /* ── Primitivas de dibujo (y medido desde el borde superior) ── */
+    // Primitivas de dibujo
     private function tx(float $x, float $y, string $txt, string $f = 'F1', float $tam = 8): void
     {
         $this->pag .= sprintf("BT /%s %.2F Tf %.2F %.2F Td (%s) Tj ET\n",
@@ -217,10 +205,9 @@ class RidePdf
         $this->pag = "0.5 w\n";
     }
 
-    /* ── Texto: codificación, medidas y ajuste ───────────────── */
+    // Texto: codificación y medidas
 
-    // Courier tiene ancho fijo exacto (0.6 em); para Helvetica se usa un
-    // promedio, suficiente porque solo alinea a la izquierda o cabeceras.
+    // Ancho fijo de Courier
     private function ancho(string $txt, string $f, float $tam): float
     {
         $factor = ($f === 'F3' || $f === 'F4') ? 0.60 : 0.52;
@@ -259,15 +246,14 @@ class RidePdf
         return array_slice($lineas, 0, 3); // límite defensivo de líneas
     }
 
-    /* ── Ensamblado del archivo PDF ──────────────────────────── */
+    // Ensamblado del archivo PDF
     private function ensamblar(): string
     {
         $this->paginas[] = $this->pag;
 
         $fuentes = ['F1' => 'Helvetica', 'F2' => 'Helvetica-Bold', 'F3' => 'Courier', 'F4' => 'Courier-Bold'];
 
-        // Objetos: 1 catálogo, 2 árbol de páginas, 3-6 fuentes,
-        // y por cada página: objeto de página + stream de contenido.
+        // Objetos: catálogo, páginas, fuentes
         $objetos    = [1 => '<< /Type /Catalog /Pages 2 0 R >>'];
         $n          = 3;
         $refsFuente = [];

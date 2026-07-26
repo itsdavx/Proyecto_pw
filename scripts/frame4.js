@@ -1,11 +1,4 @@
-/* ============================================================
-   FRAME4.JS — Clientes: módulo único responsable de la
-   administración de clientes — listado con búsqueda, creación,
-   edición, activación y eliminación con confirmación reforzada.
-   Facturación consume este mismo listado como fuente única
-   (servidor/clientes/listar.php).
-   Permisos: frame4 leer / crear / editar / estado / eliminar.
-   ============================================================ */
+// Clientes: administración y listado
 
 const TIPO_ID_CLIENTE = {
     '04': 'RUC',
@@ -109,7 +102,7 @@ function _pintarFilasClientes(lista) {
     `).join('');
 }
 
-/* ── Crear / editar cliente ──────────────────────────────────── */
+// Crear / editar cliente
 function editarCliente(id) {
     const c = _cliProductosLista.find(x => x.id_cliente == id);
     if (!c) return;
@@ -170,7 +163,7 @@ async function submitCliente(e) {
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
 }
 
-/* ── Estado y eliminación ────────────────────────────────────── */
+// Estado y eliminación
 async function toggleEstadoCliente(id) {
     try {
         const r = await postJSON(API.clientes.estado, { token: Sesion.token(), id_cliente: id });

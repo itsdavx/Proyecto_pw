@@ -1,17 +1,4 @@
-/* ============================================================
-   FRAME2.JS — Facturación Electrónica SRI (Ecuador): listado de
-   facturas (codDoc 01), emisión con descuento porcentual por
-   línea, datos del emisor y descarga de XML / PDF (RIDE).
-
-   Los clientes y los productos se administran en sus propios
-   módulos (Clientes e Inventario); aquí solo se consumen sus
-   listados como fuente única de datos para la Nueva Factura.
-
-   Catálogos duplicados aquí solo para previsualización en el
-   cliente. La fuente de verdad y el cálculo autoritativo residen
-   en servidor/facturacion/lib/ — el servidor recalcula todo al
-   generar la factura, sin confiar en estos valores del navegador.
-   ============================================================ */
+// Facturación Electrónica y Nueva Factura
 
 const FRAME2_FORMA_PAGO = {
     '01': 'Sin utilización del sistema financiero',
@@ -29,7 +16,7 @@ let _itemsFactura = [];
 let _itemUidSeq   = 0;
 let _pagFacturas  = null;
 
-/* ── Inicio ──────────────────────────────────────────────────── */
+// Inicio
 async function iniciarFrame2() {
     const ok = await Router.proteger();
     if (!ok) return;
@@ -67,19 +54,11 @@ function llenarSelect(id, opciones, formato) {
         .join('');
 }
 
-/* ── Cliente de la factura: autocompletado que busca en el servidor
-   (servidor/clientes/listar.php con "busqueda"+"limite") en vez de
-   cargar todos los clientes en un <select> — así el selector escala
-   sin importar cuántos clientes existan. ────────────────────── */
+// Autocompletado de cliente
 let _clienteBuscarTimer = null;
 
-/* Un único popup (#autocompleteOverlay, ver frame2.html) anclado a
-   <body> y "position: fixed" atiende tanto al Cliente como al
-   Producto de cada fila: al abrirlo se calcula su posición junto al
-   campo activo con getBoundingClientRect(). Así escapa el recorte de
-   contenedores con scroll (p. ej. .tabla-wrap del detalle), en vez
-   de quedar atrapado dentro con "position: absolute". */
-let _autocompleteContexto = null; // { tipo:'cliente', resultados } | { tipo:'producto', uid, resultados }
+// Popup compartido de autocompletado
+let _autocompleteContexto = null;
 
 function _overlayAutocomplete() {
     let overlay = document.getElementById('autocompleteOverlay');
@@ -96,8 +75,7 @@ function _overlayAutocomplete() {
                 if (p) seleccionarProductoFactura(_autocompleteContexto.uid, p);
             }
         });
-        // Con la posición ya calculada, un scroll (de la ventana o de
-        // .tabla-wrap) la dejaría desalineada: más simple cerrarlo.
+        // Cierra al hacer scroll
         document.addEventListener('scroll', _cerrarAutocomplete, true);
         window.addEventListener('resize', _cerrarAutocomplete);
         document.addEventListener('click', e => {
@@ -133,7 +111,7 @@ function inicializarAutocompleteCliente() {
     if (!input || !oculto) return;
 
     input.addEventListener('input', () => {
-        oculto.value = ''; // cualquier edición invalida la selección previa
+        oculto.value = ''; // invalida selección previa
         const texto = input.value.trim();
         clearTimeout(_clienteBuscarTimer);
         if (texto.length < 2) { _cerrarAutocomplete(); return; }
@@ -172,14 +150,8 @@ function seleccionarClienteFactura(c) {
     _cerrarAutocomplete();
 }
 
-/* ── Producto de cada línea del detalle: mismo patrón que el
-   Cliente — el <select> con todos los productos se reemplaza por un
-   buscador por fila que consulta servidor/inventario/listar.php con
-   "busqueda"+"limite", para que el detalle escale sin importar
-   cuántos productos existan. Cada fila tiene su propio buscador
-   (identificado por data-uid), delegado en #tbodyItems porque las
-   filas se reconstruyen en cada render. ──────────────────────── */
-let _productoBuscarTimers = {}; // uid -> id de setTimeout pendiente
+// Autocompletado de producto por fila
+let _productoBuscarTimers = {};
 
 function inicializarAutocompleteProductos() {
     const tbody = document.getElementById('tbodyItems');
@@ -218,7 +190,7 @@ async function buscarProductosFactura(input, uid, texto) {
 }
 
 function _pintarListaProductosFactura(input, uid, resultados) {
-    // la fila pudo eliminarse (o re-renderizarse) mientras la búsqueda estaba en curso
+    // fila ya eliminada
     if (!document.body.contains(input)) return;
     const overlay = _abrirAutocompleteJunto(input);
     _autocompleteContexto = { tipo: 'producto', uid, resultados };
@@ -237,7 +209,7 @@ function seleccionarProductoFactura(uid, p) {
     renderizarItemsFactura();
 }
 
-/* ── Emisor ──────────────────────────────────────────────────── */
+// Emisor
 async function cargarEmisor() {
     try {
         const r = await postJSON(API.frame2.emisorObtener, { token: Sesion.token() });
@@ -294,7 +266,7 @@ async function submitEmisor(e) {
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
 }
 
-/* ── Facturas (listado + descargas XML / PDF) ────────────────── */
+// Facturas: listado y descargas
 async function cargarFacturas() {
     try {
         const r = await postJSON(API.frame2.facturasListar, { token: Sesion.token() });
@@ -303,9 +275,7 @@ async function cargarFacturas() {
     } catch { mostrarAlerta('Error al cargar facturas.', 'error'); }
 }
 
-/* El estado hoy solo trae "GENERADA", pero el campo está pensado para
-   evolucionar (FIRMADA, ENVIADA, AUTORIZADA, RECHAZADA...), así que el
-   filtro se arma con los valores que existan realmente en los datos. */
+// Filtro de estado real
 function llenarFiltroEstadoFactura() {
     const sel = document.getElementById('selFiltroEstadoFactura');
     if (!sel) return;
@@ -392,8 +362,7 @@ async function descargarPdfFactura(id) {
         const r = await postJSON(API.frame2.facturasPdf, { token: Sesion.token(), id_factura: id });
         if (!r.ok) { mostrarAlerta(r.msg, 'error'); return; }
 
-        // El endpoint entrega el PDF (RIDE) en base64 dentro del JSON,
-        // siguiendo el mismo patrón de descarga que el XML.
+        // PDF viene en base64
         const bin   = atob(r.data.pdf_base64);
         const bytes = new Uint8Array(bin.length);
         for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
@@ -401,10 +370,7 @@ async function descargarPdfFactura(id) {
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
 }
 
-/* ── Nueva Factura: detalle dinámico y cálculo en vivo ────────
-   El descuento de cada línea es un PORCENTAJE (0-100); el valor
-   monetario se calcula automáticamente sobre el subtotal de la
-   línea y el servidor lo recalcula al emitir. */
+// Detalle dinámico en vivo
 function agregarFilaItem() {
     _itemsFactura.push({ uid: ++_itemUidSeq, id_producto: '', cantidad: 1, descuento_pct: 0, producto: null });
     renderizarItemsFactura();
@@ -441,7 +407,7 @@ function renderizarItemsFactura() {
     const tbody = document.getElementById('tbodyItems');
     if (!tbody) return;
 
-    _cerrarAutocomplete(); // el DOM de las filas se reconstruye: cualquier popup abierto quedaría huérfano
+    _cerrarAutocomplete(); // evita popup huérfano
 
     tbody.innerHTML = _itemsFactura.length === 0
         ? `<tr><td colspan="7" class="tabla-vacia">Sin ítems. Agregue al menos uno.</td></tr>`

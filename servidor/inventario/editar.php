@@ -30,7 +30,7 @@ if ($stock < 0)           responder(false, 'El stock no puede ser negativo.');
 
 $db = getDB();
 
-// Existencia previa: la variación se registra como movimiento de inventario
+// Stock previo para el movimiento
 $anterior = $db->prepare("SELECT stock FROM productos WHERE id_producto = ?");
 $anterior->execute([$idProducto]);
 $stockAnterior = $anterior->fetchColumn();

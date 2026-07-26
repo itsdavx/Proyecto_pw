@@ -1,14 +1,5 @@
 <?php
-/**
- * Generación de la Clave de Acceso (49 dígitos) y su dígito verificador
- * módulo 11, según el algoritmo oficial del SRI. Sin dependencias de
- * HTTP/BD: recibe todos los datos como parámetros.
- *
- * Estructura de los 48 dígitos previos al verificador:
- *   fecha emisión (8) + codDoc (2) + RUC (13) + ambiente (1) +
- *   establecimiento+ptoEmi (6) + secuencial (9) + código numérico (8) +
- *   tipo emisión (1) = 48
- */
+// Genera la Clave de Acceso SRI
 class ClaveAcceso
 {
     public static function generar(
@@ -26,7 +17,7 @@ class ClaveAcceso
 
         $clave48 =
             $fecha .
-            '01' . // codDoc — Factura
+            '01' . // codDoc Factura
             $ruc .
             $ambiente .
             $serie .
@@ -37,7 +28,7 @@ class ClaveAcceso
         return $clave48 . self::digitoVerificadorModulo11($clave48);
     }
 
-    /** Algoritmo módulo 11 oficial del SRI sobre los 48 dígitos previos. */
+    // Dígito verificador módulo 11
     public static function digitoVerificadorModulo11(string $clave48): int
     {
         $factores = [2, 3, 4, 5, 6, 7];
@@ -56,7 +47,7 @@ class ClaveAcceso
         return $verificador;
     }
 
-    /** Código numérico aleatorio de 8 dígitos para la clave de acceso. */
+    // Código numérico aleatorio
     public static function generarCodigoNumerico(): string
     {
         return str_pad((string)random_int(0, 99999999), 8, '0', STR_PAD_LEFT);

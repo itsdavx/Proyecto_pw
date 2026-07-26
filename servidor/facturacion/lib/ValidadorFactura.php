@@ -1,11 +1,8 @@
 <?php
-/**
- * Valida el XML de la factura contra el esquema local (estructura,
- * jerarquía y nombres de etiquetas). Ver factura_v1_1_0.xsd.
- */
+// Valida el XML contra el esquema SRI
 class ValidadorFactura
 {
-    /** @return string[] lista de errores; vacía = XML válido */
+    // Lista de errores, vacía si es válido
     public static function validar(DOMDocument $doc): array
     {
         libxml_use_internal_errors(true);

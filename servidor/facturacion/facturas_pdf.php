@@ -22,16 +22,13 @@ $detalle = $db->prepare("SELECT * FROM factura_detalle WHERE id_factura = ? ORDE
 $detalle->execute([$idFactura]);
 $detalle = $detalle->fetchAll();
 
-// La factura conserva sus datos de emisión (serie, ambiente, totales);
-// del emisor se toman los datos descriptivos vigentes (razón social,
-// dirección), igual que hizo el XML al generarse.
+// Datos vigentes del emisor
 $emisor = $db->query("SELECT * FROM factura_emisor WHERE id_emisor = 1")->fetch();
 if (!$emisor) responder(false, 'No están configurados los datos del emisor.');
 
 $pdf = RidePdf::factura($emisor, $factura, $detalle);
 
-// PDF en base64 dentro del JSON, siguiendo el mismo patrón de
-// respuesta y descarga que el resto de endpoints del módulo.
+// PDF viene en base64
 responder(true, 'OK', [
     'pdf_base64'   => base64_encode($pdf),
     'clave_acceso' => $factura['clave_acceso'],

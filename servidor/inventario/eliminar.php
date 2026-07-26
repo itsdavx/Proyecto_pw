@@ -16,9 +16,7 @@ $producto->execute([$idProducto]);
 $producto = $producto->fetch();
 if (!$producto) responder(false, 'Producto no encontrado.');
 
-// El historial de facturas no se altera: factura_detalle guarda una
-// instantánea (código, descripción, unidad, precios) y su FK es
-// ON DELETE SET NULL, por lo que eliminar el producto no lo afecta.
+// No altera historial de facturas
 $db->prepare("DELETE FROM productos WHERE id_producto = ?")->execute([$idProducto]);
 
 responder(true, 'Producto eliminado correctamente. Las facturas emitidas conservan su detalle histórico.');
