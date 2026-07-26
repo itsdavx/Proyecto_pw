@@ -25,6 +25,8 @@ async function iniciarFrame1() {
     inicializarTabs();
     document.getElementById('selFiltroTipo')?.addEventListener('change', () => renderizarComprobantes(true));
     document.getElementById('txtBuscarComprobante')?.addEventListener('input', () => renderizarComprobantes(true));
+    document.getElementById('txtFechaDesdeComprobante')?.addEventListener('input', () => renderizarComprobantes(true));
+    document.getElementById('txtFechaHastaComprobante')?.addEventListener('input', () => renderizarComprobantes(true));
 
     _pagComprobantes = crearPaginador({ clave: 'mov-comprobantes', tbodyId: 'tbodyComprobantes', etiqueta: 'comprobantes', pintar: _pintarComprobantes });
     _pagInventario   = crearPaginador({ clave: 'mov-inventario',   tbodyId: 'tbodyInventario',   etiqueta: 'movimientos', pintar: _pintarInventario });
@@ -38,6 +40,8 @@ async function iniciarFrame1() {
     }
     document.getElementById('selFiltroMovimiento')?.addEventListener('change', () => renderizarTablaInventario(true));
     document.getElementById('txtBuscarMovimientoProducto')?.addEventListener('input', () => renderizarTablaInventario(true));
+    document.getElementById('txtFechaDesdeMovimiento')?.addEventListener('input', () => renderizarTablaInventario(true));
+    document.getElementById('txtFechaHastaMovimiento')?.addEventListener('input', () => renderizarTablaInventario(true));
 
     await cargarMovimientos();
 }
@@ -71,11 +75,15 @@ function llenarFiltroTipos() {
 
 /* ── Comprobantes electrónicos ───────────────────────────────── */
 function renderizarComprobantes(reiniciar = false) {
-    const filtro   = document.getElementById('selFiltroTipo')?.value || '';
-    const busqueda = (document.getElementById('txtBuscarComprobante')?.value || '').toLowerCase().trim();
+    const filtro     = document.getElementById('selFiltroTipo')?.value || '';
+    const busqueda   = (document.getElementById('txtBuscarComprobante')?.value || '').toLowerCase().trim();
+    const fechaDesde = document.getElementById('txtFechaDesdeComprobante')?.value || '';
+    const fechaHasta = document.getElementById('txtFechaHastaComprobante')?.value || '';
 
     const lista = _movComprobantes.filter(c => {
         if (filtro && c.cod_doc !== filtro) return false;
+        if (fechaDesde && c.fecha_emision < fechaDesde) return false;
+        if (fechaHasta && c.fecha_emision > fechaHasta) return false;
         if (busqueda && !(`${c.receptor} ${c.identificacion_receptor} ${c.documento}`.toLowerCase().includes(busqueda))) return false;
         return true;
     });
@@ -132,11 +140,15 @@ function _pintarInventario(lista) {
 }
 
 function renderizarTablaInventario(reiniciar = false) {
-    const busqueda = (document.getElementById('txtBuscarMovimientoProducto')?.value || '').toLowerCase().trim();
+    const busqueda   = (document.getElementById('txtBuscarMovimientoProducto')?.value || '').toLowerCase().trim();
     const filtroTipo = document.getElementById('selFiltroMovimiento')?.value || '';
+    const fechaDesde = document.getElementById('txtFechaDesdeMovimiento')?.value || '';
+    const fechaHasta = document.getElementById('txtFechaHastaMovimiento')?.value || '';
 
     const lista = _movInventario.filter(m => {
         if (filtroTipo && m.tipo_movimiento !== filtroTipo) return false;
+        if (fechaDesde && m.fecha_emision < fechaDesde) return false;
+        if (fechaHasta && m.fecha_emision > fechaHasta) return false;
         if (busqueda && !(`${m.codigo_principal} ${m.descripcion || ''}`.toLowerCase().includes(busqueda))) return false;
         return true;
     });

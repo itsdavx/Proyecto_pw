@@ -250,6 +250,43 @@
 .filtro-grupo .form-label { margin: 0; white-space: nowrap; }
 .filtro-grupo .form-control { width: 150px; }
 
+/* ── Autocompletado (buscador que consulta al servidor en vez de
+   cargar todas las opciones; ver selectores de Cliente y Producto en
+   Nueva Factura, pensados para escalar sin importar cuántos
+   registros existan). Un único popup compartido (#autocompleteOverlay,
+   ver frame2.js) se ancla a <body> con "position: fixed" y JS calcula
+   su posición junto al campo activo: así escapa el recorte de
+   cualquier contenedor con scroll (p. ej. .tabla-wrap del detalle),
+   en vez de quedar atrapado dentro con "position: absolute". ────── */
+.autocomplete-wrap { position: relative; }
+
+.autocomplete-lista {
+    position:      fixed; /* la posición real (top/left/width) la fija JS */
+    max-height:    260px;
+    overflow-y:    auto;
+    background:    var(--bg-card);
+    border:        1.5px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow:    var(--shadow-sm);
+    z-index:       1000;
+}
+
+.autocomplete-item {
+    padding:    .55rem .9rem;
+    cursor:     pointer;
+    font-size:  .88rem;
+    color:      var(--text-main);
+}
+.autocomplete-item:hover,
+.autocomplete-item.activo { background: var(--primary-light); }
+
+.autocomplete-vacio {
+    padding:    .55rem .9rem;
+    font-size:  .85rem;
+    color:      var(--text-muted);
+    font-style: italic;
+}
+
 /* ── Búsqueda ────────────────────────────────────────────── */
 .busqueda-wrap {
     position:    relative;
@@ -276,6 +313,7 @@
     font-size:   .85rem;
     pointer-events: none;
 }
+
 
 /* ── Formularios ─────────────────────────────────────────── */
 .form-grid {

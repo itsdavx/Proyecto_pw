@@ -6,7 +6,7 @@
     <title>Movimientos — Sistema Genérico</title>
     <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/main.css?v=30">
     <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/dashboard.css?v=30">
-    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=31">
+    <link rel="stylesheet" href="/NRC30713/Proyecto_pw/estilos/components.css?v=33">
 </head>
 <body class="pag-contenido">
 
@@ -37,7 +37,15 @@
                             <span class="busqueda-icono">⊙</span>
                             <input type="text" id="txtBuscarComprobante" placeholder="Buscar por receptor, identificación o documento...">
                         </div>
-                        <select class="form-control" id="selFiltroTipo" style="width:auto"></select>
+                        <select class="form-control" id="selFiltroTipo" style="width:150px"></select>
+                        <div class="filtro-grupo">
+                            <label class="form-label" for="txtFechaDesdeComprobante">Desde</label>
+                            <input class="form-control" type="date" id="txtFechaDesdeComprobante">
+                        </div>
+                        <div class="filtro-grupo">
+                            <label class="form-label" for="txtFechaHastaComprobante">Hasta</label>
+                            <input class="form-control" type="date" id="txtFechaHastaComprobante">
+                        </div>
                     </div>
                 </div>
                 <div class="tabla-wrap">
@@ -72,6 +80,14 @@
                             <input type="text" id="txtBuscarMovimientoProducto" placeholder="Buscar por código o producto...">
                         </div>
                         <select class="form-control" id="selFiltroMovimiento" style="width:auto"></select>
+                        <div class="filtro-grupo">
+                            <label class="form-label" for="txtFechaDesdeMovimiento">Desde</label>
+                            <input class="form-control" type="date" id="txtFechaDesdeMovimiento">
+                        </div>
+                        <div class="filtro-grupo">
+                            <label class="form-label" for="txtFechaHastaMovimiento">Hasta</label>
+                            <input class="form-control" type="date" id="txtFechaHastaMovimiento">
+                        </div>
                     </div>
                 </div>
                 <div class="tabla-wrap">
@@ -104,7 +120,7 @@
     <script src="/NRC30713/Proyecto_pw/scripts/session.js?v=30"></script>
     <script src="/NRC30713/Proyecto_pw/scripts/router.js?v=30"></script>
     <script src="/NRC30713/Proyecto_pw/scripts/paginacion.js?v=30"></script>
-    <script src="/NRC30713/Proyecto_pw/scripts/frame1.js?v=31"></script>
+    <script src="/NRC30713/Proyecto_pw/scripts/frame1.js?v=33"></script>
     <script>document.addEventListener('DOMContentLoaded', iniciarFrame1);</script>
 </body>
 </html>

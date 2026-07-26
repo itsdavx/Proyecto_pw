@@ -24,8 +24,6 @@ const FRAME2_FORMA_PAGO = {
     '21': 'Endoso de títulos',
 };
 
-let _clientes     = [];
-let _productos    = [];
 let _facturas     = [];
 let _itemsFactura = [];
 let _itemUidSeq   = 0;
@@ -42,9 +40,11 @@ async function iniciarFrame2() {
 
     inicializarTabs();
     llenarSelect('selFormaPago', FRAME2_FORMA_PAGO, (cod, nombre) => `${cod} — ${nombre}`);
+    inicializarAutocompleteCliente();
+    inicializarAutocompleteProductos();
     _pagFacturas = crearPaginador({ clave: 'facturas', tbodyId: 'tbodyFacturas', etiqueta: 'facturas', pintar: _pintarFacturas });
 
-    await Promise.all([cargarClientes(), cargarProductos(), cargarFacturas(), cargarEmisor()]);
+    await Promise.all([cargarFacturas(), cargarEmisor()]);
 
     agregarFilaItem();
 
@@ -67,34 +67,174 @@ function llenarSelect(id, opciones, formato) {
         .join('');
 }
 
-/* ── Fuentes de datos (módulos Clientes e Inventario) ────────── */
-async function cargarClientes() {
-    try {
-        const r = await postJSON(API.clientes.listar, { token: Sesion.token() });
-        if (r.ok) { _clientes = r.data; llenarSelectClientesFactura(); }
-        else mostrarAlerta(r.msg, 'error');
-    } catch { mostrarAlerta('Error al cargar clientes.', 'error'); }
-}
+/* ── Cliente de la factura: autocompletado que busca en el servidor
+   (servidor/clientes/listar.php con "busqueda"+"limite") en vez de
+   cargar todos los clientes en un <select> — así el selector escala
+   sin importar cuántos clientes existan. ────────────────────── */
+let _clienteBuscarTimer = null;
 
-async function cargarProductos() {
-    try {
-        const r = await postJSON(API.inventario.listar, { token: Sesion.token() });
-        if (r.ok) { _productos = r.data.productos || []; renderizarItemsFactura(); }
-        else mostrarAlerta(r.msg, 'error');
-    } catch { mostrarAlerta('Error al cargar productos.', 'error'); }
-}
+/* Un único popup (#autocompleteOverlay, ver frame2.html) anclado a
+   <body> y "position: fixed" atiende tanto al Cliente como al
+   Producto de cada fila: al abrirlo se calcula su posición junto al
+   campo activo con getBoundingClientRect(). Así escapa el recorte de
+   contenedores con scroll (p. ej. .tabla-wrap del detalle), en vez
+   de quedar atrapado dentro con "position: absolute". */
+let _autocompleteContexto = null; // { tipo:'cliente', resultados } | { tipo:'producto', uid, resultados }
 
-function llenarSelectClientesFactura() {
-    const sel = document.getElementById('selCliente');
-    if (!sel) return;
-    const seleccionado = sel.value; // conservar la selección al refrescar la lista
-    sel.innerHTML = _clientes
-        .filter(c => c.estado == 1)
-        .map(c => `<option value="${c.id_cliente}">${esc(c.identificacion)} — ${esc(c.razon_social)}</option>`)
-        .join('');
-    if (seleccionado && [...sel.options].some(o => o.value === seleccionado)) {
-        sel.value = seleccionado;
+function _overlayAutocomplete() {
+    let overlay = document.getElementById('autocompleteOverlay');
+    if (overlay && !overlay.dataset.listo) {
+        overlay.dataset.listo = '1';
+        overlay.addEventListener('click', e => {
+            const item = e.target.closest('.autocomplete-item');
+            if (!item || !_autocompleteContexto) return;
+            if (_autocompleteContexto.tipo === 'cliente') {
+                const c = _autocompleteContexto.resultados.find(x => x.id_cliente == item.dataset.id);
+                if (c) seleccionarClienteFactura(c);
+            } else {
+                const p = _autocompleteContexto.resultados.find(x => x.id_producto == item.dataset.id);
+                if (p) seleccionarProductoFactura(_autocompleteContexto.uid, p);
+            }
+        });
+        // Con la posición ya calculada, un scroll (de la ventana o de
+        // .tabla-wrap) la dejaría desalineada: más simple cerrarlo.
+        document.addEventListener('scroll', _cerrarAutocomplete, true);
+        window.addEventListener('resize', _cerrarAutocomplete);
+        document.addEventListener('click', e => {
+            if (overlay.classList.contains('d-none')) return;
+            if (!e.target.closest('.autocomplete-wrap') && !e.target.closest('#autocompleteOverlay')) {
+                _cerrarAutocomplete();
+            }
+        });
     }
+    return overlay;
+}
+
+function _cerrarAutocomplete() {
+    const overlay = document.getElementById('autocompleteOverlay');
+    if (!overlay) return;
+    overlay.classList.add('d-none');
+    overlay.innerHTML = '';
+    _autocompleteContexto = null;
+}
+
+function _abrirAutocompleteJunto(inputEl) {
+    const overlay = _overlayAutocomplete();
+    const r = inputEl.getBoundingClientRect();
+    overlay.style.top   = `${r.bottom + 4}px`;
+    overlay.style.left  = `${r.left}px`;
+    overlay.style.width = `${r.width}px`;
+    return overlay;
+}
+
+function inicializarAutocompleteCliente() {
+    const input  = document.getElementById('txtBuscarClienteFactura');
+    const oculto = document.getElementById('selCliente');
+    if (!input || !oculto) return;
+
+    input.addEventListener('input', () => {
+        oculto.value = ''; // cualquier edición invalida la selección previa
+        const texto = input.value.trim();
+        clearTimeout(_clienteBuscarTimer);
+        if (texto.length < 2) { _cerrarAutocomplete(); return; }
+        _clienteBuscarTimer = setTimeout(() => buscarClientesFactura(input, texto), 250);
+    });
+
+    input.addEventListener('keydown', e => {
+        if (e.key === 'Escape') _cerrarAutocomplete();
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('autocompleteOverlay')?.querySelector('.autocomplete-item')?.click();
+        }
+    });
+}
+
+async function buscarClientesFactura(input, texto) {
+    try {
+        const r = await postJSON(API.clientes.listar, { token: Sesion.token(), busqueda: texto, limite: 20 });
+        _pintarListaClientesFactura(input, r.ok ? r.data.filter(c => c.estado == 1) : []);
+    } catch { _pintarListaClientesFactura(input, []); }
+}
+
+function _pintarListaClientesFactura(input, resultados) {
+    if (!document.body.contains(input)) return;
+    const overlay = _abrirAutocompleteJunto(input);
+    _autocompleteContexto = { tipo: 'cliente', resultados };
+    overlay.innerHTML = resultados.length
+        ? resultados.map(c => `<div class="autocomplete-item" data-id="${c.id_cliente}">${esc(c.identificacion)} — ${esc(c.razon_social)}</div>`).join('')
+        : `<div class="autocomplete-vacio">Sin coincidencias.</div>`;
+    overlay.classList.remove('d-none');
+}
+
+function seleccionarClienteFactura(c) {
+    document.getElementById('selCliente').value = c.id_cliente;
+    document.getElementById('txtBuscarClienteFactura').value = `${c.identificacion} — ${c.razon_social}`;
+    _cerrarAutocomplete();
+}
+
+/* ── Producto de cada línea del detalle: mismo patrón que el
+   Cliente — el <select> con todos los productos se reemplaza por un
+   buscador por fila que consulta servidor/inventario/listar.php con
+   "busqueda"+"limite", para que el detalle escale sin importar
+   cuántos productos existan. Cada fila tiene su propio buscador
+   (identificado por data-uid), delegado en #tbodyItems porque las
+   filas se reconstruyen en cada render. ──────────────────────── */
+let _productoBuscarTimers = {}; // uid -> id de setTimeout pendiente
+
+function inicializarAutocompleteProductos() {
+    const tbody = document.getElementById('tbodyItems');
+    if (!tbody) return;
+
+    tbody.addEventListener('input', e => {
+        const input = e.target.closest('.producto-buscar');
+        if (!input) return;
+        const uid = Number(input.dataset.uid);
+        const it  = _itemsFactura.find(x => x.uid === uid);
+        if (it) { it.id_producto = ''; it.producto = null; recalcularTotalesFactura(); }
+
+        clearTimeout(_productoBuscarTimers[uid]);
+        const texto = input.value.trim();
+        if (texto.length < 2) { _cerrarAutocomplete(); return; }
+        _productoBuscarTimers[uid] = setTimeout(() => buscarProductosFactura(input, uid, texto), 250);
+    });
+
+    tbody.addEventListener('keydown', e => {
+        const input = e.target.closest('.producto-buscar');
+        if (!input) return;
+        if (e.key === 'Escape') _cerrarAutocomplete();
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('autocompleteOverlay')?.querySelector('.autocomplete-item')?.click();
+        }
+    });
+}
+
+async function buscarProductosFactura(input, uid, texto) {
+    try {
+        const r = await postJSON(API.inventario.listar, { token: Sesion.token(), busqueda: texto, limite: 20 });
+        const resultados = r.ok ? (r.data.productos || []).filter(p => p.estado == 1) : [];
+        _pintarListaProductosFactura(input, uid, resultados);
+    } catch { _pintarListaProductosFactura(input, uid, []); }
+}
+
+function _pintarListaProductosFactura(input, uid, resultados) {
+    // la fila pudo eliminarse (o re-renderizarse) mientras la búsqueda estaba en curso
+    if (!document.body.contains(input)) return;
+    const overlay = _abrirAutocompleteJunto(input);
+    _autocompleteContexto = { tipo: 'producto', uid, resultados };
+    overlay.innerHTML = resultados.length
+        ? resultados.map(p => `<div class="autocomplete-item" data-id="${p.id_producto}">${esc(p.codigo_principal)} — ${esc(p.descripcion)} [${esc(p.unidad_abrev)}]</div>`).join('')
+        : `<div class="autocomplete-vacio">Sin coincidencias.</div>`;
+    overlay.classList.remove('d-none');
+}
+
+function seleccionarProductoFactura(uid, p) {
+    const it = _itemsFactura.find(x => x.uid === uid);
+    if (!it) return;
+    it.id_producto = p.id_producto;
+    it.producto    = p;
+    _cerrarAutocomplete();
+    renderizarItemsFactura();
 }
 
 /* ── Emisor ──────────────────────────────────────────────────── */
@@ -266,12 +406,14 @@ async function descargarPdfFactura(id) {
    monetario se calcula automáticamente sobre el subtotal de la
    línea y el servidor lo recalcula al emitir. */
 function agregarFilaItem() {
-    _itemsFactura.push({ uid: ++_itemUidSeq, id_producto: '', cantidad: 1, descuento_pct: 0 });
+    _itemsFactura.push({ uid: ++_itemUidSeq, id_producto: '', cantidad: 1, descuento_pct: 0, producto: null });
     renderizarItemsFactura();
 }
 
 function quitarFilaItem(uid) {
     _itemsFactura = _itemsFactura.filter(it => it.uid !== uid);
+    clearTimeout(_productoBuscarTimers[uid]);
+    delete _productoBuscarTimers[uid];
     if (_itemsFactura.length === 0) agregarFilaItem();
     else renderizarItemsFactura();
 }
@@ -279,12 +421,12 @@ function quitarFilaItem(uid) {
 function actualizarItem(uid, campo, valor) {
     const it = _itemsFactura.find(x => x.uid === uid);
     if (!it) return;
-    it[campo] = campo === 'id_producto' ? valor : (parseFloat(valor) || 0);
+    it[campo] = parseFloat(valor) || 0;
     renderizarItemsFactura();
 }
 
 function _calcularLineaPreview(it) {
-    const producto = _productos.find(p => p.id_producto == it.id_producto && p.estado == 1);
+    const producto = it.producto && it.producto.estado == 1 ? it.producto : null;
     const iva      = producto ? (CATALOGO_IVA[producto.codigo_porcentaje_iva] || { tarifa: 0 }) : { tarifa: 0 };
     const precio   = producto ? Number(producto.precio_unitario) : 0;
     const bruto    = it.cantidad * precio;
@@ -299,23 +441,23 @@ function renderizarItemsFactura() {
     const tbody = document.getElementById('tbodyItems');
     if (!tbody) return;
 
-    const productosActivos = _productos.filter(p => p.estado == 1);
+    _cerrarAutocomplete(); // el DOM de las filas se reconstruye: cualquier popup abierto quedaría huérfano
 
     tbody.innerHTML = _itemsFactura.length === 0
         ? `<tr><td colspan="7" class="tabla-vacia">Sin ítems. Agregue al menos uno.</td></tr>`
         : _itemsFactura.map(it => {
             const { descuentoMonto, subtotal, valorIva, total } = _calcularLineaPreview(it);
-            const prod = _productos.find(p => p.id_producto == it.id_producto && p.estado == 1);
+            const prod = it.producto;
             const info = prod
                 ? `${esc(prod.categoria || 'Sin categoría')} · ${esc(prod.unidad)} (${esc(prod.unidad_abrev)}) · Stock: ${Number(prod.stock).toFixed(2)}`
                 : '';
+            const textoProducto = prod ? `${prod.codigo_principal} — ${prod.descripcion}` : '';
             return `
                 <tr>
                     <td>
-                        <select class="form-control" onchange="actualizarItem(${it.uid}, 'id_producto', this.value)">
-                            <option value="">Seleccione...</option>
-                            ${productosActivos.map(p => `<option value="${p.id_producto}" ${p.id_producto == it.id_producto ? 'selected' : ''}>${esc(p.codigo_principal)} — ${esc(p.descripcion)} [${esc(p.unidad_abrev)}]</option>`).join('')}
-                        </select>
+                        <div class="autocomplete-wrap">
+                            <input class="form-control producto-buscar" type="text" data-uid="${it.uid}" placeholder="Buscar por código o descripción..." autocomplete="off" value="${esc(textoProducto)}">
+                        </div>
                         ${info ? `<div class="text-muted" style="font-size:.72rem;margin-top:.25rem">${info}</div>` : ''}
                     </td>
                     <td>
@@ -389,7 +531,7 @@ async function submitFactura(e) {
             _itemsFactura = [];
             agregarFilaItem();
             document.getElementById('formFactura')?.reset();
-            await Promise.all([cargarFacturas(), cargarProductos()]); // el stock cambió
+            await cargarFacturas();
             cambiarTab('tabFacturas');
         } else {
             mostrarAlerta(r.msg, 'error');
