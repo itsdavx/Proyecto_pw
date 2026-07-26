@@ -118,12 +118,12 @@ function renderizarInventarioFrame3(reiniciar = false) {
     _pagInventario.render(lista, { reiniciar });
 }
 
-function _pintarInventarioFrame3(lista, offset) {
+function _pintarInventarioFrame3(lista) {
     const tbody = document.getElementById('tbodyInventario');
     if (!tbody) return;
 
     if (lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="11" class="tabla-vacia">No hay productos que coincidan con el filtro.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" class="tabla-vacia">No hay productos que coincidan con el filtro.</td></tr>`;
         return;
     }
 
@@ -131,9 +131,8 @@ function _pintarInventarioFrame3(lista, offset) {
     const puedeEstado   = Sesion.tienePermiso('frame3', 'estado');
     const puedeEliminar = Sesion.tienePermiso('frame3', 'eliminar');
 
-    tbody.innerHTML = lista.map((p, i) => `
+    tbody.innerHTML = lista.map(p => `
         <tr>
-            <td class="col-num">${offset + i + 1}</td>
             <td>${esc(p.codigo_principal)}</td>
             <td><strong>${esc(p.descripcion)}</strong></td>
             <td>${esc(p.categoria || '—')}</td>

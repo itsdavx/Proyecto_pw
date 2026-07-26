@@ -82,18 +82,17 @@ function renderizarComprobantes(reiniciar = false) {
     _pagComprobantes.render(lista, { reiniciar });
 }
 
-function _pintarComprobantes(lista, offset) {
+function _pintarComprobantes(lista) {
     const tbody = document.getElementById('tbodyComprobantes');
     if (!tbody) return;
 
     if (lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="tabla-vacia">No hay comprobantes que coincidan con el filtro.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="tabla-vacia">No hay comprobantes que coincidan con el filtro.</td></tr>`;
         return;
     }
 
-    tbody.innerHTML = lista.map((c, i) => `
+    tbody.innerHTML = lista.map(c => `
         <tr>
-            <td class="col-num">${offset + i + 1}</td>
             <td><span class="badge badge-primary">${esc(c.cod_doc)}</span> ${esc(c.tipo)}</td>
             <td>${esc(c.documento)}<br><span class="text-muted" style="font-size:.72rem" title="Clave de acceso">${esc(c.clave_acceso)}</span></td>
             <td>${formatFecha(c.fecha_emision)}</td>
@@ -106,7 +105,7 @@ function _pintarComprobantes(lista, offset) {
 }
 
 /* ── Movimientos de inventario ───────────────────────────────── */
-function _pintarInventario(lista, offset) {
+function _pintarInventario(lista) {
     const tbody = document.getElementById('tbodyInventario');
     if (!tbody) return;
 
@@ -115,12 +114,11 @@ function _pintarInventario(lista, offset) {
         return;
     }
 
-    tbody.innerHTML = lista.map((m, i) => {
+    tbody.innerHTML = lista.map(m => {
         const esIngreso = m.tipo_movimiento === 'INGRESO POR COMPRA';
         const badge     = esIngreso ? 'badge-activo' : (m.tipo_movimiento === 'SALIDA POR VENTA' ? 'badge-warning' : 'badge-primary');
         return `
         <tr>
-            <td class="col-num">${offset + i + 1}</td>
             <td>${formatFecha(m.fecha_emision)}</td>
             <td>${esc(m.codigo_principal)}</td>
             <td>${esc(m.descripcion)}</td>

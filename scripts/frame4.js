@@ -33,7 +33,7 @@ async function iniciarFrame4() {
     const sel = document.getElementById('selTipoIdCliente');
     if (sel) {
         sel.innerHTML = Object.entries(TIPO_ID_CLIENTE)
-            .map(([cod, nombre]) => `<option value="${cod}">${cod} — ${esc(nombre)}</option>`)
+            .map(([cod, nombre]) => `<option value="${cod}">${esc(nombre)}</option>`)
             .join('');
     }
 
@@ -41,7 +41,7 @@ async function iniciarFrame4() {
     if (selFiltro) {
         selFiltro.innerHTML = '<option value="">Todos los tipos</option>' +
             Object.entries(TIPO_ID_CLIENTE)
-                .map(([cod, nombre]) => `<option value="${cod}">${cod} — ${esc(nombre)}</option>`)
+                .map(([cod, nombre]) => `<option value="${cod}">${esc(nombre)}</option>`)
                 .join('');
     }
 
@@ -77,12 +77,12 @@ function renderizarTablaClientes(reiniciar = false) {
     _pagClientes.render(lista, { reiniciar });
 }
 
-function _pintarFilasClientes(lista, offset) {
+function _pintarFilasClientes(lista) {
     const tbody = document.getElementById('tbodyClientes');
     if (!tbody) return;
 
     if (lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="tabla-vacia">No hay clientes que coincidan con la búsqueda.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="tabla-vacia">No hay clientes que coincidan con la búsqueda.</td></tr>`;
         return;
     }
 
@@ -90,10 +90,9 @@ function _pintarFilasClientes(lista, offset) {
     const puedeEstado   = Sesion.tienePermiso('frame4', 'estado');
     const puedeEliminar = Sesion.tienePermiso('frame4', 'eliminar');
 
-    tbody.innerHTML = lista.map((c, i) => `
+    tbody.innerHTML = lista.map(c => `
         <tr>
-            <td class="col-num">${offset + i + 1}</td>
-            <td>${esc(c.tipo_identificacion)} — ${esc(TIPO_ID_CLIENTE[c.tipo_identificacion] || '')}</td>
+            <td>${esc(TIPO_ID_CLIENTE[c.tipo_identificacion] || '')}</td>
             <td>${esc(c.identificacion)}</td>
             <td><strong>${esc(c.razon_social)}</strong></td>
             <td>${esc(c.direccion || '—')}</td>

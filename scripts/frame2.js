@@ -198,18 +198,17 @@ function renderizarTablaFacturas(reiniciar = false) {
     _pagFacturas.render(lista, { reiniciar });
 }
 
-function _pintarFacturas(lista, offset) {
+function _pintarFacturas(lista) {
     const tbody = document.getElementById('tbodyFacturas');
     if (!tbody) return;
 
     if (lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" class="tabla-vacia">No hay facturas que coincidan con el filtro.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="tabla-vacia">No hay facturas que coincidan con el filtro.</td></tr>`;
         return;
     }
 
-    tbody.innerHTML = lista.map((f, i) => `
+    tbody.innerHTML = lista.map(f => `
         <tr>
-            <td class="col-num">${offset + i + 1}</td>
             <td>${esc(f.establecimiento)}-${esc(f.punto_emision)}-${esc(f.secuencial)}</td>
             <td>${formatFecha(f.fecha_emision)}</td>
             <td>${esc(f.razon_social_comprador)}<br><span class="text-muted">${esc(f.identificacion_comprador)}</span></td>
