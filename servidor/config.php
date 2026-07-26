@@ -19,8 +19,8 @@ set_error_handler(function($errno, $errstr) {
 define('DB_HOST',    'localhost');
 define('DB_PORT',    '3306');
 define('DB_NAME',    'proyecto_pw');
-define('DB_USER',    'root');
-define('DB_PASS',    'rootroot');
+define('DB_USER',    'admin');
+define('DB_PASS',    'admin');
 define('DB_CHARSET', 'utf8');
 
 // ============================================================
