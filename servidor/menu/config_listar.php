@@ -1,4 +1,5 @@
 <?php
+// Lista todos los ItemMenu
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();

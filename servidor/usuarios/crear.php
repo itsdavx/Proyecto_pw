@@ -1,4 +1,5 @@
 <?php
+// Crea usuario y menú
 require_once dirname(__DIR__) . '/config.php';
 require_once dirname(__DIR__) . '/menu/semilla.php';
 
@@ -42,7 +43,6 @@ $stmt = $db->prepare("
 $stmt->execute([$username, $hash, $nombre, $email, $id_rol, $sesion['id_user']]);
 $id_nuevo = (int)$db->lastInsertId();
 
-// Estructura inicial del menú personal (solo al crear; nunca se reconstruye)
 sembrarMenuInicial($db, $id_nuevo, $id_rol);
 
 responder(true, 'Usuario creado correctamente.', ['id_user' => $id_nuevo]);

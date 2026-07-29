@@ -1,4 +1,5 @@
 <?php
+// Elimina un producto
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();
@@ -16,7 +17,6 @@ $producto->execute([$idProducto]);
 $producto = $producto->fetch();
 if (!$producto) responder(false, 'Producto no encontrado.');
 
-// No altera historial de facturas
 $db->prepare("DELETE FROM productos WHERE id_producto = ?")->execute([$idProducto]);
 
 responder(true, 'Producto eliminado correctamente. Las facturas emitidas conservan su detalle histórico.');

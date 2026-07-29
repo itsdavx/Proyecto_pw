@@ -1,15 +1,8 @@
-/* ============================================================
-   PERMISOS.JS — Permisos por rol en dos niveles:
-   1) Acceso a Frames (Habilitar = acción 'leer')
-   2) Acciones internas de cada Frame habilitado
-   El registro de Frames y acciones proviene del servidor
-   (servidor/permisos/registro.php), por lo que agregar un Frame
-   nuevo no requiere modificar esta lógica.
-   ============================================================ */
-
+// Frames y acciones disponibles
 let _framesRegistro = [];
 let _rolSelec       = null;
 
+// Arranca matriz de permisos
 async function iniciarPermisos() {
     const ok = await Router.proteger();
     if (!ok) return;
@@ -24,6 +17,7 @@ async function iniciarPermisos() {
     document.getElementById('btnDesmarcarTodos')?.addEventListener('click', () => marcarTodos(false));
 }
 
+// Carga registro de frames
 async function cargarFramesRegistro() {
     try {
         const r = await postJSON(API.permisos.frames, { token: Sesion.token() });
@@ -32,19 +26,20 @@ async function cargarFramesRegistro() {
     } catch { mostrarAlerta('Error al cargar el registro de frames.', 'error'); }
 }
 
+// Roles sin el superadmin
 async function cargarRolesSelect() {
     try {
         const r = await postJSON(API.roles.listar, { token: Sesion.token() });
         if (!r.ok) return;
         const sel = document.getElementById('selRolPermisos');
         if (!sel) return;
-        /* El Administrador siempre posee todos los permisos: no se configura */
         sel.innerHTML = '<option value="">-- Seleccione un rol --</option>' +
             r.data.filter(rol => rol.id_rol != 1)
                   .map(rol => `<option value="${rol.id_rol}">${esc(rol.nombre_rol)}</option>`).join('');
     } catch { mostrarAlerta('Error al cargar roles.', 'error'); }
 }
 
+// Carga permisos del rol
 async function onCambiarRol() {
     _rolSelec = document.getElementById('selRolPermisos').value;
     if (!_rolSelec) { limpiarMatriz(); return; }
@@ -61,10 +56,10 @@ async function onCambiarRol() {
     }
 }
 
+// Pinta matriz de casillas
 function renderizarMatrices(permisos) {
     const tiene = (mod, acc) => permisos.some(p => p.modulo === mod && p.accion === acc);
 
-    /* ── Nivel 1: acceso a Frames ────────────────────────────── */
     const contFrames = document.getElementById('matrizFrames');
     contFrames.innerHTML = `
         <div class="permisos-grid" style="grid-template-columns:1fr 110px">
@@ -77,7 +72,6 @@ function renderizarMatrices(permisos) {
                 </div>`).join('')}
         </div>`;
 
-    /* ── Nivel 2: acciones internas de cada Frame habilitado ─── */
     const contAcciones = document.getElementById('matrizAcciones');
     contAcciones.innerHTML = _framesRegistro
         .filter(f => f.acciones.length > 0)
@@ -96,7 +90,6 @@ function renderizarMatrices(permisos) {
                 </div>
             </div>`).join('');
 
-    /* Habilitar/deshabilitar un Frame muestra u oculta sus acciones */
     contFrames.querySelectorAll('input[data-frame]').forEach(ch => {
         ch.addEventListener('change', () => {
             document.getElementById(`acciones_${ch.dataset.frame}`)?.classList.toggle('d-none', !ch.checked);
@@ -108,11 +101,13 @@ function renderizarMatrices(permisos) {
     actualizarCardAcciones();
 }
 
+// Oculta tarjeta si vacía
 function actualizarCardAcciones() {
     const hayVisible = document.querySelector('#matrizAcciones > div:not(.d-none)');
     document.getElementById('cardAcciones')?.classList.toggle('d-none', !hayVisible);
 }
 
+// Vacía la matriz
 function limpiarMatriz() {
     const contFrames = document.getElementById('matrizFrames');
     if (contFrames) {
@@ -124,6 +119,7 @@ function limpiarMatriz() {
     document.getElementById('cardAcciones')?.classList.add('d-none');
 }
 
+// Marca o desmarca todo
 function marcarTodos(valor) {
     document.querySelectorAll('#matrizFrames input[data-frame]').forEach(ch => {
         ch.checked = valor;
@@ -135,6 +131,7 @@ function marcarTodos(valor) {
     actualizarCardAcciones();
 }
 
+// Envía permisos marcados
 async function guardarPermisos() {
     if (!_rolSelec) { mostrarAlerta('Seleccione un rol.', 'warning'); return; }
 
@@ -142,7 +139,6 @@ async function guardarPermisos() {
     document.querySelectorAll('#matrizFrames input[data-frame]:checked').forEach(ch => {
         const mod = ch.dataset.frame;
         permisos.push({ modulo: mod, accion: 'leer' });
-        /* Solo se guardan las acciones internas de Frames habilitados */
         document.querySelectorAll(`#acciones_${mod} input[data-accion]:checked`).forEach(a => {
             permisos.push({ modulo: mod, accion: a.dataset.accion });
         });

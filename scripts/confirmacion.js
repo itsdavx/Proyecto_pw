@@ -1,19 +1,7 @@
-/* ============================================================
-   CONFIRMACION.JS — Confirmación reforzada para eliminaciones
-   críticas. Componente único y reutilizable: el botón Eliminar
-   permanece deshabilitado hasta que el usuario escribe
-   exactamente el nombre del elemento a eliminar (estilo GitHub).
-
-   Uso:
-     confirmarEliminacionCritica({
-         tipo:     'Rol',
-         nombre:   rol.nombre_rol,
-         accion:   async () => { ... llamada a la API ... },
-     });
-   ============================================================ */
-
+// Acción a confirmar
 let _ceAccionPendiente = null;
 
+// Crea el modal
 function _ceAsegurarModal() {
     if (document.getElementById('modalConfirmarEliminacion')) return;
 
@@ -45,7 +33,7 @@ function _ceAsegurarModal() {
     const input   = document.getElementById('ceInput');
     const btnElim = document.getElementById('ceBtnEliminar');
 
-    // La comparación es exacta: sin recortar espacios ni ignorar mayúsculas
+    // Exige escribir el nombre
     input.addEventListener('input', () => {
         btnElim.disabled = input.value !== overlay.dataset.nombreEsperado;
     });
@@ -61,21 +49,13 @@ function _ceAsegurarModal() {
     });
 }
 
+// Cierra y cancela
 function _ceCerrar() {
     document.getElementById('modalConfirmarEliminacion')?.classList.remove('visible');
     _ceAccionPendiente = null;
 }
 
-/**
- * Componente único y reutilizable de confirmación reforzada para
- * eliminaciones críticas (Roles, Usuarios, ItemMenu, SuperMenu, Frames, etc.).
- *
- * @param {Object}   opciones
- * @param {string}   opciones.tipo          Tipo de elemento (ej. "Rol", "ItemMenu").
- * @param {string}   opciones.nombre        Nombre exacto que debe escribirse para confirmar.
- * @param {string}  [opciones.advertencia]  Texto adicional sobre la consecuencia de eliminar.
- * @param {Function} opciones.accion        Función (async) a ejecutar si se confirma.
- */
+// Confirma borrado escribiendo nombre
 function confirmarEliminacionCritica({ tipo, nombre, advertencia, accion }) {
     _ceAsegurarModal();
 

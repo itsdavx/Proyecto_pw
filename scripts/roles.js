@@ -1,8 +1,4 @@
-/* ============================================================
-   ROLES.JS — Gestión de roles
-   ============================================================ */
-
-/* ── Lista de roles ──────────────────────────────────────────── */
+// Arranca listado de roles
 async function iniciarListaRoles() {
     const ok = await Router.proteger();
     if (!ok) return;
@@ -16,6 +12,7 @@ async function iniciarListaRoles() {
     document.getElementById('txtBuscar')?.addEventListener('input', filtrarRoles);
 }
 
+// Pide roles al servidor
 async function cargarRoles() {
     mostrarCargando(true);
     try {
@@ -29,8 +26,10 @@ async function cargarRoles() {
     }
 }
 
+// Roles cargados en memoria
 let _rolesData = [];
 
+// Pinta la tabla
 function renderizarTablaRoles(lista) {
     const tbody = document.getElementById('tbodyRoles');
     if (!tbody) return;
@@ -42,6 +41,7 @@ function renderizarTablaRoles(lista) {
         return;
     }
 
+    // Rol 1 no editable
     const puedeEditar   = Sesion.tienePermiso('roles', 'editar');
     const puedeEliminar = Sesion.tienePermiso('roles', 'eliminar');
 
@@ -73,6 +73,7 @@ function renderizarTablaRoles(lista) {
     renumerarFilas(tbody);
 }
 
+// Borra con confirmación fuerte
 function eliminarRol(id) {
     const rol = _rolesData.find(r => r.id_rol == id);
     if (!rol) return;
@@ -94,6 +95,7 @@ function irEditarRol(id) {
     Router.irA(`${RUTAS.rolesCrear}?id=${id}`);
 }
 
+// Filtra por texto
 function filtrarRoles() {
     const q = document.getElementById('txtBuscar').value.toLowerCase();
     document.querySelectorAll('#tbodyRoles tr[data-buscar]').forEach(tr => {
@@ -102,7 +104,7 @@ function filtrarRoles() {
     renumerarFilas(document.getElementById('tbodyRoles'));
 }
 
-/* ── Formulario Crear/Editar rol ─────────────────────────────── */
+// Arranca crear o editar
 async function iniciarFormRol() {
     const ok = await Router.proteger();
     if (!ok) return;
@@ -118,6 +120,7 @@ async function iniciarFormRol() {
     document.getElementById('btnCancelar')?.addEventListener('click', () => Router.irA(RUTAS.roles));
 }
 
+// Rellena datos al editar
 async function precargarRol(id) {
     try {
         const r = await postJSON(API.roles.listar, { token: Sesion.token() });
@@ -127,9 +130,10 @@ async function precargarRol(id) {
         document.getElementById('txtNombreRol').value  = rol.nombre_rol;
         document.getElementById('txtDescripcion').value = rol.descripcion || '';
         document.getElementById('chkEstado').checked   = rol.estado == 1;
-    } catch { /* silencioso */ }
+    } catch {  }
 }
 
+// Valida y guarda rol
 async function submitRol(e, modo, id) {
     e.preventDefault();
     const form = e.target;

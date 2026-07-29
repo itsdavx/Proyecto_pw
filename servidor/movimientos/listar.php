@@ -1,4 +1,5 @@
 <?php
+// Comprobantes y kardex
 require_once dirname(__DIR__) . '/config.php';
 require_once dirname(__DIR__) . '/facturacion/lib/Catalogos.php';
 
@@ -9,7 +10,6 @@ verificarPermiso($sesion['id_rol'], 'frame1', 'leer');
 
 $db = getDB();
 
-// Comprobantes electrónicos (Tabla 3 SRI)
 $comprobantes = $db->query("
     SELECT '01' AS cod_doc,
            f.id_factura AS id_origen,
@@ -33,7 +33,6 @@ foreach ($comprobantes as &$c) {
 }
 unset($c);
 
-// Movimientos de inventario: ventas + ingresos
 $inventario = $db->query("
     SELECT * FROM (
         SELECT d.codigo_principal,
@@ -68,7 +67,7 @@ $inventario = $db->query("
     ORDER BY created_at DESC, codigo_principal ASC
 ")->fetchAll();
 
-// Reconstruye stock actual por movimiento
+// Calcula stock acumulado
 $indicesPorProducto = [];
 foreach ($inventario as $i => $fila) {
     $indicesPorProducto[$fila['codigo_principal']][] = $i;

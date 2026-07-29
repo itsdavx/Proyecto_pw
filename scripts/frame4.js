@@ -1,5 +1,4 @@
-// Clientes: administración y listado
-
+// Tipos de identificación SRI
 const TIPO_ID_CLIENTE = {
     '04': 'RUC',
     '05': 'CÉDULA',
@@ -8,15 +7,18 @@ const TIPO_ID_CLIENTE = {
     '08': 'IDENTIFICACIÓN DEL EXTERIOR',
 };
 
-let _cliProductosLista = []; // listado completo de clientes
+// Clientes cargados y edición
+let _cliProductosLista = [];
 let _cliEditando       = null;
 let _pagClientes       = null;
 
+// Arranca módulo de clientes
 async function iniciarFrame4() {
     const ok = await Router.proteger();
     if (!ok) return;
     if (!Router.verificarPermiso('frame4', 'leer')) return;
 
+    // Oculta formulario sin permiso
     if (!Sesion.tienePermiso('frame4', 'crear') && !Sesion.tienePermiso('frame4', 'editar')) {
         document.getElementById('cardFormCliente')?.classList.add('d-none');
     }
@@ -48,6 +50,7 @@ async function iniciarFrame4() {
     await cargarClientesFrame4();
 }
 
+// Pide clientes al servidor
 async function cargarClientesFrame4() {
     try {
         const r = await postJSON(API.clientes.listar, { token: Sesion.token() });
@@ -56,6 +59,7 @@ async function cargarClientesFrame4() {
     } catch { mostrarAlerta('Error al cargar clientes.', 'error'); }
 }
 
+// Filtra y pagina clientes
 function renderizarTablaClientes(reiniciar = false) {
     const busqueda     = (document.getElementById('txtBuscarCliente')?.value || '').toLowerCase().trim();
     const filtroTipo   = document.getElementById('selFiltroTipoIdCliente')?.value || '';
@@ -70,6 +74,7 @@ function renderizarTablaClientes(reiniciar = false) {
     _pagClientes.render(lista, { reiniciar });
 }
 
+// Pinta filas de clientes
 function _pintarFilasClientes(lista) {
     const tbody = document.getElementById('tbodyClientes');
     if (!tbody) return;
@@ -102,7 +107,7 @@ function _pintarFilasClientes(lista) {
     `).join('');
 }
 
-// Crear / editar cliente
+// Carga cliente al formulario
 function editarCliente(id) {
     const c = _cliProductosLista.find(x => x.id_cliente == id);
     if (!c) return;
@@ -118,6 +123,7 @@ function editarCliente(id) {
     cambiarTab('tabNuevoCliente');
 }
 
+// Limpia el formulario
 function cancelarEdicionCliente() {
     _cliEditando = null;
     document.getElementById('formCliente')?.reset();
@@ -126,6 +132,7 @@ function cancelarEdicionCliente() {
     cambiarTab('tabClientes');
 }
 
+// Valida y guarda cliente
 async function submitCliente(e) {
     e.preventDefault();
     const form = e.target;
@@ -163,7 +170,7 @@ async function submitCliente(e) {
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
 }
 
-// Estado y eliminación
+// Activa o desactiva cliente
 async function toggleEstadoCliente(id) {
     try {
         const r = await postJSON(API.clientes.estado, { token: Sesion.token(), id_cliente: id });
@@ -172,6 +179,7 @@ async function toggleEstadoCliente(id) {
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
 }
 
+// Borra con confirmación fuerte
 function eliminarCliente(id) {
     const c = _cliProductosLista.find(x => x.id_cliente == id);
     if (!c) return;

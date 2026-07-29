@@ -1,10 +1,7 @@
-/* ============================================================
-   SESSION.JS — Manejo de sesión en sessionStorage
-   ============================================================ */
-
+// Sesión en sessionStorage
 const Sesion = {
 
-    /* Guardar datos de sesión tras login exitoso */
+    // Guarda token y permisos
     guardar(datos) {
         sessionStorage.setItem(APP.keys.token,    datos.token);
         sessionStorage.setItem(APP.keys.usuario,  JSON.stringify(datos.usuario));
@@ -14,7 +11,7 @@ const Sesion = {
         }
     },
 
-    /* Limpiar toda la sesión (al cerrar sesión o expirar) */
+    // Borra toda la sesión
     limpiar() {
         sessionStorage.removeItem(APP.keys.token);
         sessionStorage.removeItem(APP.keys.usuario);
@@ -23,45 +20,41 @@ const Sesion = {
         sessionStorage.removeItem(APP.keys.frase);
     },
 
-    /* Obtener token */
     token() {
         return sessionStorage.getItem(APP.keys.token) || '';
     },
 
-    /* Obtener objeto usuario */
     usuario() {
         try {
             return JSON.parse(sessionStorage.getItem(APP.keys.usuario)) || null;
         } catch { return null; }
     },
 
-    /* Obtener array de permisos [{modulo, accion}, ...] */
     permisos() {
         try {
             return JSON.parse(sessionStorage.getItem(APP.keys.permisos)) || [];
         } catch { return []; }
     },
 
-    /* Obtener datos de menú */
     menuData() {
         try {
             return JSON.parse(sessionStorage.getItem(APP.keys.menuData)) || [];
         } catch { return []; }
     },
 
-    /* Comprobar si hay sesión activa */
+    // Hay sesión local
     activa() {
         return !!this.token() && !!this.usuario();
     },
 
-    /* Verificar permiso: devuelve true si el rol tiene modulo+accion */
+    // Rol 1 puede todo
     tienePermiso(modulo, accion) {
         const user = this.usuario();
-        if (user && user.id_rol === 1) return true; // super-admin
+        if (user && user.id_rol === 1) return true;
         return this.permisos().some(p => p.modulo === modulo && p.accion === accion);
     },
 
-    /* Verificar sesión con el servidor y refrescar permisos */
+    // Revalida token contra servidor
     async verificar() {
         if (!this.activa()) return false;
         try {
@@ -72,7 +65,7 @@ const Sesion = {
                 sessionStorage.setItem(APP.keys.permisos, JSON.stringify(r.data.permisos || []));
                 return true;
             }
-        } catch { /* red caída */ }
+        } catch {  }
         return false;
     },
 };

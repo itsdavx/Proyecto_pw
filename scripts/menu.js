@@ -1,8 +1,4 @@
-/* ============================================================
-   MENU.JS — Renderizado de sidebar y topbar desde sessionStorage
-   ============================================================ */
-
-/* ── Mapa de módulos → íconos ────────────────────────────────── */
+// Iconos por módulo
 const MENU_ICONOS_MOD = {
     dashboard:  '🏠︎',
     usuarios:   '👥︎',
@@ -12,7 +8,7 @@ const MENU_ICONOS_MOD = {
     perfil:     '👤︎',
 };
 
-/* ── Renderizar sidebar completo ─────────────────────────────── */
+// Pinta el menú lateral
 function renderizarSidebar() {
     const aside   = document.getElementById('sidebar');
     if (!aside) return;
@@ -36,8 +32,8 @@ function renderizarSidebar() {
     _construirNav(nav, menuDat);
 }
 
+// Árbol padres e hijos
 function _construirNav(nav, items) {
-    // Separar padres (padre_id = null) e hijos
     const padres = items.filter(i => !i.padre_id);
     const hijos  = items.filter(i =>  i.padre_id);
 
@@ -47,7 +43,6 @@ function _construirNav(nav, items) {
         const activo = _estaActivo(padre.url) ? 'activo' : '';
 
         if (hijosDePadre.length === 0) {
-            // Elemento sin hijos → enlace directo
             nav.insertAdjacentHTML('beforeend', `
                 <a class="nav-item ${activo}" href="${esc(padre.url || '#')}" aria-label="${esc(padre.nombre)}" data-modulo="${esc(padre.modulo || '')}">
                     <span class="nav-icono" aria-hidden="true">${icono}</span>
@@ -55,7 +50,6 @@ function _construirNav(nav, items) {
                 </a>
             `);
         } else {
-            // Elemento con hijos → acordeón
             const grupoId = `grupo_${padre.id_menu}`;
             const tieneHijoActivo = hijosDePadre.some(h => _estaActivo(h.url));
             const abierto = tieneHijoActivo ? 'abierto' : '';
@@ -80,12 +74,11 @@ function _construirNav(nav, items) {
         }
     });
 
-    // Acordeones
+    // Solo un grupo abierto
     nav.querySelectorAll('.nav-item-padre').forEach(btn => {
         btn.addEventListener('click', () => {
             const grupoEl = document.getElementById(btn.dataset.grupo);
             const abierto = grupoEl.classList.contains('abierto');
-            // Cerrar todos
             nav.querySelectorAll('.nav-grupo.abierto').forEach(g => g.classList.remove('abierto'));
             nav.querySelectorAll('.nav-item-padre.abierto').forEach(b => b.classList.remove('abierto'));
             if (!abierto) {
@@ -96,12 +89,13 @@ function _construirNav(nav, items) {
     });
 }
 
+// Enlace de la página
 function _estaActivo(url) {
     if (!url || url === '#') return false;
     return window.location.pathname.endsWith(url.split('?')[0]);
 }
 
-/* ── Renderizar topbar ───────────────────────────────────────── */
+// Pinta la barra superior
 function renderizarTopbar(titulo) {
     const header = document.getElementById('topbar');
     if (!header) return;
@@ -122,17 +116,15 @@ function renderizarTopbar(titulo) {
     document.getElementById('btnMenuToggle')?.addEventListener('click', _toggleSidebar);
 }
 
-/* ── Toggle del sidebar ──────────────────────────────────────
-   Móvil: desliza el panel sobre el contenido (overlay).
-   Escritorio: contrae/expande el panel dejando solo los iconos.
-   El estado se persiste en sessionStorage, igual que la última
-   ruta del shell (ver shell.js). */
+// Estado colapsado persistido
 const CLAVE_SIDEBAR_COLAPSADO = 'sidebar_colapsado';
 
+// Detecta pantalla móvil
 function _esPantallaMovil() {
     return window.matchMedia('(max-width: 768px)').matches;
 }
 
+// Abre o colapsa menú
 function _toggleSidebar() {
     const sidebar = document.querySelector('.sidebar');
     if (!sidebar) return;
@@ -147,10 +139,7 @@ function _toggleSidebar() {
     sessionStorage.setItem(CLAVE_SIDEBAR_COLAPSADO, colapsado ? '1' : '0');
 }
 
-/* Colapso forzado (no alterna) al navegar a un ítem del Módulo
-   Facturación (ver shell.js): en escritorio contrae el panel a solo
-   iconos; en móvil no aplica, ya que ahí la navegación cierra el
-   overlay por completo (_cerrarSidebarMovil). */
+// Colapsa en escritorio
 function colapsarSidebar() {
     if (_esPantallaMovil()) return;
     const sidebar = document.querySelector('.sidebar');
@@ -159,18 +148,13 @@ function colapsarSidebar() {
     sessionStorage.setItem(CLAVE_SIDEBAR_COLAPSADO, '1');
 }
 
-/* Restaurar el estado guardado (el shell se carga una sola vez;
-   esto solo aplica al refrescar la página) */
+// Restaura estado guardado
 function aplicarEstadoSidebar() {
     document.querySelector('.sidebar')
         ?.classList.toggle('colapsado', sessionStorage.getItem(CLAVE_SIDEBAR_COLAPSADO) === '1');
 }
 
-/* ── Tooltip del sidebar contraído ───────────────────────────
-   Con el panel contraído solo se ven los iconos: al pasar el
-   cursor (o enfocar con teclado) un ítem, muestra su nombre de
-   inmediato junto al icono. Los listeners se delegan en el
-   <aside>, que sobrevive a los re-renderizados del menú. */
+// Tooltip con menú colapsado
 function _inicializarTooltipSidebar() {
     const aside = document.getElementById('sidebar');
     if (!aside || aside.dataset.tooltipListo) return;
@@ -203,7 +187,7 @@ function _inicializarTooltipSidebar() {
     });
     aside.addEventListener('mouseout', e => {
         const item = e.target.closest('.nav-item');
-        if (item && item.contains(e.relatedTarget)) return; // sigue dentro del ítem
+        if (item && item.contains(e.relatedTarget)) return;
         ocultar();
     });
     aside.addEventListener('focusin', e => {
@@ -214,6 +198,7 @@ function _inicializarTooltipSidebar() {
     aside.addEventListener('click', ocultar);
 }
 
+// Fondo oscuro en móvil
 function _inicializarOverlay() {
     let overlay = document.getElementById('sidebarOverlay');
     if (!overlay) {
@@ -225,24 +210,20 @@ function _inicializarOverlay() {
     overlay.addEventListener('click', _toggleSidebar);
 }
 
-/* ── Cargar menú desde servidor y guardar en sessionStorage ───── */
+// Refresca menú desde servidor
 async function cargarMenuYRenderizar(tituloPagina) {
-    // Renderizar con datos en caché primero (más rápido)
     renderizarSidebar();
     renderizarTopbar(tituloPagina);
     _inicializarOverlay();
     _inicializarTooltipSidebar();
 
-    // Refrescar datos del menú desde el servidor
     try {
         const r = await postJSON(API.menu.listar, { token: Sesion.token() });
         if (r.ok && r.data) {
             sessionStorage.setItem(APP.keys.menuData, JSON.stringify(r.data));
-            renderizarSidebar(); // Re-renderizar con datos frescos
+            renderizarSidebar();
         }
-    } catch { /* Si falla, se usa la caché */ }
+    } catch {  }
 }
 
-/* Aplicar el estado guardado antes del primer pintado para que el
-   sidebar no "salte" de expandido a contraído al refrescar */
 aplicarEstadoSidebar();

@@ -1,7 +1,8 @@
 <?php
-// Construye el XML de la factura
+// Construye el XML
 class FacturaXmlBuilder
 {
+    // Arma el XML completo
     public static function construir(array $emisor, array $factura, array $detalles): DOMDocument
     {
         $doc = new DOMDocument('1.0', 'UTF-8');
@@ -12,7 +13,7 @@ class FacturaXmlBuilder
         $raiz->setAttribute('version', '1.1.0');
         $doc->appendChild($raiz);
 
-        // infoTributaria
+        // Bloque infoTributaria
         $infoTrib = $doc->createElement('infoTributaria');
         $raiz->appendChild($infoTrib);
         self::agregar($doc, $infoTrib, 'ambiente', $factura['ambiente']);
@@ -29,7 +30,7 @@ class FacturaXmlBuilder
         self::agregar($doc, $infoTrib, 'secuencial', $factura['secuencial']);
         self::agregar($doc, $infoTrib, 'dirMatriz', $emisor['dir_matriz']);
 
-        // infoFactura
+        // Bloque infoFactura
         $infoFac = $doc->createElement('infoFactura');
         $raiz->appendChild($infoFac);
         self::agregar($doc, $infoFac, 'fechaEmision', date('d/m/Y', strtotime($factura['fecha_emision'])));
@@ -46,12 +47,13 @@ class FacturaXmlBuilder
         self::agregar($doc, $infoFac, 'totalSinImpuestos', self::money($factura['total_sin_impuestos']));
         self::agregar($doc, $infoFac, 'totalDescuento', self::money($factura['total_descuento']));
 
+        // Impuestos agrupados por tarifa
         $totalConImp = $doc->createElement('totalConImpuestos');
         $infoFac->appendChild($totalConImp);
         foreach ($factura['por_iva'] as $codigo => $montos) {
             $ti = $doc->createElement('totalImpuesto');
             $totalConImp->appendChild($ti);
-            self::agregar($doc, $ti, 'codigo', '2'); // 2 = IVA
+            self::agregar($doc, $ti, 'codigo', '2');
             self::agregar($doc, $ti, 'codigoPorcentaje', $codigo);
             self::agregar($doc, $ti, 'baseImponible', self::money($montos['base']));
             self::agregar($doc, $ti, 'valor', self::money($montos['valor']));
@@ -68,7 +70,7 @@ class FacturaXmlBuilder
         self::agregar($doc, $pago, 'formaPago', $factura['forma_pago']);
         self::agregar($doc, $pago, 'total', self::money($factura['importe_total']));
 
-        // detalles
+        // Detalle línea por línea
         $detallesEl = $doc->createElement('detalles');
         $raiz->appendChild($detallesEl);
         foreach ($detalles as $d) {
@@ -95,11 +97,13 @@ class FacturaXmlBuilder
         return $doc;
     }
 
+    // Dos decimales con punto
     private static function money($valor): string
     {
         return number_format((float)$valor, 2, '.', '');
     }
 
+    // Crea nodo con texto
     private static function agregar(DOMDocument $doc, DOMElement $padre, string $nombre, $valor): void
     {
         $el = $doc->createElement($nombre);

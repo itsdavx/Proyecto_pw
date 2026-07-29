@@ -1,11 +1,11 @@
-// Constantes y configuración global del sistema
+// Configuración global del sistema
 const APP = {
     nombre:         'Sistema Genérico',
     version:        '2.0.0',
     baseUrl:        'http://localhost:8080/NRC30713/Proyecto_pw/',
     api:            'http://localhost:8080/NRC30713/Proyecto_pw/servidor/',
 
-    // Claves de almacenamiento en sessionStorage
+    // Claves de sessionStorage
     keys: {
         token:      'pw_token',
         usuario:    'pw_usuario',
@@ -14,17 +14,16 @@ const APP = {
         frase:      'pw_frase',
     },
 
-    // Seguridad
+    // Bloqueo tras intentos fallidos
     maxIntentos:    5,
-    bloqueoMs:      15 * 60 * 1000,    // 15 minutos en ms
-    sessionMs:      60 * 60 * 1000,    // 60 minutos en ms
-    captchaExpMs:   5  * 60 * 1000,    // 5  minutos en ms
+    bloqueoMs:      15 * 60 * 1000,
+    sessionMs:      60 * 60 * 1000,
+    captchaExpMs:   5  * 60 * 1000,
 
-    // Política de contraseña
     passMinLength:  8,
 };
 
-// Rutas relativas a cada página HTML
+// Rutas de las páginas
 const RUTAS = {
     base:            '/NRC30713/Proyecto_pw/',
     login:           '/NRC30713/Proyecto_pw/paginas/auth/frmLogin.html',
@@ -40,7 +39,7 @@ const RUTAS = {
     cambiarPassword: '/NRC30713/Proyecto_pw/paginas/perfil/frmCambiarPassword.html',
 };
 
-// Endpoints PHP (solo operaciones de BD)
+// Endpoints del backend PHP
 const API = {
     dashboard: {
         estadisticas:            APP.api + 'dashboard/estadisticas.php',

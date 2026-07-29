@@ -1,4 +1,5 @@
 <?php
+// Menú para el organizador
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();
@@ -9,7 +10,7 @@ verificarPermiso($sesion['id_rol'], 'menu', 'leer');
 $db      = getDB();
 $esAdmin = (int)$sesion['id_rol'] === 1;
 
-// ItemMenus activos permitidos (sin URL: el usuario no la ve ni la modifica)
+// Admin ve todo
 if ($esAdmin) {
     $stmt = $db->prepare("SELECT id_menu, nombre, icono, modulo, orden FROM menu WHERE estado = 1 AND url IS NOT NULL ORDER BY orden ASC");
     $stmt->execute();

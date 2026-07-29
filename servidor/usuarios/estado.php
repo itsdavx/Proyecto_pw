@@ -1,4 +1,5 @@
 <?php
+// Activa o desactiva usuario
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();
@@ -17,7 +18,6 @@ if ($id_user === 1) {
 
 $db = getDB();
 
-// Leer estado actual y alternarlo
 $stmt = $db->prepare("SELECT estado FROM pw_user WHERE id_user = ?");
 $stmt->execute([$id_user]);
 $row = $stmt->fetch();

@@ -1,4 +1,5 @@
 <?php
+// Lista usuarios con rol
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();

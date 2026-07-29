@@ -1,14 +1,10 @@
-/* ============================================================
-   SHELL.JS — Estructura única del sistema
-   Sidebar + topbar se renderizan UNA sola vez; las páginas de
-   contenido se cargan en el frame interno sin recargar el resto.
-   ============================================================ */
-
+// Contenedor con iframe
 const Shell = {
 
     frame: null,
     _CLAVE_RUTA: 'shell_ruta_actual',
 
+    // Arranca el shell
     async iniciar() {
         const ok = await Router.proteger();
         if (!ok) return;
@@ -18,7 +14,6 @@ const Shell = {
 
         await cargarMenuYRenderizar();
 
-        /* Clic en enlaces del sidebar → cargar en el frame */
         document.getElementById('sidebar').addEventListener('click', e => {
             const enlace = e.target.closest('a.nav-item');
             if (!enlace) return;
@@ -27,34 +22,27 @@ const Shell = {
             e.preventDefault();
             this.cargar(url);
             this._cerrarSidebarMovil();
-            /* Los ítems del Módulo Facturación (frame1..frame5) contraen
-               el panel automáticamente para ganar espacio de trabajo. */
             if (/^frame[1-5]$/.test(enlace.dataset.modulo || '')) colapsarSidebar();
         });
 
         this.frame.addEventListener('load', () => this._alCargarFrame());
 
-        /* Página inicial: última sección guardada (permite refrescar sin
-           perder la sección actual) o la página de inicio del dashboard.
-           Se guarda en sessionStorage y no en la URL para que la barra
-           de direcciones nunca muestre rutas internas. */
         let inicial = sessionStorage.getItem(this._CLAVE_RUTA);
         if (!this._esRutaInterna(inicial)) inicial = RUTAS.dashboardInicio;
         this.cargar(inicial);
     },
 
-    /* El ítem "Dashboard" del menú apunta al shell; dentro del frame
-       se carga la página de inicio para no anidar el shell. */
+    // Evita anidar el shell
     _mapear(url) {
         try {
             const destino = new URL(url, window.location.origin);
             const shell   = new URL(RUTAS.dashboard, window.location.origin);
             if (destino.pathname === shell.pathname) return RUTAS.dashboardInicio;
-        } catch { /* URL inválida: se usa tal cual */ }
+        } catch {  }
         return url;
     },
 
-    /* Solo se aceptan páginas del propio sistema dentro del frame */
+    // Solo rutas del proyecto
     _esRutaInterna(ruta) {
         if (!ruta) return false;
         try {
@@ -64,33 +52,32 @@ const Shell = {
         } catch { return false; }
     },
 
+    // Carga página en iframe
     cargar(url) {
         if (!url) return;
         const destino = this._mapear(url);
-        /* replace() evita acumular historial con cada cambio de sección */
         try { this.frame.contentWindow.location.replace(destino); }
         catch { this.frame.src = destino; }
         this.marcarActivo(destino);
     },
 
+    // Sincroniza título y ruta
     _alCargarFrame() {
         let doc;
         try { doc = this.frame.contentDocument; } catch { return; }
         if (!doc || !doc.location || doc.location.href === 'about:blank') return;
 
-        /* Título de la sección en el topbar y en la pestaña */
         const titulo = (doc.title || '').split('—')[0].trim();
         const el = document.querySelector('.topbar-titulo');
         if (el && titulo) el.textContent = titulo;
         if (doc.title) document.title = doc.title;
 
-        /* Sincronizar ítem activo y última ruta (la navegación también
-           puede originarse con enlaces dentro del propio frame) */
         const rutaFrame = doc.location.pathname + doc.location.search;
         this.marcarActivo(rutaFrame);
         sessionStorage.setItem(this._CLAVE_RUTA, rutaFrame);
     },
 
+    // Resalta enlace del menú
     marcarActivo(url) {
         const nav = document.getElementById('sidebarNav');
         if (!nav) return;
@@ -107,8 +94,6 @@ const Shell = {
             catch { return null; }
         };
 
-        /* Coincidencia exacta o, para formularios (frmCrear, frmEditar),
-           por carpeta del módulo */
         let activo = enlaces.find(a => rutaDe(a) === path);
         if (!activo) {
             const carpeta = path.replace(/\/[^/]*$/, '/');
@@ -118,7 +103,6 @@ const Shell = {
 
         activo.classList.add('activo');
 
-        /* Abrir el acordeón que lo contiene */
         const grupo = activo.closest('.nav-grupo');
         if (grupo && !grupo.classList.contains('abierto')) {
             grupo.classList.add('abierto');

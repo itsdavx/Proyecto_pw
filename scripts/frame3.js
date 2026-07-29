@@ -1,18 +1,20 @@
-// Inventario: productos y stock
-
+// Productos y estado edición
 let _invProductos  = [];
 let _invCategorias = [];
 let _invUnidades   = [];
 let _invEditando   = null;
 let _pagInventario = null;
 
-const UNIDAD_POR_DEFECTO = '7'; // Unidades (Und)
+// Unidad predeterminada del catálogo
+const UNIDAD_POR_DEFECTO = '7';
 
+// Arranca módulo de inventario
 async function iniciarFrame3() {
     const ok = await Router.proteger();
     if (!ok) return;
     if (!Router.verificarPermiso('frame3', 'leer')) return;
 
+    // Oculta formulario sin permiso
     if (!Sesion.tienePermiso('frame3', 'crear') && !Sesion.tienePermiso('frame3', 'editar')) {
         document.getElementById('cardFormProducto')?.classList.add('d-none');
     }
@@ -31,6 +33,7 @@ async function iniciarFrame3() {
     await cargarInventario();
 }
 
+// Llena un select
 function llenarSelect(id, opciones, formato) {
     const sel = document.getElementById(id);
     if (!sel) return;
@@ -39,7 +42,7 @@ function llenarSelect(id, opciones, formato) {
         .join('');
 }
 
-// Fuerza "No posee" como primera opción
+// Impuesto especial opcional
 function llenarSelectImpuestoEspecial() {
     const sel = document.getElementById('selImpuestoEspecial');
     if (!sel) return;
@@ -48,6 +51,7 @@ function llenarSelectImpuestoEspecial() {
         codigos.map(cod => `<option value="${cod}">${esc(cod)} — ${esc(CATALOGO_IMPUESTO_ESPECIAL[cod].nombre)}</option>`).join('');
 }
 
+// Carga productos y catálogos
 async function cargarInventario() {
     try {
         const r = await postJSON(API.inventario.listar, { token: Sesion.token() });
@@ -61,7 +65,7 @@ async function cargarInventario() {
     } catch { mostrarAlerta('Error al cargar el inventario.', 'error'); }
 }
 
-// Selects: filtro y formulario
+// Llena filtro de categorías
 function llenarFiltroCategorias() {
     const sel = document.getElementById('selFiltroCategoria');
     if (!sel) return;
@@ -72,6 +76,7 @@ function llenarFiltroCategorias() {
     if (previo && [...sel.options].some(o => o.value === previo)) sel.value = previo;
 }
 
+// Selects del formulario
 function llenarSelectsProducto() {
     const selCat = document.getElementById('selCategoriaProducto');
     if (selCat) {
@@ -90,7 +95,7 @@ function llenarSelectsProducto() {
     }
 }
 
-// Tabla del inventario
+// Filtra y pagina productos
 function renderizarInventarioFrame3(reiniciar = false) {
     const filtroCat    = document.getElementById('selFiltroCategoria')?.value ?? '';
     const filtroEstado = document.getElementById('selFiltroEstadoInventario')?.value ?? '';
@@ -106,6 +111,7 @@ function renderizarInventarioFrame3(reiniciar = false) {
     _pagInventario.render(lista, { reiniciar });
 }
 
+// Pinta filas de productos
 function _pintarInventarioFrame3(lista) {
     const tbody = document.getElementById('tbodyInventario');
     if (!tbody) return;
@@ -141,7 +147,7 @@ function _pintarInventarioFrame3(lista) {
     `).join('');
 }
 
-// Crear / editar producto
+// Carga producto al formulario
 function editarProducto(id) {
     const p = _invProductos.find(x => x.id_producto == id);
     if (!p) return;
@@ -154,13 +160,13 @@ function editarProducto(id) {
     document.getElementById('selCategoriaProducto').value = p.id_categoria || '';
     document.getElementById('selUnidadProducto').value = p.id_unidad;
     document.getElementById('txtStockProducto').value = Number(p.stock);
-    // proveedor es por compra, no fijo
     document.getElementById('txtProveedor').value = '';
     document.getElementById('btnGuardarProducto').textContent = 'Actualizar Producto';
     document.getElementById('btnCancelarProducto')?.classList.remove('d-none');
     cambiarTab('tabRegistrarCompra');
 }
 
+// Limpia el formulario
 function cancelarEdicionProducto() {
     _invEditando = null;
     document.getElementById('formProducto')?.reset();
@@ -171,6 +177,7 @@ function cancelarEdicionProducto() {
     cambiarTab('tabProductos');
 }
 
+// Valida y guarda producto
 async function submitProducto(e) {
     e.preventDefault();
     const form = e.target;
@@ -213,7 +220,7 @@ async function submitProducto(e) {
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
 }
 
-// Estado y eliminación
+// Activa o desactiva producto
 async function toggleEstadoProducto(id) {
     try {
         const r = await postJSON(API.inventario.estado, { token: Sesion.token(), id_producto: id });
@@ -222,6 +229,7 @@ async function toggleEstadoProducto(id) {
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
 }
 
+// Borra con confirmación fuerte
 function eliminarProducto(id) {
     const p = _invProductos.find(x => x.id_producto == id);
     if (!p) return;

@@ -1,4 +1,5 @@
 <?php
+// Cambia la contraseña
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();
@@ -12,7 +13,6 @@ if (empty($password_actual) || empty($password_nuevo)) {
     responder(false, 'Todos los campos son obligatorios.');
 }
 
-// Política de contraseña
 if (strlen($password_nuevo) < 8) {
     responder(false, 'La contrasena debe tener al menos 8 caracteres.');
 }

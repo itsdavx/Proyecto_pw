@@ -1,4 +1,5 @@
 <?php
+// Menú del usuario actual
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();
@@ -8,7 +9,7 @@ $sesion = verificarSesion($token);
 $db      = getDB();
 $esAdmin = (int)$sesion['id_rol'] === 1;
 
-// ── ItemMenus globales activos permitidos para el rol ────────
+// Admin ve todo
 if ($esAdmin) {
     $stmt = $db->prepare("
         SELECT id_menu, nombre, icono, url, modulo, orden
@@ -37,7 +38,6 @@ if ($esAdmin) {
 }
 $items = $stmt->fetchAll();
 
-// ── Organización personal: SuperMenus propios y ubicación ────
 $supers = [];
 $org    = [];
 try {
@@ -50,11 +50,10 @@ try {
     foreach ($stmt->fetchAll() as $o) {
         $org[$o['id_menu']] = $o;
     }
-} catch (PDOException $e) { /* migración v3 pendiente: sin organización personal */ }
+} catch (PDOException $e) {  }
 
 $superIds = array_column($supers, 'id_super');
 
-// ── Componer salida con la misma forma que consume el sidebar ─
 $salida = [];
 foreach ($supers as $s) {
     $salida[] = [
@@ -85,7 +84,7 @@ usort($salida, function ($a, $b) {
     return [$a['orden'], (string)$a['id_menu']] <=> [$b['orden'], (string)$b['id_menu']];
 });
 
-// Ocultar SuperMenus vacíos
+// Oculta grupos vacíos
 $padresConHijos = array_filter(array_column($salida, 'padre_id'));
 $salida = array_values(array_filter($salida, function ($m) use ($padresConHijos) {
     return $m['url'] !== null || in_array($m['id_menu'], $padresConHijos);

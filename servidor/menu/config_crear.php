@@ -1,4 +1,5 @@
 <?php
+// Crea ItemMenu desactivado
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();
@@ -24,8 +25,7 @@ if ($stmt->fetch()) {
     responder(false, 'Ya existe un ItemMenu con esa URL.');
 }
 
-// Identificador de modulo unico derivado del nombre (clave interna del RBAC;
-// el nombre visible para el usuario no se ve afectado por este slug)
+// Módulo único desde nombre
 $base = strtolower(trim(preg_replace('/[^a-z0-9]+/i', '_', $nombre), '_'));
 if ($base === '') { $base = 'item'; }
 
@@ -42,8 +42,6 @@ $stmt = $db->prepare("SELECT COALESCE(MAX(orden), 0) + 1 FROM menu");
 $stmt->execute();
 $orden = (int)$stmt->fetchColumn();
 
-// Nace deshabilitado (estado 0): el Administrador lo activa y le asigna
-// roles desde Permisos cuando esté listo.
 $stmt = $db->prepare("
     INSERT INTO menu (nombre, icono, url, modulo, orden, estado)
     VALUES (?, 'fa-list', ?, ?, ?, 0)

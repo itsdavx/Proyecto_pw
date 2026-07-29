@@ -1,4 +1,5 @@
 <?php
+// Genera factura y XML
 require_once dirname(__DIR__) . '/config.php';
 require_once __DIR__ . '/lib/Catalogos.php';
 require_once __DIR__ . '/lib/CalculadoraFactura.php';
@@ -31,7 +32,6 @@ if (!$cliente) responder(false, 'Cliente no encontrado o inactivo.');
 $emisor = $db->query("SELECT * FROM factura_emisor WHERE id_emisor = 1")->fetch();
 if (!$emisor) responder(false, 'Debe configurar los datos del emisor antes de generar facturas.');
 
-// Calcular líneas de detalle
 $lineas = [];
 foreach ($items as $it) {
     $idProducto   = (int)($it['id_producto'] ?? 0);
@@ -53,7 +53,6 @@ foreach ($items as $it) {
     $producto = $producto->fetch();
     if (!$producto) responder(false, 'Uno de los productos no existe o está inactivo.');
 
-    // Descuento a valor monetario
     $subtotalLinea = round($cantidad * (float)$producto['precio_unitario'], 2);
     $descuento     = round($subtotalLinea * $descuentoPct / 100, 2);
 
@@ -76,12 +75,12 @@ $totales             = CalculadoraFactura::calcularTotales($lineas);
 $totales['propina']  = $propina;
 $totales['importe_total'] = round($totales['importe_total'] + $propina, 2);
 
-// Siguiente secuencial
 $stmt = $db->prepare("
     SELECT COALESCE(MAX(CAST(secuencial AS UNSIGNED)), 0) + 1 AS siguiente
     FROM   facturas WHERE establecimiento = ? AND punto_emision = ?
 ");
 $stmt->execute([$emisor['establecimiento'], $emisor['punto_emision']]);
+// Secuencial de 9 dígitos
 $secuencial = str_pad((string)$stmt->fetch()['siguiente'], 9, '0', STR_PAD_LEFT);
 
 $fechaEmision   = date('Y-m-d');
@@ -108,16 +107,16 @@ $facturaDatos = array_merge([
 ], $totales);
 
 $xmlDoc  = FacturaXmlBuilder::construir($emisor, $facturaDatos, $lineas);
+// Valida contra el esquema
 $errores = ValidadorFactura::validar($xmlDoc);
 if ($errores) {
     responder(false, 'El XML generado no cumple el esquema: ' . implode(' | ', $errores));
 }
 $xml = $xmlDoc->saveXML();
 
-// Guardar factura y descontar stock
 $db->beginTransaction();
 try {
-    // Descuenta stock atómicamente
+    // Evita stock negativo
     $stmtStock = $db->prepare("UPDATE productos SET stock = stock - ? WHERE id_producto = ? AND stock >= ?");
     foreach ($lineas as $l) {
         $stmtStock->execute([$l['cantidad'], $l['id_producto'], $l['cantidad']]);

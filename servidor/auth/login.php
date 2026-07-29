@@ -1,4 +1,5 @@
 <?php
+// Autentica y crea sesión
 require_once dirname(__DIR__) . '/config.php';
 
 $input    = getInput();
@@ -12,11 +13,12 @@ if (empty($username) || empty($password)) {
 
 $db = getDB();
 
-// ── Verificar bloqueo por brute-force ────────────────────────
+// Revisa bloqueo previo
 $stmt = $db->prepare("SELECT intentos, bloqueado, ultimo_intento FROM login_intentos WHERE username = ? AND ip = ?");
 $stmt->execute([$username, $ip]);
 $intento = $stmt->fetch();
 
+// El bloqueo dura 15 minutos
 if ($intento && $intento['bloqueado']) {
     $segundos = time() - strtotime($intento['ultimo_intento']);
     if ($segundos < 900) {
@@ -28,12 +30,11 @@ if ($intento && $intento['bloqueado']) {
     $intento['intentos'] = 0;
 }
 
-// ── Buscar usuario ───────────────────────────────────────────
 $stmt = $db->prepare("SELECT id_user, username, password, nombre, email, id_rol, estado, primer_login FROM pw_user WHERE username = ?");
 $stmt->execute([$username]);
 $user = $stmt->fetch();
 
-// ── Validar credenciales ─────────────────────────────────────
+// Cuenta intentos fallidos
 if (!$user || !password_verify($password, $user['password'])) {
     $intentos_nuevos = ($intento ? $intento['intentos'] : 0) + 1;
     $bloqueado       = $intentos_nuevos >= 5 ? 1 : 0;
@@ -55,7 +56,7 @@ if (!$user['estado']) {
     responder(false, 'Usuario inactivo. Contacta al administrador.');
 }
 
-// Un rol inactivo bloquea el acceso de todos sus usuarios
+// El rol también debe estar activo
 $stmt = $db->prepare("SELECT estado FROM roles WHERE id_rol = ?");
 $stmt->execute([$user['id_rol']]);
 $rolEstado = $stmt->fetch();
@@ -63,34 +64,30 @@ if (!$rolEstado || !$rolEstado['estado']) {
     responder(false, 'Su rol esta inactivo. Contacta al administrador.');
 }
 
-// ── Login exitoso: limpiar intentos ──────────────────────────
 $db->prepare("DELETE FROM login_intentos WHERE username = ? AND ip = ?")
    ->execute([$username, $ip]);
 
+// Una sesión por usuario
 $db->prepare("DELETE FROM sesiones WHERE id_user = ?")
    ->execute([$user['id_user']]);
 
-// Purgar sesiones caducadas de cualquier usuario (housekeeping)
 $db->exec("DELETE FROM sesiones WHERE expires_at < NOW()");
 
-// ── Crear token de sesion ─────────────────────────────────────
+// Token aleatorio de sesión
 $token  = bin2hex(random_bytes(32));
 $expira = date('Y-m-d H:i:s', strtotime('+1 hour'));
 
 $db->prepare("INSERT INTO sesiones (token, id_user, ip, expires_at) VALUES (?, ?, ?, ?)")
    ->execute([$token, $user['id_user'], $ip, $expira]);
 
-// ── Obtener permisos del rol ──────────────────────────────────
 $stmt = $db->prepare("SELECT modulo, accion FROM permisos_rol WHERE id_rol = ?");
 $stmt->execute([$user['id_rol']]);
 $permisos = $stmt->fetchAll();
 
-// ── Obtener nombre del rol ────────────────────────────────────
 $stmt = $db->prepare("SELECT nombre_rol FROM roles WHERE id_rol = ?");
 $stmt->execute([$user['id_rol']]);
 $rol = $stmt->fetch();
 
-// ── Respuesta esperada por session.js: {token, usuario:{}, permisos:[]} ──
 responder(true, 'Login exitoso.', [
     'token'   => $token,
     'usuario' => [

@@ -1,6 +1,4 @@
-/*COMPONENTS.CSS — Tablas, formularios, botones, modales*/
-
-/* ── Tarjeta ─────────────────────────────────────────────── */
+/* Tarjetas */
 .card {
     background:    var(--bg-card);
     border:        1px solid var(--border);
@@ -28,7 +26,7 @@
     padding: 1.4rem;
 }
 
-/* ── Botones ─────────────────────────────────────────────── */
+/* Botones */
 .btn {
     display:       inline-flex;
     align-items:   center;
@@ -47,6 +45,7 @@
 .btn:active  { transform: scale(.97); }
 .btn:disabled { opacity: .55; cursor: not-allowed; }
 
+/* Variantes de botón */
 .btn-primary {
     background: var(--primary);
     color:      #ffffff;
@@ -96,14 +95,13 @@
 
 .btn-icon { padding: .4rem .6rem; }
 
-/* ── Grupos de botones ───────────────────────────────────── */
 .btn-group {
     display: flex;
     gap:     .5rem;
     flex-wrap: wrap;
 }
 
-/* ── Tabla ───────────────────────────────────────────────── */
+/* Tablas */
 .tabla-wrap {
     overflow-x: auto;
 }
@@ -145,7 +143,6 @@
 
 .tabla tbody tr:hover { background: #f8fafc; }
 
-/* Columna N°: posición visual consecutiva, no es el ID real */
 .tabla td.col-num {
     width:      2.5rem;
     text-align: center;
@@ -159,7 +156,7 @@
     font-style:  italic;
 }
 
-/* ── Paginación de tablas (selector de filas + navegación) ── */
+/* Controles de paginación */
 .tabla-paginacion {
     display:         flex;
     align-items:     center;
@@ -221,7 +218,7 @@
     .tabla-paginacion { justify-content: center; }
 }
 
-/* ── Barra de herramientas ───────────────────────────────── */
+/* Barra de filtros */
 .toolbar {
     display:         flex;
     align-items:     center;
@@ -238,7 +235,6 @@
     flex-wrap:   wrap;
 }
 
-/* Agrupa etiqueta y campo juntos */
 .filtro-grupo {
     display:     inline-flex;
     align-items: center;
@@ -247,11 +243,11 @@
 .filtro-grupo .form-label { margin: 0; white-space: nowrap; }
 .filtro-grupo .form-control { width: 150px; }
 
-/* Popup de autocompletado */
+/* Autocompletado */
 .autocomplete-wrap { position: relative; }
 
 .autocomplete-lista {
-    position:      fixed; /* posición fijada por JS */
+    position:      fixed;
     max-height:    260px;
     overflow-y:    auto;
     background:    var(--bg-card);
@@ -277,7 +273,7 @@
     font-style: italic;
 }
 
-/* ── Búsqueda ────────────────────────────────────────────── */
+/* Campo de búsqueda */
 .busqueda-wrap {
     position:    relative;
     display:     flex;
@@ -305,7 +301,7 @@
 }
 
 
-/* ── Formularios ─────────────────────────────────────────── */
+/* Formularios */
 .form-grid {
     display:               grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -371,7 +367,7 @@ select.form-control { cursor: pointer; }
     flex-wrap:   wrap;
 }
 
-/* ── Cabecera de página ──────────────────────────────────── */
+/* Título de página */
 .pag-titulo-wrap {
     display:        flex;
     align-items:    center;
@@ -393,7 +389,7 @@ select.form-control { cursor: pointer; }
     margin-top: .2rem;
 }
 
-/* ── Modal ───────────────────────────────────────────────── */
+/* Modales */
 .modal-overlay {
     position:       fixed;
     inset:          0;
@@ -458,7 +454,7 @@ select.form-control { cursor: pointer; }
     justify-content: flex-end;
 }
 
-/* ── Modal de confirmación crítica (eliminaciones irreversibles) ── */
+/* Modal de eliminación */
 .modal-peligro {
     border-top: 4px solid var(--danger);
 }
@@ -493,7 +489,7 @@ select.form-control { cursor: pointer; }
     user-select:    all;
 }
 
-/* ── Título de sección (contenido) ───────────────────────── */
+/* Secciones del dashboard */
 .seccion-titulo {
     font-size:     1.05rem;
     font-weight:   700;
@@ -501,7 +497,7 @@ select.form-control { cursor: pointer; }
     margin:        .5rem 0 1rem;
 }
 
-/* ── Tarjetas de estadísticas (dashboard) ────────────────── */
+/* Tarjetas de estadísticas */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -520,8 +516,6 @@ select.form-control { cursor: pointer; }
     box-shadow:    var(--shadow-sm);
 }
 
-/* El bloque de texto puede encogerse dentro de la tarjeta para que el
-   número y la etiqueta se ajusten en pantallas estrechas sin desbordar. */
 .stat-card > div { min-width: 0; }
 .stat-info-num,
 .stat-info-label { overflow-wrap: anywhere; }
@@ -550,7 +544,7 @@ select.form-control { cursor: pointer; }
     margin-top: .2rem;
 }
 
-/* ── Matriz de permisos ──────────────────────────────────── */
+/* Matriz de permisos */
 .permisos-grid {
     display:               grid;
     grid-template-columns: 1fr repeat(4, 90px);
@@ -593,7 +587,7 @@ select.form-control { cursor: pointer; }
     accent-color: var(--primary);
 }
 
-/* ── Organizador de menú personal (Drag & Drop) ──────────── */
+/* Organizador del menú */
 .om-zona {
     list-style: none;
     padding:    .8rem;
@@ -659,7 +653,7 @@ select.form-control { cursor: pointer; }
     padding: .6rem .6rem .6rem 1.8rem;
 }
 
-/* ── Pestañas (tabs) ─────────────────────────────────────── */
+/* Pestañas */
 .tabs-nav {
     display:       flex;
     gap:           .4rem;
@@ -685,7 +679,7 @@ select.form-control { cursor: pointer; }
     border-bottom-color: var(--primary);
 }
 
-/* ── Responsive ──────────────────────────────────────────── */
+/* Ajustes responsivos */
 @media (max-width: 600px) {
     .form-grid { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

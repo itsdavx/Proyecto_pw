@@ -1,4 +1,5 @@
 <?php
+// Elimina rol sin usuarios
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();
@@ -23,8 +24,6 @@ if (!$rol) {
     responder(false, 'Rol no encontrado.');
 }
 
-// Verificar usuarios asociados: un rol en uso no puede eliminarse
-// hasta que sus usuarios sean reasignados o eliminados.
 $stmt = $db->prepare("SELECT COUNT(*) FROM pw_user WHERE id_rol = ?");
 $stmt->execute([$id_rol]);
 $totalUsuarios = (int)$stmt->fetchColumn();
@@ -34,8 +33,6 @@ if ($totalUsuarios > 0) {
     responder(false, "No se puede eliminar: hay {$totalUsuarios} {$plural} con el rol \"{$rol['nombre_rol']}\". Reasigne o elimine esos usuarios antes de continuar.");
 }
 
-// Sin usuarios asociados: eliminar el rol. Los permisos del rol en
-// permisos_rol se eliminan automaticamente mediante ON DELETE CASCADE.
 $db->prepare("DELETE FROM roles WHERE id_rol = ?")->execute([$id_rol]);
 
 responder(true, 'Rol eliminado correctamente.');

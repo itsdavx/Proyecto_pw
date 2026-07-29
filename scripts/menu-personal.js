@@ -1,22 +1,12 @@
-/* ============================================================
-   MENU-PERSONAL.JS — Módulo "Menú": organización personal
-   Árbol jerárquico libre: la raíz es una secuencia única donde
-   ItemMenus y SuperMenus se intercalan y reordenan por igual
-   mediante Drag & Drop. Única regla: el Dashboard nunca se
-   agrupa (pero sí participa del orden general).
-   ============================================================ */
-
-/* Nodos raíz ordenados:
-   { tipo:'item',  item:{id_menu,nombre,icono,modulo} }
-   { tipo:'super', super:{id_super,nombre}, items:[...] } */
+// Árbol raíz del menú
 let _raiz = [];
 
+// Arranca organizador del menú
 async function iniciarMenuPersonal() {
     const ok = await Router.proteger();
     if (!ok) return;
     if (!Router.verificarPermiso('menu', 'leer')) return;
 
-    // Cada botón consulta únicamente su propio permiso, independiente del resto
     if (!Sesion.tienePermiso('menu', 'crear')) {
         document.getElementById('btnNuevoSuper')?.classList.add('d-none');
     }
@@ -29,6 +19,7 @@ async function iniciarMenuPersonal() {
     await cargarMiMenu();
 }
 
+// Arma el árbol ordenado
 async function cargarMiMenu() {
     mostrarCargando(true);
     try {
@@ -58,11 +49,11 @@ async function cargarMiMenu() {
     }
 }
 
+// Pinta el organizador
 function renderOrganizador() {
     const cont = document.getElementById('organizadorMenu');
     if (!cont) return;
 
-    // Cada control consulta únicamente su propio permiso, de forma independiente
     const puedeReordenar     = Sesion.tienePermiso('menu', 'reordenar');
     const puedeRenombrar     = Sesion.tienePermiso('menu', 'renombrar');
     const puedeEliminarSuper = Sesion.tienePermiso('menu', 'eliminar');
@@ -100,6 +91,7 @@ function renderOrganizador() {
     _activarDragDrop(cont);
 }
 
+// Enlaza arrastrar y soltar
 function _activarDragDrop(cont) {
     cont.querySelectorAll('.om-item').forEach(li => {
         li.addEventListener('dragstart', e => {
@@ -117,7 +109,6 @@ function _activarDragDrop(cont) {
         });
     });
 
-    /* Zonas internas de SuperMenus: solo aceptan ItemMenus */
     cont.querySelectorAll('.om-zona-super').forEach(ul => {
         ul.addEventListener('dragover', e => {
             e.preventDefault();
@@ -136,11 +127,11 @@ function _activarDragDrop(cont) {
         });
     });
 
-    /* Zona raíz: acepta ItemMenus y SuperMenus intercalados */
+    // Soltar en el raíz
     const raiz = cont.querySelector('#zonaRaiz');
     raiz.addEventListener('dragover', e => e.preventDefault());
     raiz.addEventListener('drop', e => {
-        if (e.target.closest('.om-zona-super')) return; // lo maneja la zona interna
+        if (e.target.closest('.om-zona-super')) return;
         e.preventDefault();
         const dato = e.dataTransfer.getData('text/plain');
         const ref  = e.target.closest('#zonaRaiz > li');
@@ -154,7 +145,7 @@ function _activarDragDrop(cont) {
         b.addEventListener('click', () => eliminarSuper(parseInt(b.dataset.eliminar))));
 }
 
-/* Índice de un nodo raíz a partir de su <li> */
+// Posición del nodo destino
 function _indiceNodoRaiz(li) {
     if (!li) return -1;
     if (li.dataset.item)  return _raiz.findIndex(n => n.tipo === 'item'  && n.item.id_menu == li.dataset.item);
@@ -162,7 +153,7 @@ function _indiceNodoRaiz(li) {
     return -1;
 }
 
-/* Quita un ItemMenu de donde esté (raíz o SuperMenu) y lo devuelve */
+// Saca item de origen
 function _extraerItem(id) {
     const i = _raiz.findIndex(n => n.tipo === 'item' && n.item.id_menu == id);
     if (i >= 0) return _raiz.splice(i, 1)[0].item;
@@ -174,8 +165,9 @@ function _extraerItem(id) {
     return null;
 }
 
+// Mueve item a destino
 function _soltarItem(id, destino, refEl) {
-    if (refEl && refEl.dataset.item == id) return; // soltado sobre sí mismo
+    if (refEl && refEl.dataset.item == id) return;
 
     const item = _extraerItem(id);
     if (!item) return;
@@ -183,6 +175,7 @@ function _soltarItem(id, destino, refEl) {
     if (destino.superId != null) {
         const nodo = _raiz.find(n => n.tipo === 'super' && n.super.id_super === destino.superId);
         if (!nodo) { renderOrganizador(); return; }
+        // Dashboard nunca se agrupa
         if (item.modulo === 'dashboard') {
             mostrarAlerta('El Dashboard no puede agruparse: siempre queda en el nivel raíz.', 'warning');
             _raiz.unshift({ tipo: 'item', item });
@@ -203,6 +196,7 @@ function _soltarItem(id, destino, refEl) {
     guardarOrganizacion();
 }
 
+// Reordena un SuperMenu
 function _soltarSuper(id, refEl) {
     if (refEl && refEl.dataset.super == id) return;
 
@@ -217,8 +211,7 @@ function _soltarSuper(id, refEl) {
     guardarOrganizacion();
 }
 
-/* Secuencia única de orden en la raíz; los ItemMenus de cada
-   SuperMenu llevan su propio orden interno */
+// Arma el orden final
 function _payloadOrganizacion() {
     const supers = [];
     const items  = [];
@@ -236,7 +229,7 @@ function _payloadOrganizacion() {
     return { token: Sesion.token(), supers, items };
 }
 
-/* Guardado automático tras cada movimiento */
+// Guarda orden en silencio
 async function guardarOrganizacion() {
     try {
         const r = await postJSON(API.menu.organizar, _payloadOrganizacion());
@@ -244,8 +237,7 @@ async function guardarOrganizacion() {
     } catch { mostrarAlerta('Error al guardar el menú.', 'error'); }
 }
 
-/* Guardar explícito: persiste, refresca el organizador y actualiza
-   el sidebar del shell sin cerrar sesión */
+// Guarda y refresca menú
 async function guardarMenu() {
     try {
         const r = await postJSON(API.menu.organizar, _payloadOrganizacion());
@@ -257,7 +249,7 @@ async function guardarMenu() {
     } catch { mostrarAlerta('Error al guardar el menú.', 'error'); }
 }
 
-/* Refleja los cambios en el sidebar del shell de inmediato, sin cerrar sesión */
+// Refresca menú del padre
 async function _refrescarShellMenu() {
     try {
         const p = window.parent;
@@ -265,9 +257,10 @@ async function _refrescarShellMenu() {
             await p.cargarMenuYRenderizar(document.title.split('—')[0].trim());
             p.Shell?.marcarActivo?.(window.location.pathname);
         }
-    } catch { /* fuera del shell no hay sidebar que refrescar */ }
+    } catch {  }
 }
 
+// Crea un SuperMenu
 async function crearSuper() {
     const nombre = (window.prompt('Nombre del nuevo SuperMenu:') || '').trim();
     if (!nombre) return;
@@ -278,6 +271,7 @@ async function crearSuper() {
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
 }
 
+// Renombra un SuperMenu
 async function renombrarSuper(id) {
     const nodo   = _raiz.find(n => n.tipo === 'super' && n.super.id_super === id);
     const nombre = (window.prompt('Nuevo nombre del SuperMenu:', nodo?.super.nombre || '') || '').trim();
@@ -289,6 +283,7 @@ async function renombrarSuper(id) {
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
 }
 
+// Borra con confirmación fuerte
 function eliminarSuper(id) {
     const nodo = _raiz.find(n => n.tipo === 'super' && n.super.id_super === id);
     if (!nodo) return;

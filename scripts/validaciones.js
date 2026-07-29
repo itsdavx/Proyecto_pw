@@ -1,10 +1,7 @@
-/* ============================================================
-   VALIDACIONES.JS — Validación de formularios y política de PW
-   ============================================================ */
-
+// Validaciones de formularios
 const Validaciones = {
 
-    /* Limpiar todos los errores del formulario */
+    // Borra errores del formulario
     limpiar(form) {
         form.querySelectorAll('.error, .campo-error').forEach(el => {
             el.classList.remove('error', 'campo-error');
@@ -15,13 +12,11 @@ const Validaciones = {
         });
     },
 
-    /* Mostrar error en un campo — sube al .form-grupo para encontrar .form-error */
+    // Marca campo con mensaje
     mostrar(inputEl, mensaje) {
         inputEl.classList.add('error', 'campo-error');
-        // Si el input está dentro de un wrapper (.input-pass-wrap), marcarlo también
         const wrapper = inputEl.closest('.input-pass-wrap');
         if (wrapper) wrapper.classList.add('error');
-        // Buscar el span de error en el contenedor padre (.form-grupo o .campo-grupo)
         const container = inputEl.closest('.form-grupo, .campo-grupo') || inputEl.parentElement;
         const errEl = container?.querySelector('.form-error, .mensaje-error');
         if (errEl) {
@@ -30,7 +25,7 @@ const Validaciones = {
         }
     },
 
-    /* Validar campo requerido; retorna false si vacío y muestra error */
+    // Campo obligatorio
     requerido(inputEl, etiqueta) {
         if (!inputEl.value.trim()) {
             this.mostrar(inputEl, `${etiqueta} es requerido.`);
@@ -39,7 +34,7 @@ const Validaciones = {
         return true;
     },
 
-    /* Validar ruta interna de un ItemMenu: debe iniciar con "/" */
+    // URL válida del menú
     ruta(inputEl) {
         const v = inputEl.value.trim();
         if (!/^\/[A-Za-z0-9_\-\/.]+$/.test(v)) {
@@ -49,7 +44,7 @@ const Validaciones = {
         return true;
     },
 
-    /* Validar email */
+    // Formato de correo
     email(inputEl) {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!re.test(inputEl.value.trim())) {
@@ -59,7 +54,7 @@ const Validaciones = {
         return true;
     },
 
-    /* Política de contraseña: mín 8 chars, 1 mayús, 1 número, 1 especial */
+    // Política de contraseña
     password(inputEl) {
         const v = inputEl.value;
         if (v.length < APP.passMinLength) {
@@ -81,7 +76,7 @@ const Validaciones = {
         return true;
     },
 
-    /* Validar que dos contraseñas coincidan */
+    // Ambas contraseñas coinciden
     confirmarPassword(inputEl, refEl) {
         if (inputEl.value !== refEl.value) {
             this.mostrar(inputEl, 'Las contraseñas no coinciden.');
@@ -90,7 +85,7 @@ const Validaciones = {
         return true;
     },
 
-    /* Texto descriptivo de política para mostrar al usuario */
+    // Texto de la política
     descripcionPolitica() {
         return `Mínimo ${APP.passMinLength} caracteres, una mayúscula, un número y un caracter especial.`;
     },

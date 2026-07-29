@@ -1,4 +1,5 @@
 <?php
+// Lista facturas emitidas
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();

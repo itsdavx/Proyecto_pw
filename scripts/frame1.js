@@ -1,17 +1,18 @@
-// Movimientos: comprobantes e inventario
-
+// Tipos de movimiento
 const MOV_TIPO_MOVIMIENTO = {
     'INGRESO POR COMPRA':   'Ingreso por compra',
     'SALIDA POR VENTA':     'Salida por venta',
     'AJUSTE DE INVENTARIO': 'Ajuste de inventario',
 };
 
+// Datos y paginadores
 let _movTipos        = {};
 let _movComprobantes = [];
 let _movInventario   = [];
 let _pagComprobantes = null;
 let _pagInventario   = null;
 
+// Arranca módulo de movimientos
 async function iniciarFrame1() {
     const ok = await Router.proteger();
     if (!ok) return;
@@ -41,6 +42,7 @@ async function iniciarFrame1() {
     await cargarMovimientos();
 }
 
+// Carga comprobantes e inventario
 async function cargarMovimientos() {
     try {
         const r = await postJSON(API.movimientos.listar, { token: Sesion.token() });
@@ -54,7 +56,7 @@ async function cargarMovimientos() {
     } catch { mostrarAlerta('Error al cargar los movimientos.', 'error'); }
 }
 
-// Filtro por tipo de comprobante
+// Llena filtro de tipos
 function llenarFiltroTipos() {
     const sel = document.getElementById('selFiltroTipo');
     if (!sel) return;
@@ -68,7 +70,7 @@ function llenarFiltroTipos() {
     }
 }
 
-// Comprobantes electrónicos
+// Filtra y pagina comprobantes
 function renderizarComprobantes(reiniciar = false) {
     const filtro     = document.getElementById('selFiltroTipo')?.value || '';
     const busqueda   = (document.getElementById('txtBuscarComprobante')?.value || '').toLowerCase().trim();
@@ -85,6 +87,7 @@ function renderizarComprobantes(reiniciar = false) {
     _pagComprobantes.render(lista, { reiniciar });
 }
 
+// Pinta filas de comprobantes
 function _pintarComprobantes(lista) {
     const tbody = document.getElementById('tbodyComprobantes');
     if (!tbody) return;
@@ -107,7 +110,7 @@ function _pintarComprobantes(lista) {
     `).join('');
 }
 
-// Movimientos de inventario
+// Pinta filas de inventario
 function _pintarInventario(lista) {
     const tbody = document.getElementById('tbodyInventario');
     if (!tbody) return;
@@ -134,6 +137,7 @@ function _pintarInventario(lista) {
     }).join('');
 }
 
+// Filtra movimientos de inventario
 function renderizarTablaInventario(reiniciar = false) {
     const busqueda   = (document.getElementById('txtBuscarMovimientoProducto')?.value || '').toLowerCase().trim();
     const filtroTipo = document.getElementById('selFiltroMovimiento')?.value || '';

@@ -1,4 +1,5 @@
 <?php
+// Edita nombre y URL
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();
@@ -34,7 +35,6 @@ if ($stmt->fetch()) {
     responder(false, 'Ya existe otro ItemMenu con esa URL.');
 }
 
-// Unicamente nombre y URL: modulo, estado y orden no se modifican aqui.
 $db->prepare("UPDATE menu SET nombre = ?, url = ? WHERE id_menu = ?")
    ->execute([$nombre, $url, $id_menu]);
 

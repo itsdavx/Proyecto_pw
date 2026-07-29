@@ -1,4 +1,5 @@
 <?php
+// Crea producto y movimiento
 require_once dirname(__DIR__) . '/config.php';
 require_once dirname(__DIR__) . '/facturacion/lib/Catalogos.php';
 require_once __DIR__ . '/lib/MovimientoInventario.php';
@@ -40,7 +41,6 @@ try {
     ]);
     $idProducto = (int)$db->lastInsertId();
 
-    // Existencia inicial como ingreso
     MovimientoInventario::registrar($db, [
         'id_producto'      => $idProducto,
         'codigo_principal' => $codigo,

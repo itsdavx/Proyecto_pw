@@ -1,4 +1,5 @@
 <?php
+// Elimina cliente sin facturas
 require_once dirname(__DIR__) . '/config.php';
 require_once dirname(__DIR__) . '/facturacion/lib/Catalogos.php';
 
@@ -17,12 +18,10 @@ $cliente->execute([$idCliente]);
 $cliente = $cliente->fetch();
 if (!$cliente) responder(false, 'Cliente no encontrado.');
 
-// Consumidor Final no se elimina
 if ($cliente['tipo_identificacion'] === '07' && $cliente['identificacion'] === Catalogos::CONSUMIDOR_FINAL_ID) {
     responder(false, 'El cliente Consumidor Final es obligatorio y no puede eliminarse.');
 }
 
-// No eliminar si tiene facturas
 $stmt = $db->prepare("SELECT COUNT(*) AS total FROM facturas WHERE id_cliente = ?");
 $stmt->execute([$idCliente]);
 $facturas = (int)$stmt->fetch()['total'];

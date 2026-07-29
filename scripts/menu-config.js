@@ -1,20 +1,13 @@
-/* ============================================================
-   MENU-CONFIG.JS — Módulo "Configurar Menús" (solo Administrador)
-   Disponibilidad global de los ItemMenu, y administración de su
-   nombre y URL. Los cambios de disponibilidad se acumulan y se
-   persisten con el botón "Guardar"; crear/editar un ItemMenu se
-   persiste de inmediato.
-   ============================================================ */
+// ItemMenu y edición actual
+let _configItems = [];
+let _idEditando  = null;
 
-let _configItems = [];   // {id_menu, nombre, icono, url, modulo, estado, nuevo}
-let _idEditando  = null; // id_menu en edición, o null si se está creando
-
+// Arranca configuración del menú
 async function iniciarConfigMenus() {
     const ok = await Router.proteger();
     if (!ok) return;
     if (!Router.verificarPermiso('configmenu', 'leer')) return;
 
-    // Cada botón consulta únicamente su propio permiso, independiente del resto
     if (!Sesion.tienePermiso('configmenu', 'crear')) {
         document.getElementById('btnNuevoItemMenu')?.classList.add('d-none');
     }
@@ -34,6 +27,7 @@ async function iniciarConfigMenus() {
     await cargarConfigMenus();
 }
 
+// Carga los ItemMenu
 async function cargarConfigMenus() {
     mostrarCargando(true);
     try {
@@ -48,6 +42,7 @@ async function cargarConfigMenus() {
     }
 }
 
+// Pinta tabla con casillas
 function renderizarConfigMenus() {
     const tbody = document.getElementById('tbodyConfigMenu');
     if (!tbody) return;
@@ -57,7 +52,6 @@ function renderizarConfigMenus() {
         return;
     }
 
-    // Cada control consulta únicamente su propio permiso, de forma independiente
     const puedeEditar  = Sesion.tienePermiso('configmenu', 'editar');
     const puedeEliminar = Sesion.tienePermiso('configmenu', 'eliminar');
     const puedeEstado  = Sesion.tienePermiso('configmenu', 'estado');
@@ -87,6 +81,7 @@ function renderizarConfigMenus() {
         </tr>
     `).join('');
 
+    // Recuerda casillas cambiadas
     tbody.querySelectorAll('input[data-id]').forEach(ch => {
         ch.addEventListener('change', () => {
             const item = _configItems.find(m => m.id_menu == ch.dataset.id);
@@ -95,7 +90,7 @@ function renderizarConfigMenus() {
     });
 }
 
-/* Persiste todos los cambios de disponibilidad, refresca la tabla y el sidebar del shell */
+// Guarda solo los cambios
 async function guardarConfigMenus() {
     const cambios = _configItems.filter(m => m.nuevo !== (m.estado == 1));
     if (cambios.length === 0) {
@@ -123,7 +118,7 @@ async function guardarConfigMenus() {
     }
 }
 
-/* ── Crear / editar ItemMenu (únicamente nombre y URL) ───────── */
+// Abre modal vacío
 function nuevoItemMenu() {
     _idEditando = null;
     document.getElementById('tituloModalItem').textContent = 'Nuevo ItemMenu';
@@ -132,6 +127,7 @@ function nuevoItemMenu() {
     abrirModalItem();
 }
 
+// Abre modal con datos
 function editarItemMenu(id) {
     const item = _configItems.find(m => m.id_menu == id);
     if (!item) return;
@@ -151,6 +147,7 @@ function cerrarModalItem() {
     document.getElementById('modalItemMenu')?.classList.remove('visible');
 }
 
+// Valida y guarda ItemMenu
 async function submitItemMenu(e) {
     e.preventDefault();
     const form = e.target;
@@ -166,6 +163,7 @@ async function submitItemMenu(e) {
 
     if (valido) {
         const urlLimpia = url.value.trim();
+        // URL no puede repetirse
         const duplicada = _configItems.some(m => m.url === urlLimpia && m.id_menu !== _idEditando);
         if (duplicada) {
             Validaciones.mostrar(url, 'Ya existe un ItemMenu con esa URL.');
@@ -196,8 +194,7 @@ async function submitItemMenu(e) {
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
 }
 
-/* ── Eliminar ItemMenu: el Administrador tiene control total, cualquier
-   ItemMenu puede eliminarse (incluidos los del propio sistema) ───────── */
+// Borra con confirmación fuerte
 function eliminarItemMenu(id) {
     const item = _configItems.find(m => m.id_menu == id);
     if (!item) return;
@@ -221,7 +218,7 @@ function eliminarItemMenu(id) {
     });
 }
 
-/* Refleja los cambios en el sidebar del shell de inmediato, sin cerrar sesión */
+// Refresca menú del padre
 async function _refrescarShell() {
     try {
         const p = window.parent;
@@ -229,5 +226,5 @@ async function _refrescarShell() {
             await p.cargarMenuYRenderizar(document.title.split('—')[0].trim());
             p.Shell?.marcarActivo?.(window.location.pathname);
         }
-    } catch { /* fuera del shell no hay sidebar que refrescar */ }
+    } catch {  }
 }

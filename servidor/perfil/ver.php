@@ -1,4 +1,5 @@
 <?php
+// Datos del perfil
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();

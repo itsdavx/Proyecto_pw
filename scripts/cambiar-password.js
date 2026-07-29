@@ -1,7 +1,4 @@
-/* ============================================================
-   CAMBIAR-PASSWORD.JS — Formulario de cambio de contraseña
-   ============================================================ */
-
+// Arranca cambio de contraseña
 async function iniciarCambiarPassword() {
     const ok = await Router.proteger();
     if (!ok) return;
@@ -9,6 +6,7 @@ async function iniciarCambiarPassword() {
 
     const user = Sesion.usuario();
 
+    // Aviso si es obligatorio
     if (user?.primer_login == 1) {
         const aviso = document.getElementById('avisoObligatorio');
         aviso?.classList.remove('d-none');
@@ -24,7 +22,7 @@ async function iniciarCambiarPassword() {
         }
     });
 
-    // Toggle visibilidad de contraseñas
+    // Botones ver contraseña
     ['toggleActual', 'toggleNueva', 'toggleConfirmar'].forEach(id => {
         document.getElementById(id)?.addEventListener('click', function() {
             const inputId = this.dataset.target;
@@ -35,10 +33,10 @@ async function iniciarCambiarPassword() {
         });
     });
 
-    // Indicador de fortaleza
     document.getElementById('txtNuevoPassword')?.addEventListener('input', actualizarFortaleza);
 }
 
+// Barra de fortaleza
 function actualizarFortaleza() {
     const v       = document.getElementById('txtNuevoPassword').value;
     const barra   = document.getElementById('barraFortaleza');
@@ -59,6 +57,7 @@ function actualizarFortaleza() {
     if (etiqueta) etiqueta.textContent = puntaje > 0 ? etiquetas[puntaje - 1] : '';
 }
 
+// Valida y envía cambio
 async function submitCambiarPassword(e) {
     e.preventDefault();
     const form = e.target;
@@ -74,6 +73,7 @@ async function submitCambiarPassword(e) {
     if (!Validaciones.confirmarPassword(confirmar_, nueva))   valido = false;
     if (!valido) return;
 
+    // Debe ser distinta
     if (nueva.value === actual.value) {
         Validaciones.mostrar(nueva, 'La nueva contraseña debe ser diferente a la actual.');
         return;
@@ -95,9 +95,9 @@ async function submitCambiarPassword(e) {
 
         if (r.ok) {
             mostrarAlerta(r.msg, 'ok');
-            // Actualizar primer_login en sesión
             const user = Sesion.usuario();
             if (user) {
+                // Limpia el primer login
                 user.primer_login = 0;
                 sessionStorage.setItem(APP.keys.usuario, JSON.stringify(user));
             }

@@ -1,18 +1,17 @@
 <?php
+// Genera el PDF
 require_once __DIR__ . '/Catalogos.php';
 
-// Genera el RIDE en PDF
 class RidePdf
 {
-    const W      = 595.28;   // A4 vertical
+    const W      = 595.28;
     const H      = 841.89;
     const MARGEN = 38;
-    const LIMITE = 790;      // y máximo utilizable
+    const LIMITE = 790;
 
-    private $paginas = [];   // páginas ya cerradas
-    private $pag     = '';   // página en curso
+    private $paginas = [];
+    private $pag     = '';
 
-    // API pública
     public static function factura(array $emisor, array $factura, array $detalles): string
     {
         $r = new self();
@@ -29,12 +28,10 @@ class RidePdf
         return $this->ensamblar();
     }
 
-    // Secciones del RIDE
     private function cabecera(array $emisor, array $factura): void
     {
         $m = self::MARGEN;
 
-        // Caja del emisor (izquierda)
         $this->rect($m, 40, 252, 135);
         $x = $m + 8; $yy = 56;
         foreach ($this->envolver($emisor['razon_social'], 44) as $l) { $this->tx($x, $yy, $l, 'F2', 9); $yy += 11; }
@@ -50,7 +47,6 @@ class RidePdf
             $this->tx($x, $yy, 'Contribuyente Especial Nro: ' . $emisor['contribuyente_especial'], 'F1', 7);
         }
 
-        // Caja del documento
         $xd = 302;
         $this->rect($xd, 40, self::W - $m - $xd, 135);
         $x = $xd + 8; $yy = 56;
@@ -132,7 +128,6 @@ class RidePdf
 
     private function totales(array $factura, array $detalles, float $y): void
     {
-        // Bases por tarifa de IVA
         $bases = ['0' => 0.0, '4' => 0.0, '6' => 0.0, '7' => 0.0];
         foreach ($detalles as $d) {
             $cod = $d['codigo_porcentaje_iva'];
@@ -158,7 +153,6 @@ class RidePdf
             $y = 50;
         }
 
-        // Bloque de totales (derecha)
         $x1 = 352; $x2 = 486; $x3 = self::W - self::MARGEN;
         $yy = $y;
         foreach ($filas as $fila) {
@@ -170,14 +164,12 @@ class RidePdf
             $yy += $alto;
         }
 
-        // Forma de pago
         $fp = Catalogos::FORMA_PAGO[$factura['forma_pago']] ?? $factura['forma_pago'];
         $this->rect(self::MARGEN, $y, 292, 28);
         $this->tx(self::MARGEN + 6, $y + 11, 'Forma de pago: ' . $fp, 'F1', 8);
         $this->tx(self::MARGEN + 6, $y + 22, 'Moneda: DÓLAR', 'F1', 8);
     }
 
-    // Primitivas de dibujo
     private function tx(float $x, float $y, string $txt, string $f = 'F1', float $tam = 8): void
     {
         $this->pag .= sprintf("BT /%s %.2F Tf %.2F %.2F Td (%s) Tj ET\n",
@@ -205,9 +197,7 @@ class RidePdf
         $this->pag = "0.5 w\n";
     }
 
-    // Texto: codificación y medidas
 
-    // Ancho fijo de Courier
     private function ancho(string $txt, string $f, float $tam): float
     {
         $factor = ($f === 'F3' || $f === 'F4') ? 0.60 : 0.52;
@@ -243,17 +233,15 @@ class RidePdf
             }
         }
         if ($actual !== '') $lineas[] = $actual;
-        return array_slice($lineas, 0, 3); // límite defensivo de líneas
+        return array_slice($lineas, 0, 3);
     }
 
-    // Ensamblado del archivo PDF
     private function ensamblar(): string
     {
         $this->paginas[] = $this->pag;
 
         $fuentes = ['F1' => 'Helvetica', 'F2' => 'Helvetica-Bold', 'F3' => 'Courier', 'F4' => 'Courier-Bold'];
 
-        // Objetos: catálogo, páginas, fuentes
         $objetos    = [1 => '<< /Type /Catalog /Pages 2 0 R >>'];
         $n          = 3;
         $refsFuente = [];

@@ -1,5 +1,4 @@
-/* MAIN.CSS — Variables, reset y base global */
-
+/* Variables de diseño */
 :root {
     --primary:          #2563eb;
     --primary-dark:     #1d4ed8;
@@ -34,7 +33,7 @@
     --font:             -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
 }
 
-/* ── Reset ───────────────────────────────────────────────── */
+/* Reset base */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { font-size: 14px; scroll-behavior: smooth; }
@@ -59,7 +58,7 @@ input, select, textarea, button {
 
 img { max-width: 100%; display: block; }
 
-/* ── Utilidades ──────────────────────────────────────────── */
+/* Utilidades de maquetación */
 .d-none    { display: none !important; }
 .d-flex    { display: flex; }
 .d-block   { display: block; }
@@ -80,7 +79,7 @@ img { max-width: 100%; display: block; }
 .mb-1 { margin-bottom: .5rem; }
 .mb-2 { margin-bottom: 1rem; }
 
-/* ── Badge de estado ─────────────────────────────────────── */
+/* Etiquetas de estado */
 .badge {
     display:       inline-block;
     padding:       .2rem .6rem;
@@ -94,7 +93,7 @@ img { max-width: 100%; display: block; }
 .badge-primary  { background: var(--primary-light); color: var(--primary); }
 .badge-warning  { background: var(--warning-light); color: var(--warning); }
 
-/* ── Alerta/notificación flotante ────────────────────────── */
+/* Alerta flotante global */
 #alerta-global {
     position:      fixed;
     top:           1.2rem;
@@ -124,7 +123,7 @@ img { max-width: 100%; display: block; }
 #alerta-global.alerta-warning { border-color: var(--warning); color: var(--warning); }
 #alerta-global.alerta-info    { border-color: var(--info);    color: var(--info);    }
 
-/* ── Spinner de carga ────────────────────────────────────── */
+/* Indicador de carga */
 .spinner {
     display:        inline-block;
     width:          20px; height: 20px;
@@ -136,7 +135,6 @@ img { max-width: 100%; display: block; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Overlay de carga de página ──────────────────────────── */
 #loading-overlay {
     position:   fixed;
     inset:      0;

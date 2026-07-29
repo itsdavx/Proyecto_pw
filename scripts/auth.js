@@ -1,12 +1,8 @@
-/* ============================================================
-   AUTH.JS — Login, captcha canvas, logout
-   ============================================================ */
-
-/* ── Estado local ────────────────────────────────────────────── */
+// Bloqueo por intentos fallidos
 let _intentosLocales = 0;
 let _bloqueadoHasta  = 0;
 
-/* ── Captcha ─────────────────────────────────────────────────── */
+// Dibuja captcha en canvas
 function generarCaptcha() {
     const chars  = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
     let   texto  = '';
@@ -20,14 +16,12 @@ function generarCaptcha() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Fondo degradado
     const grad = ctx.createLinearGradient(0, 0, canvas.width, 0);
     grad.addColorStop(0,   '#e8edf5');
     grad.addColorStop(1,   '#f0f4fb');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Líneas de ruido
     for (let i = 0; i < 6; i++) {
         ctx.strokeStyle = `rgba(${_rnd(100,180)},${_rnd(100,180)},${_rnd(100,180)},.35)`;
         ctx.lineWidth   = 1;
@@ -37,7 +31,6 @@ function generarCaptcha() {
         ctx.stroke();
     }
 
-    // Caracteres con rotación y color variables
     for (let i = 0; i < texto.length; i++) {
         ctx.save();
         ctx.translate(12 + i * 32, 36 + _rnd(-5, 5));
@@ -48,7 +41,6 @@ function generarCaptcha() {
         ctx.restore();
     }
 
-    // Puntos de ruido
     for (let i = 0; i < 40; i++) {
         ctx.fillStyle = `rgba(${_rnd(0,150)},${_rnd(0,150)},${_rnd(0,150)},.25)`;
         ctx.fillRect(_rnd(0, canvas.width), _rnd(0, canvas.height), 2, 2);
@@ -60,6 +52,7 @@ function generarCaptcha() {
 
 function _rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
+// Compara captcha y caduca
 function validarCaptcha(inputVal) {
     const ts     = parseInt(sessionStorage.getItem('captcha_ts') || '0');
     const texto  = sessionStorage.getItem('captcha_texto') || '';
@@ -67,7 +60,7 @@ function validarCaptcha(inputVal) {
     return inputVal.trim().toLowerCase() === texto.toLowerCase();
 }
 
-/* ── Bloqueo por intentos ────────────────────────────────────── */
+// Lee bloqueo guardado
 function leerBloqueo() {
     const b = sessionStorage.getItem('login_bloqueo');
     if (b) {
@@ -84,6 +77,7 @@ function guardarBloqueo() {
     }));
 }
 
+// Bloqueo vigente o expirado
 function estaBloqueado() {
     if (_bloqueadoHasta && Date.now() < _bloqueadoHasta) return true;
     if (_bloqueadoHasta && Date.now() >= _bloqueadoHasta) {
@@ -94,6 +88,7 @@ function estaBloqueado() {
     return false;
 }
 
+// Suma intento y bloquea
 function registrarIntento() {
     _intentosLocales++;
     if (_intentosLocales >= APP.maxIntentos) {
@@ -103,13 +98,14 @@ function registrarIntento() {
     guardarBloqueo();
 }
 
+// Limpia el bloqueo
 function resetearBloqueo() {
     _intentosLocales = 0;
     _bloqueadoHasta  = 0;
     sessionStorage.removeItem('login_bloqueo');
 }
 
-/* ── Actualizar UI de bloqueo ────────────────────────────────── */
+// Mensaje y botón bloqueado
 function actualizarUiBloqueo() {
     const divBloqueo = document.getElementById('msgBloqueo');
     const btnLogin   = document.getElementById('btnLogin');
@@ -126,7 +122,7 @@ function actualizarUiBloqueo() {
     }
 }
 
-/* ── Submit del formulario de login ──────────────────────────── */
+// Valida y envía login
 async function submitLogin(e) {
     e.preventDefault();
 
@@ -137,7 +133,6 @@ async function submitLogin(e) {
     const inCaptcha = document.getElementById('txtCaptcha');
     const btnLogin  = document.getElementById('btnLogin');
 
-    // Validar campos locales
     let ok = true;
     if (!inUser.value.trim()) {
         mostrarError(inUser, 'Ingrese su usuario.');
@@ -194,12 +189,14 @@ async function submitLogin(e) {
     }
 }
 
+// Marca campo con error
 function mostrarError(inputEl, msg) {
     inputEl.classList.add('campo-error');
     const errEl = inputEl.closest('.campo-grupo')?.querySelector('.mensaje-error');
     if (errEl) { errEl.textContent = msg; errEl.classList.add('visible'); }
 }
 
+// Quita todos los errores
 function limpiarErrores() {
     document.querySelectorAll('.campo-error').forEach(el => el.classList.remove('campo-error'));
     document.querySelectorAll('.mensaje-error.visible').forEach(el => {
@@ -207,18 +204,18 @@ function limpiarErrores() {
     });
 }
 
-/* ── Logout ──────────────────────────────────────────────────── */
+// Cierra sesión y sale
 async function logout() {
     const token = Sesion.token();
     Sesion.limpiar();
-    try { await postJSON(API.auth.logout, { token }); } catch { /* ignorar */ }
+    try { await postJSON(API.auth.logout, { token }); } catch {  }
     window.location.replace(RUTAS.login);
 }
 
-/* ── Inicializar página de login (solo si existe el formulario) ── */
+// Arranque de la pantalla
 document.addEventListener('DOMContentLoaded', async () => {
     const form = document.getElementById('formLogin');
-    if (!form) return; // auth.js se incluye en todas las páginas; aquí solo ejecuta en login
+    if (!form) return;
 
     const redirigido = await Router.redirigirSiAutenticado();
     if (redirigido) return;
@@ -246,7 +243,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    /* Mostrar/ocultar contraseña sin perder el foco del campo */
     const btnToggle = document.getElementById('togglePassword');
     btnToggle?.addEventListener('mousedown', e => e.preventDefault());
     btnToggle?.addEventListener('click', () => {

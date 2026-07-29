@@ -1,5 +1,4 @@
-// Facturación Electrónica y Nueva Factura
-
+// Formas de pago SRI
 const FRAME2_FORMA_PAGO = {
     '01': 'Sin utilización del sistema financiero',
     '15': 'Compensación de deudas',
@@ -11,17 +10,19 @@ const FRAME2_FORMA_PAGO = {
     '21': 'Endoso de títulos',
 };
 
+// Facturas e ítems actuales
 let _facturas     = [];
 let _itemsFactura = [];
 let _itemUidSeq   = 0;
 let _pagFacturas  = null;
 
-// Inicio
+// Arranca módulo de facturación
 async function iniciarFrame2() {
     const ok = await Router.proteger();
     if (!ok) return;
     if (!Router.verificarPermiso('frame2', 'leer')) return;
 
+    // Oculta según permisos
     if (!Sesion.tienePermiso('frame2', 'crear'))  document.getElementById('cardNuevaFactura')?.classList.add('d-none');
     if (!Sesion.tienePermiso('frame2', 'editar')) document.getElementById('btnGuardarEmisor')?.classList.add('d-none');
 
@@ -46,6 +47,7 @@ async function iniciarFrame2() {
         .forEach(id => document.getElementById(id)?.addEventListener('change', () => renderizarTablaFacturas(true)));
 }
 
+// Llena un select
 function llenarSelect(id, opciones, formato) {
     const sel = document.getElementById(id);
     if (!sel) return;
@@ -54,12 +56,12 @@ function llenarSelect(id, opciones, formato) {
         .join('');
 }
 
-// Autocompletado de cliente
+// Retardo de búsqueda
 let _clienteBuscarTimer = null;
 
-// Popup compartido de autocompletado
 let _autocompleteContexto = null;
 
+// Overlay único reutilizable
 function _overlayAutocomplete() {
     let overlay = document.getElementById('autocompleteOverlay');
     if (overlay && !overlay.dataset.listo) {
@@ -75,7 +77,6 @@ function _overlayAutocomplete() {
                 if (p) seleccionarProductoFactura(_autocompleteContexto.uid, p);
             }
         });
-        // Cierra al hacer scroll
         document.addEventListener('scroll', _cerrarAutocomplete, true);
         window.addEventListener('resize', _cerrarAutocomplete);
         document.addEventListener('click', e => {
@@ -88,6 +89,7 @@ function _overlayAutocomplete() {
     return overlay;
 }
 
+// Cierra el desplegable
 function _cerrarAutocomplete() {
     const overlay = document.getElementById('autocompleteOverlay');
     if (!overlay) return;
@@ -96,6 +98,7 @@ function _cerrarAutocomplete() {
     _autocompleteContexto = null;
 }
 
+// Posiciona junto al campo
 function _abrirAutocompleteJunto(inputEl) {
     const overlay = _overlayAutocomplete();
     const r = inputEl.getBoundingClientRect();
@@ -105,13 +108,14 @@ function _abrirAutocompleteJunto(inputEl) {
     return overlay;
 }
 
+// Autocompletado de cliente
 function inicializarAutocompleteCliente() {
     const input  = document.getElementById('txtBuscarClienteFactura');
     const oculto = document.getElementById('selCliente');
     if (!input || !oculto) return;
 
     input.addEventListener('input', () => {
-        oculto.value = ''; // invalida selección previa
+        oculto.value = '';
         const texto = input.value.trim();
         clearTimeout(_clienteBuscarTimer);
         if (texto.length < 2) { _cerrarAutocomplete(); return; }
@@ -127,6 +131,7 @@ function inicializarAutocompleteCliente() {
     });
 }
 
+// Busca clientes activos
 async function buscarClientesFactura(input, texto) {
     try {
         const r = await postJSON(API.clientes.listar, { token: Sesion.token(), busqueda: texto, limite: 20 });
@@ -134,6 +139,7 @@ async function buscarClientesFactura(input, texto) {
     } catch { _pintarListaClientesFactura(input, []); }
 }
 
+// Pinta resultados de clientes
 function _pintarListaClientesFactura(input, resultados) {
     if (!document.body.contains(input)) return;
     const overlay = _abrirAutocompleteJunto(input);
@@ -144,15 +150,17 @@ function _pintarListaClientesFactura(input, resultados) {
     overlay.classList.remove('d-none');
 }
 
+// Fija el cliente elegido
 function seleccionarClienteFactura(c) {
     document.getElementById('selCliente').value = c.id_cliente;
     document.getElementById('txtBuscarClienteFactura').value = `${c.identificacion} — ${c.razon_social}`;
     _cerrarAutocomplete();
 }
 
-// Autocompletado de producto por fila
+// Retardo por fila
 let _productoBuscarTimers = {};
 
+// Autocompletado de productos
 function inicializarAutocompleteProductos() {
     const tbody = document.getElementById('tbodyItems');
     if (!tbody) return;
@@ -181,6 +189,7 @@ function inicializarAutocompleteProductos() {
     });
 }
 
+// Busca productos activos
 async function buscarProductosFactura(input, uid, texto) {
     try {
         const r = await postJSON(API.inventario.listar, { token: Sesion.token(), busqueda: texto, limite: 20 });
@@ -189,8 +198,8 @@ async function buscarProductosFactura(input, uid, texto) {
     } catch { _pintarListaProductosFactura(input, uid, []); }
 }
 
+// Pinta resultados de productos
 function _pintarListaProductosFactura(input, uid, resultados) {
-    // fila ya eliminada
     if (!document.body.contains(input)) return;
     const overlay = _abrirAutocompleteJunto(input);
     _autocompleteContexto = { tipo: 'producto', uid, resultados };
@@ -200,6 +209,7 @@ function _pintarListaProductosFactura(input, uid, resultados) {
     overlay.classList.remove('d-none');
 }
 
+// Fija producto de la fila
 function seleccionarProductoFactura(uid, p) {
     const it = _itemsFactura.find(x => x.uid === uid);
     if (!it) return;
@@ -209,7 +219,7 @@ function seleccionarProductoFactura(uid, p) {
     renderizarItemsFactura();
 }
 
-// Emisor
+// Carga datos del emisor
 async function cargarEmisor() {
     try {
         const r = await postJSON(API.frame2.emisorObtener, { token: Sesion.token() });
@@ -229,6 +239,7 @@ async function cargarEmisor() {
     } catch { mostrarAlerta('Error al cargar los datos del emisor.', 'error'); }
 }
 
+// Valida y guarda emisor
 async function submitEmisor(e) {
     e.preventDefault();
     const form = e.target;
@@ -266,7 +277,7 @@ async function submitEmisor(e) {
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
 }
 
-// Facturas: listado y descargas
+// Pide facturas al servidor
 async function cargarFacturas() {
     try {
         const r = await postJSON(API.frame2.facturasListar, { token: Sesion.token() });
@@ -275,7 +286,7 @@ async function cargarFacturas() {
     } catch { mostrarAlerta('Error al cargar facturas.', 'error'); }
 }
 
-// Filtro de estado real
+// Estados presentes en datos
 function llenarFiltroEstadoFactura() {
     const sel = document.getElementById('selFiltroEstadoFactura');
     if (!sel) return;
@@ -286,6 +297,7 @@ function llenarFiltroEstadoFactura() {
     if (previo && [...sel.options].some(o => o.value === previo)) sel.value = previo;
 }
 
+// Filtra y pagina facturas
 function renderizarTablaFacturas(reiniciar = false) {
     const busqueda      = (document.getElementById('txtBuscarFactura')?.value || '').toLowerCase().trim();
     const filtroAmbiente = document.getElementById('selFiltroAmbienteFactura')?.value || '';
@@ -308,6 +320,7 @@ function renderizarTablaFacturas(reiniciar = false) {
     _pagFacturas.render(lista, { reiniciar });
 }
 
+// Pinta filas de facturas
 function _pintarFacturas(lista) {
     const tbody = document.getElementById('tbodyFacturas');
     if (!tbody) return;
@@ -336,6 +349,7 @@ function _pintarFacturas(lista) {
     `).join('');
 }
 
+// Descarga un blob
 function _descargarArchivo(blob, nombre) {
     const url = URL.createObjectURL(blob);
     const a   = document.createElement('a');
@@ -347,6 +361,7 @@ function _descargarArchivo(blob, nombre) {
     URL.revokeObjectURL(url);
 }
 
+// Descarga XML de factura
 async function descargarXmlFactura(id) {
     try {
         const r = await postJSON(API.frame2.facturasObtener, { token: Sesion.token(), id_factura: id });
@@ -357,12 +372,12 @@ async function descargarXmlFactura(id) {
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
 }
 
+// Decodifica base64 y descarga
 async function descargarPdfFactura(id) {
     try {
         const r = await postJSON(API.frame2.facturasPdf, { token: Sesion.token(), id_factura: id });
         if (!r.ok) { mostrarAlerta(r.msg, 'error'); return; }
 
-        // PDF viene en base64
         const bin   = atob(r.data.pdf_base64);
         const bytes = new Uint8Array(bin.length);
         for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
@@ -370,12 +385,13 @@ async function descargarPdfFactura(id) {
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
 }
 
-// Detalle dinámico en vivo
+// Añade fila al detalle
 function agregarFilaItem() {
     _itemsFactura.push({ uid: ++_itemUidSeq, id_producto: '', cantidad: 1, descuento_pct: 0, producto: null });
     renderizarItemsFactura();
 }
 
+// Quita fila del detalle
 function quitarFilaItem(uid) {
     _itemsFactura = _itemsFactura.filter(it => it.uid !== uid);
     clearTimeout(_productoBuscarTimers[uid]);
@@ -384,6 +400,7 @@ function quitarFilaItem(uid) {
     else renderizarItemsFactura();
 }
 
+// Cambia cantidad o descuento
 function actualizarItem(uid, campo, valor) {
     const it = _itemsFactura.find(x => x.uid === uid);
     if (!it) return;
@@ -391,6 +408,7 @@ function actualizarItem(uid, campo, valor) {
     renderizarItemsFactura();
 }
 
+// Cálculo local previo
 function _calcularLineaPreview(it) {
     const producto = it.producto && it.producto.estado == 1 ? it.producto : null;
     const iva      = producto ? (CATALOGO_IVA[producto.codigo_porcentaje_iva] || { tarifa: 0 }) : { tarifa: 0 };
@@ -403,11 +421,12 @@ function _calcularLineaPreview(it) {
     return { descuentoMonto, subtotal, valorIva, total: subtotal + valorIva };
 }
 
+// Pinta el detalle
 function renderizarItemsFactura() {
     const tbody = document.getElementById('tbodyItems');
     if (!tbody) return;
 
-    _cerrarAutocomplete(); // evita popup huérfano
+    _cerrarAutocomplete();
 
     tbody.innerHTML = _itemsFactura.length === 0
         ? `<tr><td colspan="7" class="tabla-vacia">Sin ítems. Agregue al menos uno.</td></tr>`
@@ -445,6 +464,7 @@ function renderizarItemsFactura() {
     recalcularTotalesFactura();
 }
 
+// Suma totales con propina
 function recalcularTotalesFactura() {
     let subtotalGeneral = 0, descuentoGeneral = 0, ivaGeneral = 0;
 
@@ -463,6 +483,7 @@ function recalcularTotalesFactura() {
     document.getElementById('totImporte').textContent   = (subtotalGeneral + ivaGeneral + propina).toFixed(2);
 }
 
+// Valida y emite factura
 async function submitFactura(e) {
     e.preventDefault();
 

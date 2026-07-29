@@ -1,11 +1,4 @@
-/* ============================================================
-   UTILS.JS — Helpers globales: fetch, DOM, alertas, formato
-   ============================================================ */
-
-/* ── Mapa de iconos Unicode (reemplaza font-awesome) ──────────
-   Los pictogramas llevan el selector de variación U+FE0E (invisible)
-   para forzar la presentación de texto monocroma en lugar de emoji
-   a color, manteniendo un estilo uniforme. */
+// Iconos Unicode sin dependencias
 const ICONOS = {
     'fa-gauge':        '🏠︎',
     'fa-gear':         '⚙︎',
@@ -29,13 +22,12 @@ const ICONOS = {
     'default':         '▸',
 };
 
+// Devuelve icono o predeterminado
 function resolverIcono(nombre) {
     return ICONOS[nombre] || ICONOS['default'];
 }
 
-/* ── Catálogo de IVA vigente (codigoPorcentaje SRI) ──────────────
-   Solo para previsualización y formularios del cliente; la fuente
-   de verdad está en servidor/facturacion/lib/Catalogos.php. */
+// Tarifas IVA del SRI
 const CATALOGO_IVA = {
     '0': { nombre: '0%',                    tarifa: 0.00 },
     '4': { nombre: '15%',                   tarifa: 15.00 },
@@ -43,16 +35,14 @@ const CATALOGO_IVA = {
     '7': { nombre: 'Exento de IVA',          tarifa: 0.00 },
 };
 
-/* ── Catálogo de impuestos especiales (Tabla 16 SRI) ─────────────
-   Clasificación informativa del producto, además del IVA. La clave
-   vacía representa "No posee" (se guarda como NULL en el producto). */
+// Impuestos especiales ICE/IRBPNR
 const CATALOGO_IMPUESTO_ESPECIAL = {
     '':  { nombre: 'No posee' },
     '3': { nombre: 'ICE — Impuesto a los Consumos Especiales' },
     '5': { nombre: 'IRBPNR — Impuesto a las Botellas Plásticas No Retornables' },
 };
 
-/* ── Petición POST a los endpoints PHP ───────────────────────── */
+// POST JSON al servidor
 async function postJSON(url, datos) {
     const resp = await fetch(url, {
         method:  'POST',
@@ -63,9 +53,9 @@ async function postJSON(url, datos) {
     return resp.json();
 }
 
-/* ── Alerta flotante ─────────────────────────────────────────── */
 let _alertaTimer = null;
 
+// Alerta flotante temporal
 function mostrarAlerta(mensaje, tipo = 'ok') {
     let el = document.getElementById('alerta-global');
     if (!el) {
@@ -84,7 +74,7 @@ function mostrarAlerta(mensaje, tipo = 'ok') {
     }, 4000);
 }
 
-/* ── Overlay de carga ────────────────────────────────────────── */
+// Muestra u oculta spinner
 function mostrarCargando(visible) {
     let el = document.getElementById('loading-overlay');
     if (!el) {
@@ -96,23 +86,21 @@ function mostrarCargando(visible) {
     el.classList.toggle('d-none', !visible);
 }
 
-/* ── Obtener parámetro de la URL ─────────────────────────────── */
+// Parámetro de la URL
 function getParam(nombre) {
     return new URLSearchParams(window.location.search).get(nombre);
 }
 
-/* ── Formatear fecha ISO → dd/mm/aaaa ───────────────────────── */
+// Fecha ISO a dd/mm/aaaa
 function formatFecha(iso) {
     if (!iso) return '—';
-    // Fechas sin hora ('YYYY-MM-DD'): formatear directamente, sin pasar
-    // por Date, que las interpreta como UTC y resta un día en zonas GMT-.
     const soloFecha = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
     if (soloFecha) return `${soloFecha[3]}/${soloFecha[2]}/${soloFecha[1]}`;
     const d = new Date(iso);
     return d.toLocaleDateString('es-ES');
 }
 
-/* ── Escapar HTML para evitar XSS al insertar en innerHTML ────── */
+// Escapa HTML contra XSS
 function esc(txt) {
     return String(txt ?? '')
         .replace(/&/g, '&amp;')
@@ -121,30 +109,24 @@ function esc(txt) {
         .replace(/"/g, '&quot;');
 }
 
-/* ── Confirmar antes de eliminar ─────────────────────────────── */
 function confirmar(mensaje) {
     return window.confirm(mensaje);
 }
 
-/* ── Pestañas (tabs) ─────────────────────────────────────────────
-   Conecta los botones .tab-btn[data-tab] con sus paneles .tab-panel
-   (por id). Usado por las páginas con vista en pestañas. */
+// Activa las pestañas
 function inicializarTabs() {
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => cambiarTab(btn.dataset.tab));
     });
 }
 
+// Cambia pestaña visible
 function cambiarTab(tabId) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('activo', b.dataset.tab === tabId));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('d-none', p.id !== tabId));
 }
 
-/* ── Numeración visual (columna N°) ──────────────────────────────
-   Renumera consecutivamente (1, 2, 3...) la celda `.col-num` de
-   cada fila VISIBLE de una tabla. Es puramente de interfaz: no
-   se guarda en la base de datos ni sustituye al ID real. Debe
-   invocarse de nuevo tras cualquier render, filtro o búsqueda. */
+// Renumera filas visibles
 function renumerarFilas(tbody) {
     if (!tbody) return;
     let n = 0;

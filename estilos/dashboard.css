@@ -1,6 +1,4 @@
-/* DASHBOARD.CSS */
-
-/* ── Shell: fondo tipo login ─────────────────────────────── */
+/* Estructura del dashboard */
 body.pag-dashboard {
     display:  flex;
     gap:      1rem;
@@ -15,7 +13,7 @@ body.pag-dashboard {
     background-repeat:   no-repeat;
 }
 
-/* ── Sidebar: panel flotante oscuro (glassmorphism) ──────── */
+/* Menú lateral */
 .sidebar {
     width:       var(--sidebar-w);
     flex-shrink: 0;
@@ -59,7 +57,6 @@ body.pag-dashboard {
     transition:  opacity var(--transition);
 }
 
-/* ── Menú de navegación ──────────────────────────────────── */
 .sidebar-nav {
     flex:       1;
     padding:    .8rem .6rem;
@@ -75,6 +72,7 @@ body.pag-dashboard {
     padding:        1rem .6rem .3rem;
 }
 
+/* Enlaces del menú */
 .nav-item {
     display:        flex;
     align-items:    center;
@@ -95,8 +93,6 @@ body.pag-dashboard {
     white-space:    nowrap;
 }
 
-/* El texto del ítem se recorta con elipsis (y se desvanece al
-   contraer el sidebar) en lugar de saltar de línea */
 .nav-item > span:not(.nav-icono):not(.flecha) {
     flex:          1 1 auto;
     min-width:     0;
@@ -111,7 +107,6 @@ body.pag-dashboard {
     text-decoration: none;
 }
 
-/* Activo con el degradado del botón de login */
 .nav-item.activo {
     background:  linear-gradient(90deg, #5a4fcf, #3a7bd5);
     color:       #ffffff;
@@ -126,6 +121,7 @@ body.pag-dashboard {
     flex-shrink: 0;
 }
 
+/* Grupos desplegables */
 .nav-grupo {
     overflow:   hidden;
     max-height: 0;
@@ -149,7 +145,7 @@ body.pag-dashboard {
     transform: rotate(180deg);
 }
 
-/* ── Sidebar inferior (usuario) ──────────────────────────── */
+/* Usuario al pie */
 .sidebar-user {
     padding:     1rem 1.4rem;
     border-top:  1px solid rgba(255, 255, 255, 0.10);
@@ -174,7 +170,7 @@ body.pag-dashboard {
     transition:  opacity var(--transition);
 }
 
-/* ── Topbar: panel flotante oscuro ───────────────────────── */
+/* Barra superior */
 .topbar {
     height:      var(--topbar-h);
     flex-shrink: 0;
@@ -222,9 +218,6 @@ body.pag-dashboard {
     color:        #fca5a5;
 }
 
-/* ── Botón hamburguesa ───────────────────────────────────────
-   Móvil: desliza el sidebar sobre el contenido.
-   Escritorio: contrae/expande el sidebar (solo iconos). */
 .btn-menu-toggle {
     display:    block;
     background: none;
@@ -235,14 +228,12 @@ body.pag-dashboard {
     padding:    .3rem;
 }
 
-/* ── Sidebar contraído (solo escritorio) ─────────────────── */
+/* Menú colapsado */
 @media (min-width: 769px) {
     .sidebar.colapsado {
         width: var(--sidebar-w-min);
     }
 
-    /* Solo permanecen visibles los iconos: el resto de textos
-       se desvanece mientras el ancho se anima */
     .sidebar.colapsado .logo-nombre,
     .sidebar.colapsado .logo-version,
     .sidebar.colapsado .sidebar-user-nombre,
@@ -251,16 +242,12 @@ body.pag-dashboard {
         opacity: 0;
     }
 
-    /* Los iconos de los hijos se alinean con los de los padres */
     .sidebar.colapsado .nav-item-hijo {
         padding-left: .9rem;
     }
 }
 
-/* ── Tooltip del sidebar contraído ───────────────────────────
-   position: fixed lo saca del recorte (overflow) del sidebar;
-   pointer-events: none evita que interfiera con la navegación.
-   Aparece de inmediato (sin retardo ni transición). */
+/* Tooltip al colapsar */
 .sidebar-tooltip {
     position:      fixed;
     z-index:       1000;
@@ -284,7 +271,7 @@ body.pag-dashboard {
     visibility: visible;
 }
 
-/* ── Área del frame de contenido ─────────────────────────── */
+/* Área de contenido */
 .main-wrap {
     flex:           1;
     min-width:      0;
@@ -304,6 +291,7 @@ body.pag-dashboard {
     box-shadow:    0 8px 32px rgba(0, 0, 0, 0.35);
 }
 
+/* Iframe del contenido */
 #frameContenido {
     display:    block;
     width:      100%;
@@ -312,7 +300,6 @@ body.pag-dashboard {
     background: var(--bg-page);
 }
 
-/* ── Páginas de contenido (cargadas dentro del frame) ────── */
 body.pag-contenido {
     background: var(--bg-page);
     min-height: 100vh;
@@ -322,7 +309,6 @@ body.pag-contenido {
     padding: 1.8rem;
 }
 
-/* ── Breadcrumb ──────────────────────────────────────────── */
 .breadcrumb {
     display:       flex;
     align-items:   center;
@@ -333,7 +319,7 @@ body.pag-contenido {
 }
 .breadcrumb span { color: var(--text-muted); }
 
-/* ── Overlay sidebar móvil ───────────────────────────────── */
+/* Fondo en móvil */
 .sidebar-overlay {
     display:    none;
     position:   fixed;
@@ -342,7 +328,7 @@ body.pag-contenido {
     z-index:    99;
 }
 
-/* ── Responsive ──────────────────────────────────────────── */
+/* Ajustes responsivos */
 @media (max-width: 768px) {
     body.pag-dashboard {
         padding: .8rem;

@@ -1,4 +1,5 @@
 <?php
+// Crea un SuperMenu
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();
@@ -13,8 +14,6 @@ if ($nombre === '') {
 
 $db = getDB();
 
-// Siguiente posición al final de la raíz (ItemMenus sueltos y SuperMenus
-// comparten una misma secuencia de orden)
 $stmt = $db->prepare("
     SELECT GREATEST(
         COALESCE((SELECT MAX(orden) FROM menu_super_usuario WHERE id_user = ?), 0),

@@ -1,7 +1,8 @@
 <?php
-// Genera la Clave de Acceso SRI
+// Clave de acceso SRI
 class ClaveAcceso
 {
+    // 48 dígitos más verificador
     public static function generar(
         string $fechaEmision,
         string $ruc,
@@ -17,7 +18,7 @@ class ClaveAcceso
 
         $clave48 =
             $fecha .
-            '01' . // codDoc Factura
+            '01' .
             $ruc .
             $ambiente .
             $serie .

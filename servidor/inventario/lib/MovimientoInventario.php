@@ -1,11 +1,11 @@
 <?php
-// Registra movimientos de inventario
+// Registra cambios de stock
 class MovimientoInventario
 {
     const INGRESO = 'INGRESO POR COMPRA';
     const AJUSTE  = 'AJUSTE DE INVENTARIO';
 
-    // Registra variación de existencia
+    // Ingreso o ajuste
     public static function registrar(PDO $db, array $producto, float $stockAnterior, float $stockNuevo, ?int $idUser, ?string $proveedor = null): void
     {
         $delta = round($stockNuevo - $stockAnterior, 6);

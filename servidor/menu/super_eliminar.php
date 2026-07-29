@@ -1,4 +1,5 @@
 <?php
+// Elimina SuperMenu no protegido
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();
@@ -20,14 +21,13 @@ $row = $stmt->fetch();
 if (!$row) {
     responder(false, 'SuperMenu no encontrado.');
 }
+// Protegido no se elimina
 if ((int)$row['protegido'] === 1) {
     responder(false, 'Este SuperMenu es obligatorio para todos los usuarios y no puede eliminarse.');
 }
 
 $db->beginTransaction();
 try {
-    // Siguiente posicion libre en la raiz: ItemMenus sueltos y SuperMenus
-    // comparten una misma secuencia de orden.
     $stmt = $db->prepare("
         SELECT GREATEST(
             COALESCE((SELECT MAX(orden) FROM menu_super_usuario WHERE id_user = ?), 0),
@@ -37,8 +37,6 @@ try {
     $stmt->execute([$sesion['id_user'], $sesion['id_user']]);
     $siguiente = (int)$stmt->fetch()['maximo'] + 1;
 
-    // Los ItemMenu del SuperMenu eliminado pasan a "Elementos sin agrupar",
-    // conservando el orden relativo que tenian entre si.
     $stmt = $db->prepare("SELECT id_menu FROM menu_orden_usuario WHERE id_user = ? AND id_super = ? ORDER BY orden ASC");
     $stmt->execute([$sesion['id_user'], $id_super]);
     $items = $stmt->fetchAll();

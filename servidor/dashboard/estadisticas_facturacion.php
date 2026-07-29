@@ -1,16 +1,7 @@
 <?php
-/**
- * Estadísticas del Módulo de Facturación para el Dashboard.
- *
- * Información de solo consulta, disponible para cualquier usuario
- * autenticado (no depende del rol). Se calcula con consultas
- * agregadas — cuatro en total, una por tabla — para no repetir
- * conteos ni recorrer filas en el cliente.
- */
+// Conteos de facturación
 require_once dirname(__DIR__) . '/config.php';
 
-// Umbral de "stock bajo": productos activos con existencia en o por
-// debajo de este valor. Centralizado aquí para ajustarlo en un solo sitio.
 const UMBRAL_STOCK_BAJO = 10;
 
 $input = getInput();
@@ -19,7 +10,6 @@ verificarSesion($token);
 
 $db = getDB();
 
-// Facturas: total, del día y del mes en una sola pasada.
 $f = $db->query("
     SELECT COUNT(*) AS total,
            COALESCE(SUM(fecha_emision = CURDATE()), 0) AS hoy,
@@ -28,7 +18,6 @@ $f = $db->query("
     FROM facturas
 ")->fetch();
 
-// Productos: total, con stock bajo y valor del inventario (solo activos).
 $p = $db->query("
     SELECT COUNT(*) AS total,
            COALESCE(SUM(estado = 1 AND stock <= " . UMBRAL_STOCK_BAJO . "), 0) AS stock_bajo,
@@ -38,9 +27,6 @@ $p = $db->query("
 
 $clientes = (int)$db->query("SELECT COUNT(*) FROM clientes")->fetchColumn();
 
-// Movimientos = comprobantes emitidos (facturas) + salidas de inventario
-// (líneas de detalle) + ingresos y ajustes de inventario, tal como los
-// presenta el módulo Movimientos.
 $detalle  = (int)$db->query("SELECT COUNT(*) FROM factura_detalle")->fetchColumn();
 $ingresos = (int)$db->query("SELECT COUNT(*) FROM inventario_movimientos")->fetchColumn();
 

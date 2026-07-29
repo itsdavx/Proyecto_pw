@@ -14,3 +14,10 @@
 - **Facturador** — Crear y consultar facturas; consulta (solo lectura) de Clientes e Inventario. Sin permisos administrativos.
 - **Auxiliar de Cobranza** — Consulta de Facturas, Clientes y Movimientos. Sin acceso a Inventario ni configuración.
 - **Analista de Facturación** — Consulta (solo lectura) de Facturas, Movimientos e Inventario para análisis y reportes.
+
+### Credenciales Base de Datos para Conexión
+
+| Usuario    | Contraseña  |
+| ---------- | ----------- |
+| `admin`    | `admin`     |
+| `root`     | `rootroot` |

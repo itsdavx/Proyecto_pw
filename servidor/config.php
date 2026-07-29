@@ -1,4 +1,5 @@
 <?php
+// Cabeceras JSON y CORS
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
@@ -7,15 +8,13 @@ header('Cache-Control: no-store, no-cache');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }
 
+// Errores PHP como JSON
 set_error_handler(function($errno, $errstr) {
     echo json_encode(['ok' => false, 'msg' => "Error PHP [$errno]: $errstr", 'data' => []]);
     exit;
 });
 
-// ============================================================
-// CONFIGURACION MySQL
-// Apache: localhost:8080 | MySQL: localhost:3306
-// ============================================================
+// Credenciales de MySQL
 define('DB_HOST',    'localhost');
 define('DB_PORT',    '3306');
 define('DB_NAME',    'proyecto_pw');
@@ -23,13 +22,8 @@ define('DB_USER',    'admin');
 define('DB_PASS',    'admin');
 define('DB_CHARSET', 'utf8');
 
-// ============================================================
-// FUNCIONES BASE
-// ============================================================
 
-/**
- * Lee el cuerpo de la petición: JSON (enviado por fetch) o $_POST como fallback.
- */
+// Lee JSON o POST
 function getInput(): array
 {
     $raw = file_get_contents('php://input');
@@ -42,6 +36,7 @@ function getInput(): array
     return $_POST;
 }
 
+// Respuesta JSON estándar
 function responder(bool $ok, string $msg, array $data = []): void
 {
     echo json_encode(
@@ -51,6 +46,7 @@ function responder(bool $ok, string $msg, array $data = []): void
     exit;
 }
 
+// Conexión PDO reutilizable
 function getDB(): PDO
 {
     static $pdo = null;
@@ -69,7 +65,7 @@ function getDB(): PDO
     return $pdo;
 }
 
-// Valida el token de sesion — retorna datos del usuario o detiene ejecucion
+// Valida token de sesión
 function verificarSesion(string $token): array
 {
     if (empty($token)) {
@@ -89,8 +85,7 @@ function verificarSesion(string $token): array
     return $sesion;
 }
 
-// Indica si el modulo (ItemMenu) esta activo globalmente. Un ItemMenu
-// desactivado en "Configurar Menus" no es accesible para nadie.
+// Módulo habilitado en menú
 function moduloActivo(string $modulo): bool
 {
     $db   = getDB();
@@ -101,18 +96,17 @@ function moduloActivo(string $modulo): bool
     return !((int)$r['total'] > 0 && (int)$r['activos'] === 0);
 }
 
-// Indica si el rol tiene permiso sobre modulo+accion, sin detener la
-// ejecucion (para endpoints validos desde mas de un modulo).
+// Rol 1 es superadmin
 function rolTienePermiso(int $id_rol, string $modulo, string $accion): bool
 {
-    if ($id_rol === 1) { return true; } // El Administrador siempre posee todos los permisos
+    if ($id_rol === 1) { return true; }
     $db   = getDB();
     $stmt = $db->prepare("SELECT id FROM permisos_rol WHERE id_rol = ? AND modulo = ? AND accion = ?");
     $stmt->execute([$id_rol, $modulo, $accion]);
     return (bool)$stmt->fetch();
 }
 
-// Verifica que el modulo este activo globalmente — o detiene ejecucion
+// Aborta si módulo deshabilitado
 function verificarModuloActivo(string $modulo): void
 {
     if (!moduloActivo($modulo)) {
@@ -120,7 +114,7 @@ function verificarModuloActivo(string $modulo): void
     }
 }
 
-// Verifica que el rol tenga permiso sobre modulo+accion — o detiene ejecucion
+// Valida módulo y permiso
 function verificarPermiso(int $id_rol, string $modulo, string $accion): void
 {
     verificarModuloActivo($modulo);

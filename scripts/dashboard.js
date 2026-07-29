@@ -1,11 +1,8 @@
-/* ============================================================
-   DASHBOARD.JS — Página de inicio: saludo, accesos rápidos
-   personalizables por usuario, frase motivadora y estadísticas.
-   ============================================================ */
+// Accesos rápidos ocultos
+let _accesosOcultos = [];
+let _itemsAccesos   = [];
 
-let _accesosOcultos = [];   // ids de menú que el usuario decidió ocultar
-let _itemsAccesos   = [];   // ItemMenus con URL permitidos al rol
-
+// Arranque del dashboard
 document.addEventListener('DOMContentLoaded', async () => {
     const ok = await Router.proteger();
     if (!ok) return;
@@ -15,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     mostrarFrase();
     cargarEstadisticasFacturacion();
 
-    /* Estadísticas e información administrativa: solo Administrador */
+    // Stats solo para superadmin
     if (Sesion.usuario()?.id_rol === 1) {
         cargarEstadisticas();
     } else {
@@ -25,6 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('btnPersonalizarAccesos')?.addEventListener('click', modoPersonalizarAccesos);
 });
 
+// Saludo según la hora
 function mostrarBienvenida() {
     const user = Sesion.usuario();
     const hora = new Date().getHours();
@@ -46,16 +44,17 @@ function mostrarBienvenida() {
     if (rolEl) rolEl.textContent = user?.rol || '';
 }
 
-/* ── Accesos rápidos personalizables ─────────────────────────── */
+// Carga accesos del usuario
 async function cargarAccesosRapidos() {
     _itemsAccesos = Sesion.menuData().filter(m => m.url && m.modulo !== 'dashboard');
     try {
         const r = await postJSON(API.dashboard.accesos, { token: Sesion.token() });
         if (r.ok) _accesosOcultos = (r.data || []).map(Number);
-    } catch { /* sin configuración: se muestran todos */ }
+    } catch {  }
     renderAccesosRapidos();
 }
 
+// Pinta accesos visibles
 function renderAccesosRapidos() {
     const cont = document.getElementById('accesosRapidos');
     if (!cont) return;
@@ -67,6 +66,7 @@ function renderAccesosRapidos() {
         || '<span class="text-muted">No hay accesos rápidos visibles. Use "Personalizar" para activarlos.</span>';
 }
 
+// Casillas para elegir accesos
 function modoPersonalizarAccesos() {
     const cont = document.getElementById('accesosRapidos');
     if (!cont) return;
@@ -88,6 +88,7 @@ function modoPersonalizarAccesos() {
     document.getElementById('btnCancelarAccesos')?.addEventListener('click', renderAccesosRapidos);
 }
 
+// Guarda accesos ocultos
 async function guardarAccesosRapidos() {
     const ocultos = [];
     document.querySelectorAll('#accesosRapidos input[data-acceso]').forEach(ch => {
@@ -105,13 +106,12 @@ async function guardarAccesosRapidos() {
     renderAccesosRapidos();
 }
 
-/* ── Frase motivadora (solo usuarios no administradores) ─────── */
+// Frase motivacional cacheada
 async function mostrarFrase() {
     if (Sesion.usuario()?.id_rol === 1) return;
 
-    /* Una frase por inicio de sesión: se conserva durante la sesión */
     let f = null;
-    try { f = JSON.parse(sessionStorage.getItem(APP.keys.frase)); } catch { /* sin caché */ }
+    try { f = JSON.parse(sessionStorage.getItem(APP.keys.frase)); } catch {  }
 
     if (!f || !f.frase) {
         try {
@@ -120,7 +120,7 @@ async function mostrarFrase() {
                 f = r.data;
                 sessionStorage.setItem(APP.keys.frase, JSON.stringify(f));
             }
-        } catch { /* sin frase disponible */ }
+        } catch {  }
     }
     if (!f || !f.frase) return;
 
@@ -129,7 +129,7 @@ async function mostrarFrase() {
     document.getElementById('fraseCard')?.classList.remove('d-none');
 }
 
-/* ── Conteos exactos por módulo ──────────────────────────────── */
+// Conteos de administración
 async function cargarEstadisticas() {
     try {
         const r = await postJSON(API.dashboard.estadisticas, { token: Sesion.token() });
@@ -137,7 +137,7 @@ async function cargarEstadisticas() {
         _ponerConteo('statUsuarios', r.data.usuarios);
         _ponerConteo('statRoles',    r.data.roles);
         _ponerConteo('statPermisos', r.data.permisos);
-    } catch { /* si falla, se mantienen los guiones */ }
+    } catch {  }
 }
 
 function _ponerConteo(id, valor) {
@@ -145,9 +145,7 @@ function _ponerConteo(id, valor) {
     if (el && valor !== undefined && valor !== null) el.textContent = valor;
 }
 
-/* ── Estadísticas del Módulo de Facturación (todos los roles) ──
-   Solo consulta; se obtiene fresca en cada carga del Dashboard,
-   por lo que refleja el estado actual sin necesidad de caché. */
+// Conteos de facturación
 async function cargarEstadisticasFacturacion() {
     try {
         const r = await postJSON(API.dashboard.estadisticasFacturacion, { token: Sesion.token() });
@@ -164,10 +162,10 @@ async function cargarEstadisticasFacturacion() {
 
         const lbl = document.getElementById('statStockBajoLabel');
         if (lbl && d.umbral_stock_bajo != null) lbl.textContent = `Productos con stock bajo (≤ ${d.umbral_stock_bajo})`;
-    } catch { /* si falla, se mantienen los guiones */ }
+    } catch {  }
 }
 
-/* Formato monetario USD, consistente con las tablas del sistema */
+// Formato de moneda
 function _money(valor) {
     return '$' + Number(valor || 0).toLocaleString('es-EC', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }

@@ -1,8 +1,8 @@
 <?php
-// Valida el XML contra el esquema SRI
+// Valida XML contra XSD
 class ValidadorFactura
 {
-    // Lista de errores, vacía si es válido
+    // Devuelve errores del esquema
     public static function validar(DOMDocument $doc): array
     {
         libxml_use_internal_errors(true);

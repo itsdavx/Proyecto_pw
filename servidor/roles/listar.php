@@ -1,4 +1,5 @@
 <?php
+// Lista todos los roles
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();

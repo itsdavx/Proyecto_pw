@@ -1,13 +1,10 @@
-/* ============================================================
-   USUARIOS.JS — Gestión de usuarios (lista, crear, editar)
-   ============================================================ */
-
-/* ── Lista de usuarios ───────────────────────────────────────── */
+// Arranca listado de usuarios
 async function iniciarListaUsuarios() {
     const ok = await Router.proteger();
     if (!ok) return;
     if (!Router.verificarPermiso('usuarios', 'leer')) return;
 
+    // Oculta botón sin permiso
     if (!Sesion.tienePermiso('usuarios', 'crear')) {
         document.getElementById('btnNuevoUsuario')?.classList.add('d-none');
     }
@@ -22,6 +19,7 @@ async function iniciarListaUsuarios() {
     document.getElementById('selFiltroEstado')?.addEventListener('change', aplicarFiltros);
 }
 
+// Pide usuarios al servidor
 async function cargarUsuarios() {
     mostrarCargando(true);
     try {
@@ -35,6 +33,7 @@ async function cargarUsuarios() {
     }
 }
 
+// Pinta la tabla
 function renderizarTablaUsuarios(lista) {
     const tbody = document.getElementById('tbodyUsuarios');
     if (!tbody) return;
@@ -44,6 +43,7 @@ function renderizarTablaUsuarios(lista) {
         return;
     }
 
+    // Botones según permisos
     const puedeEditar  = Sesion.tienePermiso('usuarios', 'editar');
     const puedeEstado  = Sesion.tienePermiso('usuarios', 'desactivar');
 
@@ -80,7 +80,7 @@ function renderizarTablaUsuarios(lista) {
     aplicarFiltros();
 }
 
-/* Opciones del filtro de rol a partir de los roles presentes en la lista */
+// Llena filtro de roles
 function poblarFiltroRoles(lista) {
     const sel = document.getElementById('selFiltroRol');
     if (!sel) return;
@@ -93,7 +93,7 @@ function poblarFiltroRoles(lista) {
     if (sel.value !== actual) sel.value = '';
 }
 
-/* Filtros combinables: búsqueda + rol + estado */
+// Filtra por texto, rol, estado
 function aplicarFiltros() {
     const q   = (document.getElementById('txtBuscar')?.value || '').toLowerCase();
     const rol = document.getElementById('selFiltroRol')?.value || '';
@@ -111,6 +111,7 @@ function irEditar(id) {
     Router.irA(`${RUTAS.usuariosEditar}?id=${id}`);
 }
 
+// Activa o desactiva usuario
 async function toggleEstado(id, estadoActual) {
     const accion = estadoActual == 1 ? 'desactivar' : 'activar';
     if (!confirmar(`¿Desea ${accion} este usuario?`)) return;
@@ -122,7 +123,7 @@ async function toggleEstado(id, estadoActual) {
     } catch { mostrarAlerta('Error de conexión.', 'error'); }
 }
 
-/* ── Formulario Crear/Editar usuario ─────────────────────────── */
+// Arranca crear o editar
 async function iniciarFormUsuario(modo) {
     const ok = await Router.proteger();
     if (!ok) return;
@@ -140,6 +141,7 @@ async function iniciarFormUsuario(modo) {
     document.getElementById('btnCancelar')?.addEventListener('click', () => Router.irA(RUTAS.usuarios));
 }
 
+// Llena select de roles
 async function cargarRolesEnSelect() {
     try {
         const r = await postJSON(API.roles.listar, { token: Sesion.token() });
@@ -148,9 +150,10 @@ async function cargarRolesEnSelect() {
         if (!sel) return;
         sel.innerHTML = '<option value="">-- Seleccione un rol --</option>' +
             r.data.map(rol => `<option value="${rol.id_rol}">${esc(rol.nombre_rol)}</option>`).join('');
-    } catch { /* silencioso */ }
+    } catch {  }
 }
 
+// Rellena datos al editar
 async function precargarUsuario(id) {
     try {
         const r = await postJSON(API.usuarios.listar, { token: Sesion.token() });
@@ -164,8 +167,7 @@ async function precargarUsuario(id) {
 
         const selRol = document.getElementById('selRol');
         selRol.value = u.id_rol;
-        // Cambiar el rol es una acción independiente: sin ese permiso,
-        // el campo queda visible pero bloqueado en su valor actual.
+        // Rol bloqueado sin permiso
         if (!Sesion.tienePermiso('usuarios', 'cambiar_rol')) {
             selRol.disabled = true;
         }
@@ -173,12 +175,12 @@ async function precargarUsuario(id) {
         const h = document.getElementById('hdnIdUser');
         if (h) h.value = id;
 
-        // En modo editar, password no es obligatorio
         const lblPass = document.querySelector('label[for="txtPassword"]');
         if (lblPass) lblPass.textContent = 'Nueva contraseña (dejar vacío para no cambiar)';
-    } catch { /* silencioso */ }
+    } catch {  }
 }
 
+// Valida y guarda usuario
 async function submitUsuario(e, modo) {
     e.preventDefault();
     const form = e.target;

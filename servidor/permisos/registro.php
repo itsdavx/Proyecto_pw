@@ -1,13 +1,5 @@
 <?php
-/**
- * Registro central de Frames del sistema y sus acciones internas.
- *
- * Para agregar un Frame nuevo: registrarlo aquí (modulo, nombre y acciones)
- * y crear su ítem de menú. La matriz de permisos, la validación al guardar
- * y el menú por rol se generan automáticamente a partir de este registro.
- *
- * El acceso al Frame se controla siempre con la acción 'leer' (Habilitar).
- */
+// Catálogo de módulos
 function obtenerRegistroFrames(): array
 {
     $frames = [
@@ -41,7 +33,6 @@ function obtenerRegistroFrames(): array
         ['modulo' => 'perfil', 'nombre' => 'Mi Perfil', 'acciones' => [
             ['accion' => 'editar', 'nombre' => 'Cambiar contraseña'],
         ]],
-        // Historial de solo lectura: el acceso se controla con 'leer'
         ['modulo' => 'frame1', 'nombre' => 'Movimientos', 'acciones' => []],
         ['modulo' => 'frame2', 'nombre' => 'Facturación Electrónica', 'acciones' => [
             ['accion' => 'crear',  'nombre' => 'Generar factura'],
@@ -62,9 +53,6 @@ function obtenerRegistroFrames(): array
         ['modulo' => 'frame5', 'nombre' => 'Frame 5', 'acciones' => []],
     ];
 
-    // ItemMenus creados desde "Configurar Menús" no están en este catálogo
-    // estático: se incorporan automáticamente como Frames de solo acceso,
-    // para que puedan habilitarse por rol en el módulo Permisos.
     try {
         $db       = getDB();
         $conocidos = array_column($frames, 'modulo');
@@ -78,7 +66,7 @@ function obtenerRegistroFrames(): array
         foreach ($stmt->fetchAll() as $fila) {
             $frames[] = ['modulo' => $fila['modulo'], 'nombre' => $fila['nombre'], 'acciones' => []];
         }
-    } catch (\Throwable $e) { /* getDB() no disponible en este contexto */ }
+    } catch (\Throwable $e) {  }
 
     return $frames;
 }

@@ -1,4 +1,5 @@
 <?php
+// Activa o desactiva producto
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();

@@ -1,39 +1,20 @@
-/* ============================================================
-   PAGINACION.JS — Paginador reutilizable para tablas.
-
-   Divide un arreglo de datos en páginas con un selector de
-   "Mostrar N registros" (persistido por tabla en sessionStorage)
-   y controles de navegación. No conoce la estructura de las
-   filas: delega el pintado de cada página en un callback, de modo
-   que cualquier tabla del sistema puede paginarse sin duplicar
-   lógica de renderizado.
-
-   Uso:
-     const pag = crearPaginador({
-         clave:   'clientes',           // id único (persistencia + DOM)
-         tbodyId: 'tbodyClientes',       // <tbody> a paginar
-         etiqueta:'clientes',            // sustantivo para "de N clientes"
-         pintar:  (filas, offset) => {   // rellena el <tbody> con la página
-             tbody.innerHTML = filas.map((x, i) => `... ${offset + i + 1} ...`).join('');
-         },
-     });
-     pag.render(datosFiltrados);                 // repinta (conserva página)
-     pag.render(datosFiltrados, { reiniciar:true }); // vuelve a la página 1
-   ============================================================ */
-
+// Tamaños de página
 const PAGINACION_TAMANOS = [10, 20, 50, 100];
 
+// Paginador reutilizable de tablas
 function crearPaginador({ clave, tbodyId, pintar, tamanos = PAGINACION_TAMANOS, etiqueta = 'registros' }) {
     const claveStorage = 'paginacion_' + clave;
     let tamano = _leerTamano();
     let pagina = 1;
     let datos  = [];
 
+    // Tamaño guardado o predeterminado
     function _leerTamano() {
         const v = parseInt(sessionStorage.getItem(claveStorage), 10);
         return tamanos.includes(v) ? v : tamanos[0];
     }
 
+    // Crea el pie paginado
     function _pie() {
         const wrap = document.getElementById(tbodyId)?.closest('.tabla-wrap');
         if (!wrap) return null;
@@ -47,6 +28,7 @@ function crearPaginador({ clave, tbodyId, pintar, tamanos = PAGINACION_TAMANOS, 
         return pie;
     }
 
+    // Pinta la página actual
     function render(nuevosDatos, opciones = {}) {
         datos = Array.isArray(nuevosDatos) ? nuevosDatos : [];
         if (opciones.reiniciar) pagina = 1;
@@ -59,6 +41,7 @@ function crearPaginador({ clave, tbodyId, pintar, tamanos = PAGINACION_TAMANOS, 
         _controles(totalPaginas, inicio);
     }
 
+    // Botones y contador
     function _controles(totalPaginas, inicio) {
         const pie = _pie();
         if (!pie) return;
@@ -102,7 +85,7 @@ function crearPaginador({ clave, tbodyId, pintar, tamanos = PAGINACION_TAMANOS, 
         });
     }
 
-    /* Ventana compacta de páginas: 1 … (a-1) a (a+1) … total */
+    // Números con elipsis
     function _rango(actual, total) {
         const set = new Set([1, total, actual, actual - 1, actual + 1]);
         const orden = [...set].filter(p => p >= 1 && p <= total).sort((a, b) => a - b);

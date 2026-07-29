@@ -1,11 +1,12 @@
 <?php
+// Lista productos y catálogos
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();
 $token  = $input['token'] ?? '';
 $sesion = verificarSesion($token);
 
-// Basta permiso en uno de los módulos
+// Acceso desde dos módulos
 $puede = false;
 foreach (['frame3', 'frame2'] as $mod) {
     if (moduloActivo($mod) && rolTienePermiso($sesion['id_rol'], $mod, 'leer')) {
@@ -17,7 +18,6 @@ if (!$puede) responder(false, 'Sin permiso para esta accion.');
 
 $db = getDB();
 
-// Búsqueda y límite opcionales
 $busqueda = trim((string)($input['busqueda'] ?? ''));
 $limite   = isset($input['limite']) ? max(1, min(50, (int)$input['limite'])) : null;
 
@@ -46,7 +46,6 @@ $stmt = $db->prepare($sql);
 $stmt->execute($params);
 $productos = $stmt->fetchAll();
 
-// Omitidas en búsqueda acotada
 $categorias = [];
 $unidades   = [];
 if ($busqueda === '' && $limite === null) {

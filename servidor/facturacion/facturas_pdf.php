@@ -1,4 +1,5 @@
 <?php
+// Genera el RIDE
 require_once dirname(__DIR__) . '/config.php';
 require_once __DIR__ . '/lib/Catalogos.php';
 require_once __DIR__ . '/lib/RidePdf.php';
@@ -22,13 +23,11 @@ $detalle = $db->prepare("SELECT * FROM factura_detalle WHERE id_factura = ? ORDE
 $detalle->execute([$idFactura]);
 $detalle = $detalle->fetchAll();
 
-// Datos vigentes del emisor
 $emisor = $db->query("SELECT * FROM factura_emisor WHERE id_emisor = 1")->fetch();
 if (!$emisor) responder(false, 'No están configurados los datos del emisor.');
 
 $pdf = RidePdf::factura($emisor, $factura, $detalle);
 
-// PDF viene en base64
 responder(true, 'OK', [
     'pdf_base64'   => base64_encode($pdf),
     'clave_acceso' => $factura['clave_acceso'],

@@ -1,10 +1,10 @@
 <?php
+// Cálculos de la factura
 require_once __DIR__ . '/Catalogos.php';
 
-// Cálculos monetarios de factura
 class CalculadoraFactura
 {
-    // Calcula una línea de detalle
+    // Subtotal e IVA
     public static function calcularLinea(float $cantidad, float $precioUnitario, float $descuento, string $codigoIva): array
     {
         $subtotal = round(($cantidad * $precioUnitario) - $descuento, 2);
@@ -20,7 +20,7 @@ class CalculadoraFactura
         ];
     }
 
-    // Agrega totales por código de IVA
+    // Agrupa IVA y suma
     public static function calcularTotales(array $lineas): array
     {
         $totalSinImpuestos = 0.00;

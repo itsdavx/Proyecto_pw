@@ -1,4 +1,5 @@
 <?php
+// Guarda el orden personal
 require_once dirname(__DIR__) . '/config.php';
 
 $input  = getInput();
@@ -15,9 +16,9 @@ if (!is_array($supers) || !is_array($items)) {
 
 $db = getDB();
 
-// SuperMenus propios del usuario (no puede tocar los de otros)
 $stmt = $db->prepare("SELECT id_super FROM menu_super_usuario WHERE id_user = ?");
 $stmt->execute([$sesion['id_user']]);
+// Solo SuperMenus propios
 $propios = array_map('intval', array_column($stmt->fetchAll(), 'id_super'));
 
 $db->beginTransaction();

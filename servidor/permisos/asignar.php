@@ -1,4 +1,5 @@
 <?php
+// Reemplaza permisos del rol
 require_once dirname(__DIR__) . '/config.php';
 require_once __DIR__ . '/registro.php';
 
@@ -8,7 +9,6 @@ $sesion = verificarSesion($token);
 verificarPermiso($sesion['id_rol'], 'permisos', 'crear');
 
 $id_rol = (int)($input['id_rol'] ?? 0);
-// El JS envía JSON, así que $input['permisos'] ya es un array PHP
 $lista  = $input['permisos'] ?? [];
 
 if (!$id_rol) {
@@ -21,7 +21,6 @@ if (!is_array($lista)) {
     responder(false, 'Formato de permisos invalido.');
 }
 
-// Módulos y acciones válidos se derivan del registro central de Frames
 $accionesPorModulo = [];
 foreach (obtenerRegistroFrames() as $f) {
     $accionesPorModulo[$f['modulo']] = array_merge(['leer'], array_column($f['acciones'], 'accion'));
